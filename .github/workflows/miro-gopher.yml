@@ -1,0 +1,24 @@
+name: miro-gopher
+
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get dependencies
+      run: go mod vendor
+
+    - name: Test
+      run: |
+        go test ./...
