@@ -26,8 +26,8 @@ const (
 	CopyAccessTeamEditors = "team_editors"
 	CopyAccessBoardOwner  = "board_owner"
 
-	SharingAccessTeamMemberWithEditingRights = "team_members_with_editing_rights"
-	AccessBoardOwnersAndCoOwners             = "board_owners_and_coowners"
+	AccessTeamMemberWithEditingRights = "team_members_with_editing_rights"
+	AccessBoardOwnersAndCoOwners      = "board_owners_and_coowners"
 
 	CollabToolsStartAccessAllEditors = "all_editors"
 
@@ -94,14 +94,14 @@ func (b *BoardsService) Get(id string) (*Board, error) {
 // GetAll Retrieves a list of boards that match the search criteria provided in the request.
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: BoardQueryParams{}
-func (b *BoardsService) GetAll(queryArgs ...BoardQueryParams) (*ListBoards, error) {
+func (b *BoardsService) GetAll(queryParams ...BoardQueryParams) (*ListBoards, error) {
 	response := &ListBoards{}
 
 	url := fmt.Sprintf("%s/%s", b.client.BaseURL, EndpointBoards)
 
 	var err error
-	if len(queryArgs) > 0 {
-		err = b.client.Get(url, response, ParseQueryTags(queryArgs[0])...)
+	if len(queryParams) > 0 {
+		err = b.client.Get(url, response, ParseQueryTags(queryParams[0])...)
 	} else {
 		err = b.client.Get(url, response)
 	}
@@ -109,14 +109,14 @@ func (b *BoardsService) GetAll(queryArgs ...BoardQueryParams) (*ListBoards, erro
 	return response, err
 }
 
-// CopyBoard Creates a copy of an existing board. You can also update the name, description, sharing policy, and permissions
+// Copy Creates a copy of an existing board. You can also update the name, description, sharing policy, and permissions
 // policy for the new board in the request body.
 // Required scope: boards:write | Rate limiting: Level 4
-func (b *BoardsService) CopyBoard(body CreateBoard, copyFrom string) (*Board, error) {
+func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) {
 	response := &Board{}
 
 	url := fmt.Sprintf("%s/%s", b.client.BaseURL, EndpointBoards)
-	err := b.client.Put(url, body, response, Arguments{
+	err := b.client.Put(url, body, response, Parameter{
 		QueryParamCopyFrom: copyFrom,
 	})
 

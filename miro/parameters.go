@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-type Arguments map[string]string
+type Parameter map[string]string
 
-func EncodeQueryParams(queryParams []Arguments) string {
+func EncodeQueryParams(queryParams []Parameter) string {
 	values := url.Values{}
 	for _, params := range queryParams {
 		for key, value := range params {
@@ -22,8 +22,8 @@ func EncodeQueryParams(queryParams []Arguments) string {
 	return "?" + values.Encode()
 }
 
-func ParseQueryTags(v interface{}) []Arguments {
-	args := make([]Arguments, 0)
+func ParseQueryTags(v interface{}) []Parameter {
+	params := make([]Parameter, 0)
 	t := reflect.TypeOf(v)
 	value := reflect.ValueOf(v)
 
@@ -39,8 +39,8 @@ func ParseQueryTags(v interface{}) []Arguments {
 			}
 
 			key := strings.Replace(tag, ",omitempty", "", 1)
-			args = append(args, Arguments{key: val})
+			params = append(params, Parameter{key: val})
 		}
 	}
-	return args
+	return params
 }

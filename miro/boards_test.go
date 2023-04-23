@@ -329,7 +329,7 @@ func TestCopyBoard(t *testing.T) {
 				TeamAccess:                        AccessEdit,
 			},
 			PermissionsPolicy: PermissionsPolicy{
-				SharingAccess:                 SharingAccessTeamMemberWithEditingRights,
+				SharingAccess:                 AccessBoardOwnersAndCoOwners,
 				CopyAccess:                    CopyAccessTeamEditors,
 				CollaborationToolsStartAccess: AccessBoardOwnersAndCoOwners,
 			},
@@ -357,7 +357,7 @@ func TestCopyBoard(t *testing.T) {
 
 	Convey("Given a CreateBoard struct", t, func() {
 		Convey(fmt.Sprintf("When the Boards Copy function is called with valid data"), func() {
-			results, err := client.Boards.CopyBoard(testBody, TestQueryParams)
+			results, err := client.Boards.Copy(testBody, TestQueryParams)
 
 			Convey("Then the board is created and the board data is returned", func() {
 				So(err, ShouldBeNil)
@@ -365,7 +365,7 @@ func TestCopyBoard(t *testing.T) {
 			})
 		})
 		Convey(fmt.Sprintf("When the Boards Copy function is called with invalid data"), func() {
-			results, err := client.Boards.CopyBoard(testBody, "")
+			results, err := client.Boards.Copy(testBody, "")
 
 			Convey("Then the board is not created and an error is returned", func() {
 				So(err, ShouldBeError)
@@ -381,16 +381,3 @@ func reverseSlice(s []*BoardData) {
 		s[i], s[j] = s[j], s[i]
 	}
 }
-
-//func TestGetBoardForReal(t *testing.T) {
-//	client := NewClient(os.Getenv("MIRO_TOKEN"))
-//
-//	//board, err := client.Boards.Get("uXjVMXqSjzc=")
-//	board, err := client.Boards.CopyBoard(CreateBoard{})
-//	if err != nil {
-//		fmt.Printf("Error: %v\n", err)
-//	}
-//
-//	jsonData, _ := json.Marshal(board)
-//	fmt.Println(string(jsonData))
-//}

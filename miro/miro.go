@@ -47,7 +47,7 @@ func NewClient(token string) *Client {
 }
 
 // Get takes a client, API endpoint and a pointer to a struct then writes the API response data to that struct
-func (c *Client) Get(url string, response interface{}, queryParams ...Arguments) error {
+func (c *Client) Get(url string, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
@@ -103,7 +103,7 @@ func (c *Client) Post(url string, body, response interface{}) error {
 	return json.NewDecoder(res.Body).Decode(&response)
 }
 
-func (c *Client) Put(url string, body, response interface{}, queryParams ...Arguments) error {
+func (c *Client) Put(url string, body, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
