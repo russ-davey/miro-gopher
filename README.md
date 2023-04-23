@@ -22,6 +22,8 @@ go get github.com/russ-davey/miro-gopher/miro
 All interaction starts with a `miro.Client`. Create one with your MIRO token:
 
 ```Go
+import "github.com/russ-davey/miro-gopher/miro"
+
 client := miro.NewClient(token)
 ```
 
@@ -44,7 +46,7 @@ or with query parameters:
 ```go
 client.Boards.GetAll(BoardQueryParams{
     TeamID: "gophers",
-    Sort: SortAlphabetically,
+    Sort: miro.SortAlphabetically,
 })
 ```
 
@@ -56,15 +58,15 @@ client.Boards.Create(CreateBoard{
     Name:        "MIRO Gopher",
     Policy: Policy{
         SharingPolicy: SharingPolicy{
-            Access:                            AccessPrivate,
-            InviteToAccountAndBoardLinkAccess: InviteAccessEditor,
-            OrganizationAccess:                AccessEdit,
-            TeamAccess:                        AccessEdit,
+            Access:                            miro.AccessPrivate,
+            InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
+            OrganizationAccess:                miro.AccessEdit,
+            TeamAccess:                        miro.AccessEdit,
         },
         PermissionsPolicy: PermissionsPolicy{
-            SharingAccess:                 AccessBoardOwnersAndCoOwners,
-            CopyAccess:                    CopyAccessTeamEditors,
-            CollaborationToolsStartAccess: AccessBoardOwnersAndCoOwners,
+            SharingAccess:                 miro.AccessBoardOwnersAndCoOwners,
+            CopyAccess:                    miro.CopyAccessTeamEditors,
+            CollaborationToolsStartAccess: miro.AccessBoardOwnersAndCoOwners,
         },
     },
     TeamID: "gophers",
@@ -73,21 +75,21 @@ client.Boards.Create(CreateBoard{
 
 ### Copy
 
-``` go
+```go
 client.Boards.Copy(CreateBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
     Policy: Policy{
         SharingPolicy: SharingPolicy{
-            Access:                            AccessPrivate,
-            InviteToAccountAndBoardLinkAccess: InviteAccessEditor,
-            OrganizationAccess:                AccessEdit,
-            TeamAccess:                        AccessEdit,
+            Access:                            miro.AccessPrivate,
+            InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
+            OrganizationAccess:                miro.AccessEdit,
+            TeamAccess:                        miro.AccessEdit,
         },
         PermissionsPolicy: PermissionsPolicy{
-            SharingAccess:                 AccessBoardOwnersAndCoOwners,
-            CopyAccess:                    CopyAccessTeamEditors,
-            CollaborationToolsStartAccess: AccessBoardOwnersAndCoOwners,
+            SharingAccess:                 miro.AccessBoardOwnersAndCoOwners,
+            CopyAccess:                    miro.CopyAccessTeamEditors,
+            CollaborationToolsStartAccess: miro.AccessBoardOwnersAndCoOwners,
         },
     },
     TeamID: "gophers",
