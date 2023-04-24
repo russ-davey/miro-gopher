@@ -4,7 +4,7 @@ API client for accessing the MIRO API
 
 Currently, only supports the `/boards` endpoint, but more to follow soon.
 
-For now the GET, POST, PUT & PATCH methods are open to use for any other API calls to MIRO.
+For now the `GET`, `POST`, `PUT`, `PATCH` & `DELETE` methods are open to use for any other API calls to MIRO.
 
 Minimum required Go version : `1.18`
 
@@ -118,4 +118,10 @@ client.Boards.Update(CreateBoard{
     TeamID: "gophers",
 },
 "3141592")
+```
+
+### Delete
+
+```go
+client.Boards.Delete("3141592")
 ```
