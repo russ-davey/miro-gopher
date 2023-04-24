@@ -298,7 +298,7 @@ func TestListBoardsWithQueryParams(t *testing.T) {
 					json.NewEncoder(w).Encode(test.expected)
 				})
 
-				results, err := client.Boards.GetAll(BoardQueryParams{
+				results, err := client.Boards.GetAll(BoardSearchParams{
 					Owner: "30744573567",
 					Sort:  SortAlphabetically,
 				})

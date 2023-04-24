@@ -42,7 +42,7 @@ const (
 	InviteAccessNoAccess  = "no_access"
 )
 
-type BoardQueryParams struct {
+type BoardSearchParams struct {
 	// TeamID The team_id for which you want to retrieve the list of boards. If this parameter is sent in the request,
 	// the query and owner parameters are ignored.
 	TeamID string `query:"team_id,omitempty"`
@@ -93,8 +93,8 @@ func (b *BoardsService) Get(id string) (*Board, error) {
 
 // GetAll Retrieves a list of boards that match the search criteria provided in the request.
 // Required scope: boards:read | Rate limiting: Level 1
-// Search query params: BoardQueryParams{}
-func (b *BoardsService) GetAll(queryParams ...BoardQueryParams) (*ListBoards, error) {
+// Search query params: BoardSearchParams{}
+func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, error) {
 	response := &ListBoards{}
 
 	url := fmt.Sprintf("%s/%s", b.client.BaseURL, EndpointBoards)
