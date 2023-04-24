@@ -6,6 +6,9 @@ Currently, only supports the `/boards` endpoint, but more to follow soon.
 
 For now the GET, POST & PUT methods are open to use for any other API calls to MIRO.
 
+Minimum required Go version : `1.18`
+
+
 [![GoDoc](https://godoc.org/github.com/russ-davey/miro-gopher?status.svg)](http://godoc.org/github.com/russ-davey/miro-gopher)
 [![Tests](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml/badge.svg?branch=main)](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml)
 
@@ -44,7 +47,7 @@ client.Boards.GetAll()
 or with query parameters:
 
 ```go
-client.Boards.GetAll(BoardQueryParams{
+client.Boards.GetAll(miro.BoardSearchParams{
     TeamID: "gophers",
     Sort: miro.SortAlphabetically,
 })
