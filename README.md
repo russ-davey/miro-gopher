@@ -4,7 +4,7 @@ API client for accessing the MIRO API
 
 Currently, only supports the `/boards` endpoint, but more to follow soon.
 
-For now the GET, POST & PUT methods are open to use for any other API calls to MIRO.
+For now the GET, POST, PUT & PATCH methods are open to use for any other API calls to MIRO.
 
 Minimum required Go version : `1.18`
 
@@ -60,13 +60,12 @@ client.Boards.Create(CreateBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
     Policy: Policy{
-        SharingPolicy: SharingPolicy{
+        SharingPolicy: miro.SharingPolicy{
             Access:                            miro.AccessPrivate,
             InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
-            OrganizationAccess:                miro.AccessEdit,
             TeamAccess:                        miro.AccessEdit,
         },
-        PermissionsPolicy: PermissionsPolicy{
+        PermissionsPolicy: miro.PermissionsPolicy{
             SharingAccess:                 miro.AccessBoardOwnersAndCoOwners,
             CopyAccess:                    miro.CopyAccessTeamEditors,
             CollaborationToolsStartAccess: miro.AccessBoardOwnersAndCoOwners,
@@ -83,13 +82,12 @@ client.Boards.Copy(CreateBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
     Policy: Policy{
-        SharingPolicy: SharingPolicy{
+        SharingPolicy: miro.SharingPolicy{
             Access:                            miro.AccessPrivate,
             InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
-            OrganizationAccess:                miro.AccessEdit,
             TeamAccess:                        miro.AccessEdit,
         },
-        PermissionsPolicy: PermissionsPolicy{
+        PermissionsPolicy: miro.PermissionsPolicy{
             SharingAccess:                 miro.AccessBoardOwnersAndCoOwners,
             CopyAccess:                    miro.CopyAccessTeamEditors,
             CollaborationToolsStartAccess: miro.AccessBoardOwnersAndCoOwners,
@@ -100,3 +98,24 @@ client.Boards.Copy(CreateBoard{
     "3141592")
 ```
 
+### Update
+```go
+client.Boards.Update(CreateBoard{
+    Description: "My New Board",
+    Name:        "New MIRO Gopher",
+    Policy: Policy{
+        SharingPolicy: miro.SharingPolicy{
+            Access:                            miro.AccessPrivate,
+            InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
+            TeamAccess:                        miro.AccessEdit,
+        },
+        PermissionsPolicy: miro.PermissionsPolicy{
+            SharingAccess:                 miro.AccessBoardOwnersAndCoOwners,
+            CopyAccess:                    miro.CopyAccessTeamEditors,
+            CollaborationToolsStartAccess: miro.AccessBoardOwnersAndCoOwners,
+        },
+    },
+    TeamID: "gophers",
+},
+"3141592")
+```
