@@ -46,7 +46,7 @@ func NewClient(token string) *Client {
 	return c
 }
 
-// Get takes a client, API endpoint and a pointer to a struct then writes the API response data to that struct
+// Get Native GET function
 func (c *Client) Get(url string, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
@@ -57,6 +57,7 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 		return err
 	}
 
+	req.Header.Add("accept", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 
 	res, err := http.DefaultClient.Do(req)
@@ -74,6 +75,7 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 	return json.NewDecoder(res.Body).Decode(&response)
 }
 
+// Post Native POST function
 func (c *Client) Post(url string, body, response interface{}) error {
 	bufBody, err := bodyToBuffer(body)
 	if err != nil {
@@ -103,6 +105,7 @@ func (c *Client) Post(url string, body, response interface{}) error {
 	return json.NewDecoder(res.Body).Decode(&response)
 }
 
+// Put Native PUT function
 func (c *Client) Put(url string, body, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
@@ -136,6 +139,7 @@ func (c *Client) Put(url string, body, response interface{}, queryParams ...Para
 	return json.NewDecoder(res.Body).Decode(&response)
 }
 
+// Patch Native PATCH function
 func (c *Client) Patch(url string, body, response interface{}) error {
 	bufBody, err := bodyToBuffer(body)
 	if err != nil {
@@ -163,6 +167,34 @@ func (c *Client) Patch(url string, body, response interface{}) error {
 		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
+}
+
+// Delete Native DELETE function
+func (c *Client) Delete(url string) error {
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		respErr := &ResponseError{}
+		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
+			return err
+		}
+		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+	}
+
+	return nil
+}
+
+func addHeaders(r *http.Request) {
+
 }
 
 func bodyToBuffer(body interface{}) (io.ReadWriter, error) {
