@@ -11,29 +11,23 @@ import (
 
 const (
 	testBoardName     = "test-name"
-	testBoardViewLink = "https://test-test.com"
+	testBoardViewLink = "https://testing-miro.com/app/board"
 	testBoardDesc     = "MIRO Gopher"
+	testBoardID       = "3141592"
+	testTeamID        = "662607015"
 )
 
-func boardResponse(id string, timeStamp time.Time, description string) Board {
+func boardResponse(boardID, description, teamID string, timeStamp time.Time) Board {
 	return Board{
-		ID:          id,
+		ID:          boardID,
 		Name:        testBoardName,
-		ViewLink:    testBoardViewLink,
+		ViewLink:    fmt.Sprintf("%s/%s", testBoardViewLink, boardID),
 		Description: description,
 		CreatedAt:   timeStamp,
 		ModifiedAt:  timeStamp,
-	}
-}
-
-func getBoard(id string, timeStamp time.Time, description string) *Board {
-	return &Board{
-		ID:          id,
-		ViewLink:    testBoardViewLink,
-		Name:        testBoardName,
-		Description: description,
-		ModifiedAt:  timeStamp,
-		CreatedAt:   timeStamp,
+		Team: BasicTeamInfo{
+			ID: teamID,
+		},
 	}
 }
 
@@ -44,84 +38,82 @@ func getTimeNow() time.Time {
 }
 
 func TestCreateBoard(t *testing.T) {
-	client, mux, _, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI()
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
 
-	tests := []struct {
-		id       string
-		body     CreateBoard
-		expected *Board
-	}{
-		{
-			id: "1",
-			body: CreateBoard{
-				Description: testBoardDesc,
-				Name:        testBoardName,
-				TeamID:      "3141592",
-			},
-			expected: getBoard("1", timeStamp, testBoardDesc),
-		},
+	testData := CreateBoard{
+		Description: testBoardDesc,
+		Name:        testBoardName,
+		TeamID:      testTeamID,
 	}
+	expectedResults := boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp)
 
 	Convey("Given a CreateBoard struct", t, func() {
-		for _, test := range tests {
-			Convey("When the Boards Create function is called", func() {
-				mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
-					if r.Method == http.MethodPost {
-						w.WriteHeader(http.StatusCreated)
-						json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp, testBoardDesc))
-					}
-				})
+		Convey("When the Boards Create function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusCreated)
+				boardCreateData := CreateBoard{}
+				json.NewDecoder(r.Body).Decode(&boardCreateData)
 
-				results, err := client.Boards.Create(test.body)
+				json.NewEncoder(w).Encode(boardResponse(testBoardID, boardCreateData.Description, boardCreateData.TeamID, timeStamp))
+				receivedRequest = r
+			})
 
-				Convey("Then the board is created and the board data is returned", func() {
-					So(err, ShouldBeNil)
-					So(results, ShouldResemble, test.expected)
+			results, err := client.Boards.Create(testData)
+
+			Convey("Then the board is created and the board data is returned", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, &expectedResults)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodPost)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
 				})
 			})
-		}
+		})
 	})
 }
 
 func TestGetBoard(t *testing.T) {
-	client, mux, _, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI()
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
 
-	tests := []struct {
-		id       string
-		expected *Board
-	}{
-		{
-			id:       "1",
-			expected: getBoard("1", timeStamp, testBoardDesc),
-		},
-	}
+	expectedResults := boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp)
 
 	Convey("Given a board ID", t, func() {
-		for _, test := range tests {
-			Convey("When the Boards Get function is called", func() {
-				mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, test.id), func(w http.ResponseWriter, r *http.Request) {
-					json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp, testBoardDesc))
-				})
+		Convey("When the Boards Get function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+				json.NewEncoder(w).Encode(boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp))
+				receivedRequest = r
+			})
 
-				results, err := client.Boards.Get(test.id)
+			results, err := client.Boards.Get(testBoardID)
 
-				Convey("Then the board data is returned", func() {
-					So(err, ShouldBeNil)
-					So(results, ShouldResemble, test.expected)
+			Convey("Then the board data is returned", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, &expectedResults)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID))
 				})
 			})
-		}
+		})
 	})
 }
 
 func TestGetBoardWithError(t *testing.T) {
-	client, mux, _, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI()
 	defer closeAPIServer()
 
 	tests := []struct {
@@ -179,148 +171,130 @@ func TestGetBoardWithError(t *testing.T) {
 }
 
 func TestListBoards(t *testing.T) {
-	client, mux, _, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI()
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
 
-	tests := []struct {
-		query    string
-		expected *ListBoards
-	}{
-		{
-			query: "test",
-			expected: &ListBoards{
-				Data: []*BoardData{
-					{
-						CreatedAt: timeStamp,
-						CreatedBy: BasicUserInfo{
-							ID:   "123",
-							Name: "John Smith",
-							Type: "user",
-						},
-						Description: "test",
-						ID:          "1",
-						ModifiedAt:  timeStamp,
-						Name:        "test",
-					},
-				},
-				Total:  123,
-				Size:   123,
-				Offset: 1,
-				Limit:  1,
+	expectedResults := &ListBoards{
+		Total:  123,
+		Size:   123,
+		Offset: 1,
+		Limit:  1,
+		Data: []*BoardData{
+			{
+				CreatedAt:   timeStamp,
+				CreatedBy:   BasicUserInfo{ID: "2718282", Name: "Leonhard Euler", Type: "user"},
+				Description: testBoardDesc,
+				ID:          testBoardID,
+				ModifiedAt:  timeStamp,
+				Name:        testBoardName,
 			},
 		},
+		Type: "board",
 	}
 
 	Convey("Given a query string", t, func() {
-		for _, test := range tests {
-			Convey("When the Boards GetAll function is called", func() {
-				mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
-					json.NewEncoder(w).Encode(test.expected)
-				})
+		Convey("When the Boards GetAll function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+				json.NewEncoder(w).Encode(expectedResults)
+				receivedRequest = r
+			})
 
-				results, err := client.Boards.GetAll()
+			results, err := client.Boards.GetAll()
 
-				Convey("Then the list of boards is returned", func() {
-					So(err, ShouldBeNil)
-					So(results, ShouldResemble, test.expected)
+			Convey("Then the list of boards is returned", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, expectedResults)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
 				})
 			})
-		}
+		})
 	})
 }
 
-func TestListBoardsWithQueryParams(t *testing.T) {
-	client, mux, _, closeAPIServer := mockMIROAPI()
+func TestListBoardsWithSearchParams(t *testing.T) {
+	client, mux, closeAPIServer := mockMIROAPI()
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
 
-	tests := []struct {
-		query    string
-		expected *ListBoards
-	}{
-		{
-			query: "test",
-			expected: &ListBoards{
-				Data: []*BoardData{
-					{
-						CreatedAt: timeStamp,
-						CreatedBy: BasicUserInfo{
-							ID:   "123",
-							Name: "Franz Kafka",
-							Type: "user",
-						},
-						Description: "test",
-						ID:          "1",
-						ModifiedAt:  timeStamp,
-						Name:        "test",
-						Owner: BasicUserInfo{
-							ID:   "30744573567",
-							Name: "Franz Kafka",
-							Type: "user",
-						},
-					},
-					{
-						CreatedAt: timeStamp,
-						CreatedBy: BasicUserInfo{
-							ID:   "123",
-							Name: "Anna",
-							Type: "user",
-						},
-						Description: "test",
-						ID:          "1",
-						ModifiedAt:  timeStamp,
-						Name:        "test",
-						Owner: BasicUserInfo{
-							ID:   "30744573567",
-							Name: "Anna",
-							Type: "user",
-						},
-					},
-				},
-				Total:  123,
-				Size:   123,
-				Offset: 1,
-				Limit:  1,
+	expectedResults := &ListBoards{
+		Total:  2,
+		Size:   123,
+		Offset: 1,
+		Limit:  1,
+		Data: []*BoardData{
+			{
+				CreatedAt:   timeStamp,
+				CreatedBy:   BasicUserInfo{ID: "1", Name: "Josef K", Type: "user"},
+				Description: "test",
+				ID:          "1",
+				ModifiedAt:  timeStamp,
+				Name:        "test",
+				Owner:       BasicUserInfo{ID: "30744573567", Name: "Franz Kafka", Type: "user"},
+			},
+			{
+				CreatedAt:   timeStamp,
+				CreatedBy:   BasicUserInfo{ID: "2", Name: "Anna", Type: "user"},
+				Description: "test",
+				ID:          "2",
+				ModifiedAt:  timeStamp,
+				Name:        "test",
+				Owner:       BasicUserInfo{ID: "30744573567", Name: "Franz Kafka", Type: "user"},
 			},
 		},
+		Type: "board",
 	}
 
 	Convey("Given a query string", t, func() {
-		for _, test := range tests {
-			Convey("When the Boards GetAll function is called", func() {
-				mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
-					if r.URL.Query().Get("sort") == "alphabetically" {
-						reverseSlice(test.expected.Data)
-					}
-					json.NewEncoder(w).Encode(test.expected)
-				})
+		Convey("When the Boards GetAll function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+				reverseSlice(expectedResults.Data)
+				json.NewEncoder(w).Encode(expectedResults)
+				receivedRequest = r
+			})
 
-				results, err := client.Boards.GetAll(BoardSearchParams{
-					Owner: "30744573567",
-					Sort:  SortAlphabetically,
-				})
+			results, err := client.Boards.GetAll(BoardSearchParams{
+				Owner: "30744573567",
+				Sort:  SortAlphabetically,
+			})
 
-				Convey("Then the list of boards is returned, sorted alphabetically", func() {
-					So(err, ShouldBeNil)
-					So(results, ShouldResemble, test.expected)
-					So(results.Data[0].Owner.Name, ShouldEqual, "Anna")
-					So(results.Data[1].Owner.Name, ShouldEqual, "Franz Kafka")
+			Convey("Then the list of boards is returned, sorted alphabetically", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, expectedResults)
+				So(results.Data[0].CreatedBy.Name, ShouldEqual, "Anna")
+				So(results.Data[1].CreatedBy.Name, ShouldEqual, "Josef K")
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
+					So(receivedRequest.URL.Query().Get("sort"), ShouldEqual, "alphabetically")
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
 				})
 			})
-		}
+		})
 	})
 }
 
 func TestCopyBoard(t *testing.T) {
-	testID := "1"
+	client, mux, closeAPIServer := mockMIROAPI()
+	defer closeAPIServer()
+
 	timeStamp := getTimeNow()
-	testBody := CreateBoard{
+
+	testData := CreateBoard{
 		Description: testBoardDesc,
 		Name:        testBoardName,
-		TeamID:      "3141592",
+		TeamID:      testTeamID,
 		Policy: Policy{
 			SharingPolicy: SharingPolicy{
 				Access:                            AccessPrivate,
@@ -335,37 +309,44 @@ func TestCopyBoard(t *testing.T) {
 			},
 		},
 	}
-	TestQueryParams := "123456"
+	expectedResults := boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp)
 
-	client, mux, _, closeAPIServer := mockMIROAPI()
-	defer closeAPIServer()
-
+	var receivedRequest *http.Request
 	mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPut {
-			if r.URL.Query().Get("copy_from") != "" {
-				w.WriteHeader(http.StatusCreated)
-				json.NewEncoder(w).Encode(boardResponse(testID, timeStamp, testBoardDesc))
-			} else {
-				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(ResponseError{
-					Status:  http.StatusBadRequest,
-					Message: "invalid request",
-				})
-			}
+		if r.URL.Query().Get("copy_from") != "" {
+			w.WriteHeader(http.StatusCreated)
+			boardCreateData := CreateBoard{}
+			json.NewDecoder(r.Body).Decode(&boardCreateData)
+			json.NewEncoder(w).Encode(boardResponse(testBoardID, boardCreateData.Description, boardCreateData.TeamID, timeStamp))
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(ResponseError{
+				Status:  http.StatusBadRequest,
+				Message: "invalid request",
+			})
 		}
+		receivedRequest = r
 	})
 
 	Convey("Given a CreateBoard struct", t, func() {
 		Convey(fmt.Sprintf("When the Boards Copy function is called with valid data"), func() {
-			results, err := client.Boards.Copy(testBody, TestQueryParams)
+			results, err := client.Boards.Copy(testData, testBoardID)
 
 			Convey("Then the board is created and the board data is returned", func() {
 				So(err, ShouldBeNil)
-				So(results, ShouldResemble, getBoard("1", timeStamp, testBoardDesc))
+				So(results, ShouldResemble, &expectedResults)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodPut)
+					So(receivedRequest.URL.Query().Get("copy_from"), ShouldEqual, testBoardID)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
+				})
 			})
 		})
 		Convey(fmt.Sprintf("When the Boards Copy function is called with invalid data"), func() {
-			results, err := client.Boards.Copy(testBody, "")
+			results, err := client.Boards.Copy(testData, "")
 
 			Convey("Then the board is not created and an error is returned", func() {
 				So(err, ShouldBeError)
@@ -376,49 +357,72 @@ func TestCopyBoard(t *testing.T) {
 }
 
 func TestUpdateBoard(t *testing.T) {
-	client, mux, _, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI()
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
-	testBoardID := "3141592"
 
-	tests := []struct {
-		id       string
-		body     CreateBoard
-		expected *Board
-	}{
-		{
-			id: "1",
-			body: CreateBoard{
-				Description: "A new description",
-				Name:        testBoardName,
-				TeamID:      "3141592",
-			},
-			expected: getBoard("1", timeStamp, "A new description"),
-		},
+	testData := CreateBoard{
+		Description: "A new description",
+		Name:        testBoardName,
+		TeamID:      testTeamID,
 	}
+	expectedResult := boardResponse(testBoardID, "A new description", testTeamID, timeStamp)
 
 	Convey("Given a CreateBoard struct", t, func() {
-		for _, test := range tests {
-			Convey("When the Boards Update function is called", func() {
-				mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
-					if r.Method == http.MethodPatch {
-						boardCreateData := CreateBoard{}
-						json.NewDecoder(r.Body).Decode(&boardCreateData)
+		Convey("When the Boards Update function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+				boardCreateData := CreateBoard{}
+				json.NewDecoder(r.Body).Decode(&boardCreateData)
 
-						json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp, boardCreateData.Description))
-					}
-				})
+				json.NewEncoder(w).Encode(boardResponse(testBoardID, boardCreateData.Description, boardCreateData.TeamID, timeStamp))
+				receivedRequest = r
+			})
 
-				results, err := client.Boards.Update(test.body, testBoardID)
+			results, err := client.Boards.Update(testData, testBoardID)
 
-				Convey("Then the board is updated and the board data is returned", func() {
-					So(err, ShouldBeNil)
-					So(results, ShouldResemble, test.expected)
-					So(results.Description, ShouldEqual, test.body.Description)
+			Convey("Then the board is updated and the board data is returned", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, &expectedResult)
+				So(results.Description, ShouldEqual, expectedResult.Description)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodPatch)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID))
 				})
 			})
-		}
+		})
+	})
+}
+
+func TestDeleteBoard(t *testing.T) {
+	client, mux, closeAPIServer := mockMIROAPI()
+	defer closeAPIServer()
+
+	Convey("Given a board ID", t, func() {
+		Convey("When the Boards Delete function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusNoContent)
+				receivedRequest = r
+			})
+
+			err := client.Boards.Delete(testBoardID)
+
+			Convey("Then the board is deleted", func() {
+				So(err, ShouldBeNil)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodDelete)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID))
+				})
+			})
+		})
 	})
 }
 
