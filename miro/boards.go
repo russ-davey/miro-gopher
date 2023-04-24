@@ -133,3 +133,11 @@ func (b *BoardsService) Update(body CreateBoard, id string) (*Board, error) {
 
 	return response, err
 }
+
+// Delete Deletes a board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (b *BoardsService) Delete(id string) error {
+	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, EndpointBoards, id)
+	return b.client.Delete(url)
+
+}
