@@ -136,6 +136,35 @@ func (c *Client) Put(url string, body, response interface{}, queryParams ...Para
 	return json.NewDecoder(res.Body).Decode(&response)
 }
 
+func (c *Client) Patch(url string, body, response interface{}) error {
+	bufBody, err := bodyToBuffer(body)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, url, bufBody)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("accept", "application/json")
+	req.Header.Add("content-type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		respErr := &ResponseError{}
+		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
+			return err
+		}
+		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+	}
+	return json.NewDecoder(res.Body).Decode(&response)
+}
+
 func bodyToBuffer(body interface{}) (io.ReadWriter, error) {
 	var bufBody io.ReadWriter
 	if body != nil {
