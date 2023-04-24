@@ -1,24 +1,20 @@
-name: miro-gopher
-
-on:
-  push:
-    branches: [ "main" ]
-
-  workflow_dispatch:
-
+on: [push, pull_request]
+name: Tests
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
+  test:
+    strategy:
+      matrix:
+        go-version: [1.18.x, 1.19.x, 1.20.x]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:
+          # excludes go 1.18.x on Windows
+          - os: windows-latest
+            go-version: 1.18.x
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+      - uses: actions/checkout@v3
+      - run: go test -v ./...
 
-    - name: Get dependencies
-      run: go mod vendor
-
-    - name: Test
-      run: |
-        go test ./...
