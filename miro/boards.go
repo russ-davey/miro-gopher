@@ -42,6 +42,10 @@ const (
 	InviteAccessNoAccess  = "no_access"
 )
 
+type BoardsService struct {
+	client *Client
+}
+
 type BoardSearchParams struct {
 	// TeamID The team_id for which you want to retrieve the list of boards. If this parameter is sent in the request,
 	// the query and owner parameters are ignored.
@@ -63,10 +67,6 @@ type BoardSearchParams struct {
 	// Sort The order in which you want to view the result set.
 	// Options last_created and alphabetically are applicable only when you search for boards by team.
 	Sort string `query:"sort,omitempty"`
-}
-
-type BoardsService struct {
-	client *Client
 }
 
 // Create a board with the specified name and sharing policies.
@@ -119,6 +119,17 @@ func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) 
 	err := b.client.Put(url, body, response, Parameter{
 		QueryParamCopyFrom: copyFrom,
 	})
+
+	return response, err
+}
+
+// Update Updates a specific board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (b *BoardsService) Update(body CreateBoard, id string) (*Board, error) {
+	response := &Board{}
+
+	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, EndpointBoards, id)
+	err := b.client.Patch(url, body, response)
 
 	return response, err
 }

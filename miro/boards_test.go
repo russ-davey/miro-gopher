@@ -12,26 +12,26 @@ import (
 const (
 	testBoardName     = "test-name"
 	testBoardViewLink = "https://test-test.com"
-	testBoardDesc     = ""
+	testBoardDesc     = "MIRO Gopher"
 )
 
-func boardResponse(id string, timeStamp time.Time) Board {
+func boardResponse(id string, timeStamp time.Time, description string) Board {
 	return Board{
 		ID:          id,
 		Name:        testBoardName,
 		ViewLink:    testBoardViewLink,
-		Description: testBoardDesc,
+		Description: description,
 		CreatedAt:   timeStamp,
 		ModifiedAt:  timeStamp,
 	}
 }
 
-func getBoard(id string, timeStamp time.Time) *Board {
+func getBoard(id string, timeStamp time.Time, description string) *Board {
 	return &Board{
 		ID:          id,
 		ViewLink:    testBoardViewLink,
 		Name:        testBoardName,
-		Description: testBoardDesc,
+		Description: description,
 		ModifiedAt:  timeStamp,
 		CreatedAt:   timeStamp,
 	}
@@ -61,7 +61,7 @@ func TestCreateBoard(t *testing.T) {
 				Name:        testBoardName,
 				TeamID:      "3141592",
 			},
-			expected: getBoard("1", timeStamp),
+			expected: getBoard("1", timeStamp, testBoardDesc),
 		},
 	}
 
@@ -71,7 +71,7 @@ func TestCreateBoard(t *testing.T) {
 				mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
 					if r.Method == http.MethodPost {
 						w.WriteHeader(http.StatusCreated)
-						json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp))
+						json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp, testBoardDesc))
 					}
 				})
 
@@ -98,7 +98,7 @@ func TestGetBoard(t *testing.T) {
 	}{
 		{
 			id:       "1",
-			expected: getBoard("1", timeStamp),
+			expected: getBoard("1", timeStamp, testBoardDesc),
 		},
 	}
 
@@ -106,7 +106,7 @@ func TestGetBoard(t *testing.T) {
 		for _, test := range tests {
 			Convey("When the Boards Get function is called", func() {
 				mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, test.id), func(w http.ResponseWriter, r *http.Request) {
-					json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp))
+					json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp, testBoardDesc))
 				})
 
 				results, err := client.Boards.Get(test.id)
@@ -344,7 +344,7 @@ func TestCopyBoard(t *testing.T) {
 		if r.Method == http.MethodPut {
 			if r.URL.Query().Get("copy_from") != "" {
 				w.WriteHeader(http.StatusCreated)
-				json.NewEncoder(w).Encode(boardResponse(testID, timeStamp))
+				json.NewEncoder(w).Encode(boardResponse(testID, timeStamp, testBoardDesc))
 			} else {
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(ResponseError{
@@ -361,7 +361,7 @@ func TestCopyBoard(t *testing.T) {
 
 			Convey("Then the board is created and the board data is returned", func() {
 				So(err, ShouldBeNil)
-				So(results, ShouldResemble, getBoard("1", timeStamp))
+				So(results, ShouldResemble, getBoard("1", timeStamp, testBoardDesc))
 			})
 		})
 		Convey(fmt.Sprintf("When the Boards Copy function is called with invalid data"), func() {
@@ -372,6 +372,53 @@ func TestCopyBoard(t *testing.T) {
 				So(results, ShouldResemble, &Board{})
 			})
 		})
+	})
+}
+
+func TestUpdateBoard(t *testing.T) {
+	client, mux, _, closeAPIServer := mockMIROAPI()
+	defer closeAPIServer()
+
+	timeStamp := getTimeNow()
+	testBoardID := "3141592"
+
+	tests := []struct {
+		id       string
+		body     CreateBoard
+		expected *Board
+	}{
+		{
+			id: "1",
+			body: CreateBoard{
+				Description: "A new description",
+				Name:        testBoardName,
+				TeamID:      "3141592",
+			},
+			expected: getBoard("1", timeStamp, "A new description"),
+		},
+	}
+
+	Convey("Given a CreateBoard struct", t, func() {
+		for _, test := range tests {
+			Convey("When the Boards Update function is called", func() {
+				mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+					if r.Method == http.MethodPatch {
+						boardCreateData := CreateBoard{}
+						json.NewDecoder(r.Body).Decode(&boardCreateData)
+
+						json.NewEncoder(w).Encode(boardResponse(test.id, timeStamp, boardCreateData.Description))
+					}
+				})
+
+				results, err := client.Boards.Update(test.body, testBoardID)
+
+				Convey("Then the board is updated and the board data is returned", func() {
+					So(err, ShouldBeNil)
+					So(results, ShouldResemble, test.expected)
+					So(results.Description, ShouldEqual, test.body.Description)
+				})
+			})
+		}
 	})
 }
 
