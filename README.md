@@ -8,7 +8,6 @@ For now the `GET`, `POST`, `PUT`, `PATCH` & `DELETE` methods are open to use for
 
 Minimum required Go version : `1.18`
 
-
 [![GoDoc](https://godoc.org/github.com/russ-davey/miro-gopher?status.svg)](http://godoc.org/github.com/russ-davey/miro-gopher)
 [![Tests](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml/badge.svg?branch=main)](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml)
 
@@ -29,7 +28,7 @@ import "github.com/russ-davey/miro-gopher/miro"
 
 client := miro.NewClient(token)
 ```
-
+---
 ## /boards API Methods
 
 ### Get
@@ -125,3 +124,4 @@ client.Boards.Update(CreateBoard{
 ```go
 client.Boards.Delete("3141592")
 ```
+---
