@@ -195,7 +195,6 @@ func (c *Client) addHeaders(r *http.Request) {
 		r.Header.Add("content-type", "application/json")
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
-
 }
 
 func bodyToBuffer(body interface{}) (io.ReadWriter, error) {

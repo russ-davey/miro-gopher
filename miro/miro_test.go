@@ -78,7 +78,7 @@ func TestAddHeaders(t *testing.T) {
 				req, _ := http.NewRequest(test.method, "http://no-where", nil)
 				c.addHeaders(req)
 
-				Convey("Then the expected headers are returned", func() {
+				Convey("Then the expected headers are added to the request", func() {
 					So(headerExists(req, "accept"), ShouldEqual, test.expectAccept)
 					So(headerExists(req, "content-type"), ShouldEqual, test.expectContent)
 					So(headerExists(req, "Authorization"), ShouldEqual, test.expectAuth)
