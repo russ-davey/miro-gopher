@@ -25,7 +25,7 @@ func boardResponse(boardID, description, teamID string, timeStamp time.Time) Boa
 		Description: description,
 		CreatedAt:   timeStamp,
 		ModifiedAt:  timeStamp,
-		Team: BasicTeamInfo{
+		Team: BasicEntityInfo{
 			ID: teamID,
 		},
 	}
@@ -38,7 +38,7 @@ func getTimeNow() time.Time {
 }
 
 func TestCreateBoard(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
@@ -53,7 +53,7 @@ func TestCreateBoard(t *testing.T) {
 	Convey("Given a CreateBoard struct", t, func() {
 		Convey("When the Boards Create function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v2/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
 				boardCreateData := CreateBoard{}
 				json.NewDecoder(r.Body).Decode(&boardCreateData)
@@ -72,7 +72,7 @@ func TestCreateBoard(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodPost)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s", EndpointBoards))
 				})
 			})
 		})
@@ -80,7 +80,7 @@ func TestCreateBoard(t *testing.T) {
 }
 
 func TestGetBoard(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
@@ -90,7 +90,7 @@ func TestGetBoard(t *testing.T) {
 	Convey("Given a board ID", t, func() {
 		Convey("When the Boards Get function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp))
 				receivedRequest = r
 			})
@@ -105,7 +105,7 @@ func TestGetBoard(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s", EndpointBoards, testBoardID))
 				})
 			})
 		})
@@ -113,7 +113,7 @@ func TestGetBoard(t *testing.T) {
 }
 
 func TestGetBoardWithError(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	tests := []struct {
@@ -154,7 +154,7 @@ func TestGetBoardWithError(t *testing.T) {
 	Convey("Given a board ID", t, func() {
 		for _, test := range tests {
 			Convey(fmt.Sprintf("When the Boards Get function is called and the expected return error is %s", test.expectedErr), func() {
-				mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, test.id), func(w http.ResponseWriter, r *http.Request) {
+				mux.HandleFunc(fmt.Sprintf("/v2/%s/%s", EndpointBoards, test.id), func(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusNotFound)
 					json.NewEncoder(w).Encode(test.responseErr)
 				})
@@ -171,7 +171,7 @@ func TestGetBoardWithError(t *testing.T) {
 }
 
 func TestListBoards(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
@@ -181,10 +181,10 @@ func TestListBoards(t *testing.T) {
 		Size:   123,
 		Offset: 1,
 		Limit:  1,
-		Data: []*BoardData{
+		Data: []*Board{
 			{
 				CreatedAt:   timeStamp,
-				CreatedBy:   BasicUserInfo{ID: "2718282", Name: "Leonhard Euler", Type: "user"},
+				CreatedBy:   BasicEntityInfo{ID: "2718282", Name: "Leonhard Euler", Type: "user"},
 				Description: testBoardDesc,
 				ID:          testBoardID,
 				ModifiedAt:  timeStamp,
@@ -194,10 +194,10 @@ func TestListBoards(t *testing.T) {
 		Type: "board",
 	}
 
-	Convey("Given a query string", t, func() {
+	Convey("Given no arguments", t, func() {
 		Convey("When the Boards GetAll function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v2/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(expectedResults)
 				receivedRequest = r
 			})
@@ -212,7 +212,7 @@ func TestListBoards(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s", EndpointBoards))
 				})
 			})
 		})
@@ -220,7 +220,7 @@ func TestListBoards(t *testing.T) {
 }
 
 func TestListBoardsWithSearchParams(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
@@ -230,24 +230,24 @@ func TestListBoardsWithSearchParams(t *testing.T) {
 		Size:   123,
 		Offset: 1,
 		Limit:  1,
-		Data: []*BoardData{
+		Data: []*Board{
 			{
 				CreatedAt:   timeStamp,
-				CreatedBy:   BasicUserInfo{ID: "1", Name: "Josef K", Type: "user"},
+				CreatedBy:   BasicEntityInfo{ID: "1", Name: "Josef K", Type: "user"},
 				Description: "test",
 				ID:          "1",
 				ModifiedAt:  timeStamp,
 				Name:        "test",
-				Owner:       BasicUserInfo{ID: "30744573567", Name: "Franz Kafka", Type: "user"},
+				Owner:       BasicEntityInfo{ID: "30744573567", Name: "Franz Kafka", Type: "user"},
 			},
 			{
 				CreatedAt:   timeStamp,
-				CreatedBy:   BasicUserInfo{ID: "2", Name: "Anna", Type: "user"},
+				CreatedBy:   BasicEntityInfo{ID: "2", Name: "Anna", Type: "user"},
 				Description: "test",
 				ID:          "2",
 				ModifiedAt:  timeStamp,
 				Name:        "test",
-				Owner:       BasicUserInfo{ID: "30744573567", Name: "Franz Kafka", Type: "user"},
+				Owner:       BasicEntityInfo{ID: "30744573567", Name: "Franz Kafka", Type: "user"},
 			},
 		},
 		Type: "board",
@@ -256,7 +256,7 @@ func TestListBoardsWithSearchParams(t *testing.T) {
 	Convey("Given a query string", t, func() {
 		Convey("When the Boards GetAll function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v2/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
 				reverseSlice(expectedResults.Data)
 				json.NewEncoder(w).Encode(expectedResults)
 				receivedRequest = r
@@ -278,7 +278,7 @@ func TestListBoardsWithSearchParams(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.URL.Query().Get("sort"), ShouldEqual, "alphabetically")
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s", EndpointBoards))
 				})
 			})
 		})
@@ -286,7 +286,7 @@ func TestListBoardsWithSearchParams(t *testing.T) {
 }
 
 func TestCopyBoard(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
@@ -312,7 +312,7 @@ func TestCopyBoard(t *testing.T) {
 	expectedResults := boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp)
 
 	var receivedRequest *http.Request
-	mux.HandleFunc(fmt.Sprintf("/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(fmt.Sprintf("/v2/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("copy_from") != "" {
 			w.WriteHeader(http.StatusCreated)
 			boardCreateData := CreateBoard{}
@@ -341,7 +341,7 @@ func TestCopyBoard(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodPut)
 					So(receivedRequest.URL.Query().Get("copy_from"), ShouldEqual, testBoardID)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s", EndpointBoards))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s", EndpointBoards))
 				})
 			})
 		})
@@ -357,7 +357,7 @@ func TestCopyBoard(t *testing.T) {
 }
 
 func TestUpdateBoard(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	timeStamp := getTimeNow()
@@ -372,7 +372,7 @@ func TestUpdateBoard(t *testing.T) {
 	Convey("Given a CreateBoard struct", t, func() {
 		Convey("When the Boards Update function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
 				boardCreateData := CreateBoard{}
 				json.NewDecoder(r.Body).Decode(&boardCreateData)
 
@@ -391,7 +391,7 @@ func TestUpdateBoard(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodPatch)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s", EndpointBoards, testBoardID))
 				})
 			})
 		})
@@ -399,13 +399,13 @@ func TestUpdateBoard(t *testing.T) {
 }
 
 func TestDeleteBoard(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI()
+	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
 	Convey("Given a board ID", t, func() {
 		Convey("When the Boards Delete function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusNoContent)
 				receivedRequest = r
 			})
@@ -419,14 +419,14 @@ func TestDeleteBoard(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodDelete)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/%s/%s", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s", EndpointBoards, testBoardID))
 				})
 			})
 		})
 	})
 }
 
-func reverseSlice(s []*BoardData) {
+func reverseSlice(s []*Board) {
 	for i := 0; i < len(s)/2; i++ {
 		j := len(s) - i - 1
 		s[i], s[j] = s[j], s[i]

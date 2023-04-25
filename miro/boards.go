@@ -43,7 +43,8 @@ const (
 )
 
 type BoardsService struct {
-	client *Client
+	client      *Client
+	BaseVersion string
 }
 
 type BoardSearchParams struct {
@@ -74,7 +75,7 @@ type BoardSearchParams struct {
 func (b *BoardsService) Create(body CreateBoard) (*Board, error) {
 	response := &Board{}
 
-	url := fmt.Sprintf("%s/%s", b.client.BaseURL, EndpointBoards)
+	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards)
 	err := b.client.Post(url, body, response)
 
 	return response, err
@@ -85,7 +86,7 @@ func (b *BoardsService) Create(body CreateBoard) (*Board, error) {
 func (b *BoardsService) Get(id string) (*Board, error) {
 	response := &Board{}
 
-	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, EndpointBoards, id)
+	url := fmt.Sprintf("%s/%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, id)
 	err := b.client.Get(url, response)
 
 	return response, err
@@ -97,7 +98,7 @@ func (b *BoardsService) Get(id string) (*Board, error) {
 func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, error) {
 	response := &ListBoards{}
 
-	url := fmt.Sprintf("%s/%s", b.client.BaseURL, EndpointBoards)
+	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards)
 
 	var err error
 	if len(queryParams) > 0 {
@@ -115,7 +116,7 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) {
 	response := &Board{}
 
-	url := fmt.Sprintf("%s/%s", b.client.BaseURL, EndpointBoards)
+	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards)
 	err := b.client.Put(url, body, response, Parameter{
 		QueryParamCopyFrom: copyFrom,
 	})
@@ -128,7 +129,7 @@ func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) 
 func (b *BoardsService) Update(body CreateBoard, id string) (*Board, error) {
 	response := &Board{}
 
-	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, EndpointBoards, id)
+	url := fmt.Sprintf("%s/%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, id)
 	err := b.client.Patch(url, body, response)
 
 	return response, err
@@ -137,7 +138,5 @@ func (b *BoardsService) Update(body CreateBoard, id string) (*Board, error) {
 // Delete Deletes a board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (b *BoardsService) Delete(id string) error {
-	url := fmt.Sprintf("%s/%s/%s", b.client.BaseURL, EndpointBoards, id)
-	return b.client.Delete(url)
-
+	return b.client.Delete(fmt.Sprintf("%s/%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, id))
 }

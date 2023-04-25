@@ -1,6 +1,6 @@
 package miro
 
 type CurrentUserMembership struct {
-	BasicUserInfo
+	BasicEntityInfo
 	Role string `json:"role"`
 }

@@ -1,0 +1,27 @@
+{
+  "type": "oAuthToken",
+  "team": {
+    "type": "team",
+    "name": "Doc sample team",
+    "id": "3074457362577833142"
+  },
+  "createdBy": {
+    "type": "user",
+    "name": "John Smith",
+    "id": "3074457362577955221"
+  },
+  "scopes": [
+    "boards:write",
+    "boards:read"
+  ],
+  "organization": {
+    "type": "organization",
+    "name": "Doc sample team",
+    "id": "3074457363786315310"
+  },
+  "user": {
+    "type": "user",
+    "name": "John Smith",
+    "id": "3974457362577957221"
+  }
+}

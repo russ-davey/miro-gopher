@@ -11,10 +11,11 @@ import (
 )
 
 type Client struct {
-	BaseURL string
-	token   string
-	ctx     context.Context
-	Boards  *BoardsService
+	BaseURL     string
+	token       string
+	ctx         context.Context
+	Boards      *BoardsService
+	AccessToken *AccessTokenService
 }
 
 type ResponseError struct {
@@ -33,7 +34,7 @@ func NewClient(token string) *Client {
 	if mockServer := os.Getenv("MIRO_MOCK_SERVER"); mockServer != "" {
 		baseURL = mockServer
 	} else {
-		baseURL = "https://api.miro.com/v2"
+		baseURL = "https://api.miro.com"
 	}
 
 	c := &Client{
@@ -41,7 +42,8 @@ func NewClient(token string) *Client {
 		token:   token,
 		ctx:     context.Background(),
 	}
-	c.Boards = &BoardsService{client: c}
+	c.AccessToken = &AccessTokenService{client: c, BaseVersion: "v1"}
+	c.Boards = &BoardsService{client: c, BaseVersion: "v2"}
 
 	return c
 }
@@ -99,6 +101,33 @@ func (c *Client) Post(url string, body, response interface{}) error {
 		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
+}
+
+// PostNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
+func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
+	if len(queryParams) > 0 {
+		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, nil)
+	if err != nil {
+		return err
+	}
+
+	c.addHeaders(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		respErr := &ResponseError{}
+		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
+			return err
+		}
+		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+	}
+	return nil
 }
 
 // Put Native PUT function

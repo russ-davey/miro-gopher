@@ -17,49 +17,29 @@ type Board struct {
 	ID                    string                `json:"id"`
 	Name                  string                `json:"name"`
 	Description           string                `json:"description"`
-	Team                  BasicTeamInfo         `json:"team"`
-	Picture               Picture               `json:"picture"`
+	Team                  BasicEntityInfo       `json:"team"`
+	Picture               Picture               `json:"picture,omitempty"`
 	Policy                Policy                `json:"policy"`
 	ViewLink              string                `json:"viewLink"`
-	Owner                 BasicUserInfo         `json:"owner"`
+	Owner                 BasicEntityInfo       `json:"owner"`
 	CurrentUserMembership CurrentUserMembership `json:"currentUserMembership"`
 	CreatedAt             time.Time             `json:"createdAt"`
-	CreatedBy             BasicUserInfo         `json:"createdBy"`
+	CreatedBy             BasicEntityInfo       `json:"createdBy"`
 	ModifiedAt            time.Time             `json:"modifiedAt"`
-	ModifiedBy            BasicUserInfo         `json:"modifiedBy"`
+	ModifiedBy            BasicEntityInfo       `json:"modifiedBy"`
 	Links                 BoardLinks            `json:"links"`
 	Type                  string                `json:"type"`
 	Project               Project               `json:"project,omitempty"`
 }
 
 type ListBoards struct {
-	Data   []*BoardData     `json:"data"`
+	Data   []*Board         `json:"data"`
 	Links  *ListBoardsLinks `json:"links"`
 	Type   string           `json:"type"`
 	Total  int              `json:"total"`
 	Size   int              `json:"size"`
 	Offset int              `json:"offset"`
 	Limit  int              `json:"limit"`
-}
-
-type BoardData struct {
-	ID                    string                `json:"id"`
-	Type                  string                `json:"type"`
-	Name                  string                `json:"name"`
-	Description           string                `json:"description"`
-	Links                 BoardLinks            `json:"links"`
-	CreatedAt             time.Time             `json:"createdAt"`
-	CreatedBy             BasicUserInfo         `json:"createdBy"`
-	CurrentUserMembership CurrentUserMembership `json:"currentUserMembership,omitempty"`
-	ModifiedAt            time.Time             `json:"modifiedAt"`
-	ModifiedBy            BasicUserInfo         `json:"modifiedBy"`
-	Owner                 BasicUserInfo         `json:"owner"`
-	PermissionsPolicy     PermissionsPolicy     `json:"permissionsPolicy"`
-	Policy                Policy                `json:"policy"`
-	Project               Project               `json:"project,omitempty"`
-	SharingPolicy         SharingPolicy         `json:"sharingPolicy"`
-	Team                  BasicTeamInfo         `json:"team"`
-	ViewLink              string                `json:"viewLink"`
 }
 
 type BoardLinks struct {

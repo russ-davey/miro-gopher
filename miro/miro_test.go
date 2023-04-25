@@ -9,21 +9,20 @@ import (
 )
 
 const (
-	apiVersion = "/v2"
-	testToken  = "test-token"
+	testToken = "test-token"
 )
 
-func mockMIROAPI() (*Client, *http.ServeMux, func()) {
+func mockMIROAPI(apiVersion string) (*Client, *http.ServeMux, func()) {
 	mux := http.NewServeMux()
-
 	handler := http.NewServeMux()
-	handler.Handle(apiVersion+"/", http.StripPrefix(apiVersion, mux))
+
+	handler.Handle(fmt.Sprintf("/%s/", apiVersion), mux)
 
 	server := httptest.NewServer(handler)
 
 	client := NewClient(testToken)
+	client.BaseURL = server.URL
 
-	client.BaseURL = fmt.Sprintf("%s%s", server.URL, apiVersion)
 	return client, mux, server.Close
 }
 
