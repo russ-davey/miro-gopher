@@ -8,8 +8,13 @@ For now the `GET`, `POST`, `PUT`, `PATCH` & `DELETE` methods are open to use for
 
 Minimum required Go version : `1.18`
 
+
 [![GoDoc](https://godoc.org/github.com/russ-davey/miro-gopher?status.svg)](http://godoc.org/github.com/russ-davey/miro-gopher)
 [![Tests](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml/badge.svg?branch=main)](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml)
+
+[![Tag](https://img.shields.io/github/v/tag/russ-davey/miro-gopher?style=plastic)](https://github.com/russ-davey/miro-gopher/tags)
+[![GoDoc](https://img.shields.io/github/go-mod/go-version/russ-davey/miro-gopher?style=plastic)](https://go.dev/doc/go1.2)
+[![License](https://img.shields.io/badge/License-MIT%202.0-blue.svg?style=plastic)](https://opensource.org/licenses/MIT)
 
 ![gopher.png](gopher.png)
 
@@ -55,10 +60,10 @@ client.Boards.GetAll(miro.BoardSearchParams{
 ### Create
 
 ```go
-client.Boards.Create(CreateBoard{
+client.Boards.Create(miro.CreateBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
-    Policy: Policy{
+    Policy: miro.Policy{
         SharingPolicy: miro.SharingPolicy{
             Access:                            miro.AccessPrivate,
             InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
@@ -77,10 +82,10 @@ client.Boards.Create(CreateBoard{
 ### Copy
 
 ```go
-client.Boards.Copy(CreateBoard{
+client.Boards.Copy(miro.CreateBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
-    Policy: Policy{
+    Policy: miro.Policy{
         SharingPolicy: miro.SharingPolicy{
             Access:                            miro.AccessPrivate,
             InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
@@ -99,10 +104,10 @@ client.Boards.Copy(CreateBoard{
 
 ### Update
 ```go
-client.Boards.Update(CreateBoard{
+client.Boards.Update(miro.CreateBoard{
     Description: "My New Board",
     Name:        "New MIRO Gopher",
-    Policy: Policy{
+    Policy: miro.Policy{
         SharingPolicy: miro.SharingPolicy{
             Access:                            miro.AccessPrivate,
             InviteToAccountAndBoardLinkAccess: miro.InviteAccessEditor,
