@@ -57,9 +57,7 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 		return err
 	}
 
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
-
+	c.addHeaders(req)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -86,10 +84,8 @@ func (c *Client) Post(url string, body, response interface{}) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 
+	c.addHeaders(req)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -120,10 +116,8 @@ func (c *Client) Put(url string, body, response interface{}, queryParams ...Para
 	if err != nil {
 		return err
 	}
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 
+	c.addHeaders(req)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -150,10 +144,8 @@ func (c *Client) Patch(url string, body, response interface{}) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 
+	c.addHeaders(req)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -176,7 +168,7 @@ func (c *Client) Delete(url string) error {
 		return err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	c.addHeaders(req)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
@@ -193,7 +185,16 @@ func (c *Client) Delete(url string) error {
 	return nil
 }
 
-func addHeaders(r *http.Request) {
+func (c *Client) addHeaders(r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		r.Header.Add("accept", "application/json")
+	case http.MethodDelete:
+	default:
+		r.Header.Add("accept", "application/json")
+		r.Header.Add("content-type", "application/json")
+	}
+	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 
 }
 
