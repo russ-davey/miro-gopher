@@ -412,7 +412,7 @@ func TestDeleteBoard(t *testing.T) {
 
 			err := client.Boards.Delete(testBoardID)
 
-			Convey("Then the board is deleted", func() {
+			Convey("Then the board is deleted (no error is returned)", func() {
 				So(err, ShouldBeNil)
 
 				Convey("And the request contains the expected headers and parameters", func() {

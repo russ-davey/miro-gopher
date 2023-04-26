@@ -49,6 +49,22 @@ func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberS
 	return response, err
 }
 
+// Update Updates the role of a board member.
+// Required scope: boards:write | Rate limiting: Level 2
+func (b *BoardMembersService) Update(boardID, boardMemberID string, role Role) (*BoardMember, error) {
+	response := &BoardMember{}
+
+	err := b.client.Patch(b.constructURL(boardID, boardMemberID), RoleUpdate{Role: role}, response)
+
+	return response, err
+}
+
+// Delete Removes a board member from a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (b *BoardMembersService) Delete(boardID, boardMemberID string) error {
+	return b.client.Delete(b.constructURL(boardID, boardMemberID))
+}
+
 func (b *BoardMembersService) constructURL(boardID, boardMemberID string) string {
 	if boardMemberID != "" {
 		return fmt.Sprintf("%s/%s/%s/%s/members/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID, boardMemberID)

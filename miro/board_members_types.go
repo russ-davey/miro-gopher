@@ -11,6 +11,10 @@ const (
 	RoleGuest     Role = "guest"
 )
 
+type RoleUpdate struct {
+	Role Role `json:"role"`
+}
+
 type ShareBoardInvitation struct {
 	// Emails Email IDs of the users you want to invite to the board. You can invite up to 20 members per call (required).
 	Emails []string `json:"emails"`
@@ -30,7 +34,7 @@ type BoardInvitationResponse struct {
 
 type BoardMember struct {
 	BasicEntityInfo
-	Role  string          `json:"role"`
+	Role  Role            `json:"role"`
 	Links PaginationLinks `json:"links,omitempty"`
 }
 

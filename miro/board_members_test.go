@@ -26,9 +26,9 @@ func TestShareBoard(t *testing.T) {
 			})
 
 			results, err := client.BoardMembers.ShareBoard(ShareBoardInvitation{
-				Emails:  []string{"alpha@milkyway.com", "beta@milkyway.com", "gramma@milkyway.com", "delta@milkyway.com"},
+				Emails:  []string{"alpha@quadrant.com", "beta@quadrant.com", "gramma@quadrant.com", "delta@quadrant.com"},
 				Role:    RoleEditor,
-				Message: "Join me on my awesome board",
+				Message: "Join me on my awesome board, make it so",
 			}, testBoardID)
 
 			Convey("Then a success message response is returned", func() {
@@ -64,7 +64,7 @@ func TestGetBoardMember(t *testing.T) {
 
 			results, err := client.BoardMembers.Get(testBoardID, testBoardMemberID)
 
-			Convey("Then a slice of board member information is returned", func() {
+			Convey("Then the board member information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, &expectedResults)
 
@@ -152,6 +152,77 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 					Convey("And round-tripping the data does not result in any loss of data", func() {
 						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
 					})
+				})
+			})
+		})
+	})
+}
+
+func TestUpdateBoardMember(t *testing.T) {
+	client, mux, closeAPIServer := mockMIROAPI("v2")
+	defer closeAPIServer()
+
+	expectedResults := BoardMember{}
+	responseData := constructResponseAndResults("board_members_get.json", &expectedResults)
+
+	Convey("Given a board ID, a board member ID and a new role", t, func() {
+		Convey("When the Update function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
+				// decode body
+				bodyData := RoleUpdate{}
+				json.NewDecoder(r.Body).Decode(&bodyData)
+				// encode test data
+				resData := BoardMember{}
+				json.Unmarshal(responseData, &resData)
+				// update test data
+				resData.Role = bodyData.Role
+				// marshal test data
+				jsonData, _ := json.Marshal(resData)
+				w.Write(jsonData)
+
+				receivedRequest = r
+			})
+
+			results, err := client.BoardMembers.Update(testBoardID, testBoardMemberID, RoleEditor)
+
+			Convey("Then the board member information is returned which includes the new role", func() {
+				So(err, ShouldBeNil)
+				So(results.Role, ShouldEqual, RoleEditor)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodPatch)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID))
+				})
+			})
+		})
+	})
+}
+
+func TestDeleteBoardMember(t *testing.T) {
+	client, mux, closeAPIServer := mockMIROAPI("v2")
+	defer closeAPIServer()
+
+	Convey("Given a board ID and a board member ID", t, func() {
+		Convey("When the Delete function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusNoContent)
+				receivedRequest = r
+			})
+
+			err := client.BoardMembers.Delete(testBoardID, testBoardMemberID)
+
+			Convey("Then the board member is deleted (no error is returned)", func() {
+				So(err, ShouldBeNil)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodDelete)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID))
 				})
 			})
 		})
