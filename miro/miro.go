@@ -11,11 +11,12 @@ import (
 )
 
 type Client struct {
-	BaseURL     string
-	token       string
-	ctx         context.Context
-	Boards      *BoardsService
-	AccessToken *AccessTokenService
+	BaseURL      string
+	token        string
+	ctx          context.Context
+	AccessToken  *AccessTokenService
+	Boards       *BoardsService
+	BoardMembers *BoardMembersService
 }
 
 type ResponseError struct {
@@ -44,6 +45,7 @@ func NewClient(token string) *Client {
 	}
 	c.AccessToken = &AccessTokenService{client: c, BaseVersion: "v1"}
 	c.Boards = &BoardsService{client: c, BaseVersion: "v2"}
+	c.BoardMembers = &BoardMembersService{client: c, BaseVersion: "v2"}
 
 	return c
 }
