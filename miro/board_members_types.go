@@ -1,8 +1,19 @@
 package miro
 
+type Role string
+
+const (
+	RoleViewer    Role = "viewer"
+	RoleCommenter Role = "commenter"
+	RoleEditor    Role = "editor"
+	RoleCoOwner   Role = "coowner"
+	RoleOwner     Role = "owner"
+	RoleGuest     Role = "guest"
+)
+
 type ShareBoardInvitation struct {
 	Emails  []string `json:"emails"`
-	Role    string   `json:"role,omitempty"`
+	Role    Role     `json:"role,omitempty"`
 	Message string   `json:"message,omitempty"`
 }
 

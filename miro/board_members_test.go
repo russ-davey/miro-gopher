@@ -17,10 +17,9 @@ func TestShareBoard(t *testing.T) {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
-				json.NewEncoder(w).Encode(
-					BoardInvitationResponse{
-						Successful: 3074457350804038700,
-					})
+				json.NewEncoder(w).Encode(BoardInvitationResponse{
+					Successful: 3074457350804038700,
+				})
 				receivedRequest = r
 			})
 

@@ -3,8 +3,10 @@ package miro
 import "fmt"
 
 const (
+	// EndpointOAUTHToken /oauth-token endpoint
 	EndpointOAUTHToken = "oauth-token"
-	EndpointOAUTH      = "oauth"
+	// EndpointOAUTH /oauth endpoint
+	EndpointOAUTH = "oauth"
 )
 
 type AccessTokenService struct {

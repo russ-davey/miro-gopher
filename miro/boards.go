@@ -5,69 +5,16 @@ import (
 )
 
 const (
+	// EndpointBoards /boards endpoint
 	EndpointBoards = "boards"
 
 	// QueryParamCopyFrom Unique identifier (ID) of the board that you want to copy (required).
 	QueryParamCopyFrom = "copy_from"
-
-	// SortDefault If team_id is present, last_created. Otherwise, last_opened
-	SortDefault = "default"
-	// SortLastModified sort by the date and time when the board was last modified
-	SortLastModified = "last_modified"
-	// SortLastOpened sort by the date and time when the board was last opened
-	SortLastOpened = "last_opened"
-	// SortLastCreated sort by the date and time when the board was created
-	SortLastCreated = "last_created"
-	// SortAlphabetically sort by the board name (alphabetically)
-	SortAlphabetically = "alphabetically"
-
-	CopyAccessAnyone      = "anyone"
-	CopyAccessTeamMembers = "team_members"
-	CopyAccessTeamEditors = "team_editors"
-	CopyAccessBoardOwner  = "board_owner"
-
-	AccessTeamMemberWithEditingRights = "team_members_with_editing_rights"
-	AccessBoardOwnersAndCoOwners      = "board_owners_and_coowners"
-
-	CollabToolsStartAccessAllEditors = "all_editors"
-
-	AccessPrivate = "private"
-	AccessView    = "view"
-	AccessComment = "comment"
-	AccessEdit    = "edit"
-
-	InviteAccessViewer    = "viewer"
-	InviteAccessCommenter = "commenter"
-	InviteAccessEditor    = "editor"
-	InviteAccessNoAccess  = "no_access"
 )
 
 type BoardsService struct {
 	client      *Client
 	BaseVersion string
-}
-
-type BoardSearchParams struct {
-	// TeamID The team_id for which you want to retrieve the list of boards. If this parameter is sent in the request,
-	// the query and owner parameters are ignored.
-	TeamID string `query:"team_id,omitempty"`
-	// Query Retrieves a list of boards that contain the query string provided in the board content or board name.
-	// For example, if you want to retrieve a list of boards that contain the word beta within the board itself (board content),
-	// add beta as the query parameter value. You can use the query parameter with the owner parameter to narrow down the board search results.
-	Query string `query:"query,omitempty"`
-	// Owner Retrieves a list of boards that belong to a specific owner ID. You must pass the owner ID (for example,
-	//3074457353169356300), not the owner name. You can use the 'owner' parameter with the query parameter to narrow
-	//down the board search results. Note that if you pass the team_id in the same request, the owner parameter is ignored.
-	Owner string `query:"owner,omitempty"`
-	// Limit The maximum number of boards to retrieve.
-	// Default: 20
-	Limit string `query:"limit,omitempty"`
-	// The (zero-based) offset of the first item in the collection to return.
-	// Default: 0.
-	Offset string `query:"offset,omitempty"`
-	// Sort The order in which you want to view the result set.
-	// Options last_created and alphabetically are applicable only when you search for boards by team.
-	Sort string `query:"sort,omitempty"`
 }
 
 // Create a board with the specified name and sharing policies.

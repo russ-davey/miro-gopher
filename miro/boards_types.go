@@ -55,39 +55,74 @@ type ListBoardsLinks struct {
 	Self  string `json:"self,omitempty"`
 }
 
+type Access string
+
+type Invite string
+
+const (
+	AccessPrivate Access = "private"
+	AccessView    Access = "view"
+	AccessEdit    Access = "edit"
+	AccessComment Access = "comment"
+
+	InviteAccessNoAccess  Invite = "no_access"
+	InviteAccessViewer    Invite = "viewer"
+	InviteAccessCommenter Invite = "commenter"
+	InviteAccessEditor    Invite = "editor"
+)
+
 type SharingPolicy struct {
 	// Access Defines the public-level access to the board.
 	// Valid options: private | view | edit | comment
-	Access string `json:"access,omitempty"`
+	Access Access `json:"access,omitempty"`
 	// InviteToAccountAndBoardLinkAccess Defines the user role when inviting a user via the invite to team and board link.
 	// For Enterprise users, this parameter is always set to no_access regardless of the value that you assign for this parameter.
 	// Valid options: viewer | commenter | editor | no_access
-	InviteToAccountAndBoardLinkAccess string `json:"inviteToAccountAndBoardLinkAccess,omitempty"`
+	InviteToAccountAndBoardLinkAccess Invite `json:"inviteToAccountAndBoardLinkAccess,omitempty"`
 	// OrganizationAccess Defines the organization-level access to the board. If the board is created for a team that does
 	// not belong to an organization, the organizationAccess parameter is always set to the default value.
 	// Warning: may result in a "One of the requested features is not supported. (4.0408)" error message if you don't have the necessary access level.
 	// Valid options: private | view | edit | comment
-	OrganizationAccess string `json:"organizationAccess,omitempty"`
+	OrganizationAccess Access `json:"organizationAccess,omitempty"`
 	// TeamAccess Defines the team-level access to the board.
 	// Valid options: private | view | edit | comment
-	TeamAccess string `json:"teamAccess,omitempty"`
+	TeamAccess Access `json:"teamAccess,omitempty"`
 }
+
+type CollabAccess string
+
+type CopyAcc string
+
+type SharingAcc string
+
+const (
+	CollabAccessAllEditors             CollabAccess = "all_editors"
+	CollabAccessBoardOwnersAndCoOwners CollabAccess = "board_owners_and_coowners"
+
+	CopyAccessAnyone      CopyAcc = "anyone"
+	CopyAccessTeamMembers CopyAcc = "team_members"
+	CopyAccessTeamEditors CopyAcc = "team_editors"
+	CopyAccessBoardOwner  CopyAcc = "board_owner"
+
+	SharingAccessTeamMemberWithEditingRights SharingAcc = "team_members_with_editing_rights"
+	SharingAccessOwnersAndCoOwners           SharingAcc = "owner_and_coowners"
+)
 
 // PermissionsPolicy Defines the permissions policies for the board.
 type PermissionsPolicy struct {
 	// CollaborationToolsStartAccess Defines who can start or stop timer, voting, video chat, screen sharing, attention management.
 	// Others will only be able to join. To change the value for the collaborationToolsStartAccess parameter, contact Miro Customer Support.
 	// Valid options: all_editors | board_owners_and_coowners
-	CollaborationToolsStartAccess string `json:"collaborationToolsStartAccess,omitempty"`
+	CollaborationToolsStartAccess CollabAccess `json:"collaborationToolsStartAccess,omitempty"`
 	// CopyAccess Defines who can copy the board, copy objects, download images, and save the board as a template or PDF.
 	// Valid options: anyone | team_members | team_editors | board_owner
-	CopyAccess string `json:"copyAccess,omitempty"`
+	CopyAccess CopyAcc `json:"copyAccess,omitempty"`
 	// CopyAccessLevel ...
 	CopyAccessLevel string `json:"copyAccessLevel,omitempty"`
 	// SharingAccess Defines who can change access and invite users to this board. To change the value for the sharingAccess
 	// parameter, contact Miro Customer Support.
 	// Valid options: team_members_with_editing_rights | board_owners_and_coowners
-	SharingAccess string `json:"sharingAccess,omitempty"`
+	SharingAccess SharingAcc `json:"sharingAccess,omitempty"`
 }
 
 type Policy struct {
@@ -103,3 +138,41 @@ type Project struct {
 	ID   string `json:"id,omitempty"`
 	Type string `json:"type,omitempty"`
 }
+
+type BoardSearchParams struct {
+	// TeamID The team_id for which you want to retrieve the list of boards. If this parameter is sent in the request,
+	// the query and owner parameters are ignored.
+	TeamID string `query:"team_id,omitempty"`
+	// Query Retrieves a list of boards that contain the query string provided in the board content or board name.
+	// For example, if you want to retrieve a list of boards that contain the word beta within the board itself (board content),
+	// add beta as the query parameter value. You can use the query parameter with the owner parameter to narrow down the board search results.
+	Query string `query:"query,omitempty"`
+	// Owner Retrieves a list of boards that belong to a specific owner ID. You must pass the owner ID (for example,
+	//3074457353169356300), not the owner name. You can use the 'owner' parameter with the query parameter to narrow
+	//down the board search results. Note that if you pass the team_id in the same request, the owner parameter is ignored.
+	Owner string `query:"owner,omitempty"`
+	// Limit The maximum number of boards to retrieve.
+	// Default: 20
+	Limit string `query:"limit,omitempty"`
+	// The (zero-based) offset of the first item in the collection to return.
+	// Default: 0.
+	Offset string `query:"offset,omitempty"`
+	// Sort The order in which you want to view the result set.
+	// Options last_created and alphabetically are applicable only when you search for boards by team.
+	Sort Sort `query:"sort,omitempty"`
+}
+
+type Sort string
+
+const (
+	// SortDefault If team_id is present, last_created. Otherwise, last_opened
+	SortDefault Sort = "default"
+	// SortLastModified sort by the date and time when the board was last modified
+	SortLastModified Sort = "last_modified"
+	// SortLastOpened sort by the date and time when the board was last opened
+	SortLastOpened Sort = "last_opened"
+	// SortLastCreated sort by the date and time when the board was created
+	SortLastCreated Sort = "last_created"
+	// SortAlphabetically sort by the board name (alphabetically)
+	SortAlphabetically Sort = "alphabetically"
+)

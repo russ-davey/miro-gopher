@@ -303,9 +303,9 @@ func TestCopyBoard(t *testing.T) {
 				TeamAccess:                        AccessEdit,
 			},
 			PermissionsPolicy: PermissionsPolicy{
-				SharingAccess:                 AccessBoardOwnersAndCoOwners,
+				SharingAccess:                 SharingAccessOwnersAndCoOwners,
 				CopyAccess:                    CopyAccessTeamEditors,
-				CollaborationToolsStartAccess: AccessBoardOwnersAndCoOwners,
+				CollaborationToolsStartAccess: CollabAccessBoardOwnersAndCoOwners,
 			},
 		},
 	}

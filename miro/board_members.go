@@ -4,15 +4,6 @@ import (
 	"fmt"
 )
 
-const (
-	RoleViewer    = "viewer"
-	RoleCommenter = "commenter"
-	RoleEditor    = "editor"
-	RoleCoOwner   = "coowner"
-	RoleOwner     = "owner"
-	RoleGuest     = "guest"
-)
-
 type BoardMembersService struct {
 	client      *Client
 	BaseVersion string
