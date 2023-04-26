@@ -35,7 +35,7 @@ type BoardMember struct {
 }
 
 type ListBoardMembersResponse struct {
-	Data   []BoardMember    `json:"data"`
+	Data   []*BoardMember   `json:"data"`
 	Total  int              `json:"total"`
 	Size   int              `json:"size"`
 	Offset int              `json:"offset"`

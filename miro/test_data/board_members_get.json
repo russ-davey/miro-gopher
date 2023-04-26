@@ -1,0 +1,9 @@
+{
+  "id": "3074457353169356300",
+  "name": "John Smith",
+  "role": "viewer",
+  "links": {
+    "self": "http://api.miro.com/v2/boards/o9J_koQspF4=/object_type/3074457349143649487"
+  },
+  "type": "board_member"
+}

@@ -16,7 +16,17 @@ type BoardMembersService struct {
 func (b *BoardMembersService) ShareBoard(payload ShareBoardInvitation, boardID string) (*BoardInvitationResponse, error) {
 	response := &BoardInvitationResponse{}
 
-	err := b.client.Post(b.constructURL(boardID), payload, response)
+	err := b.client.Post(b.constructURL(boardID, ""), payload, response)
+
+	return response, err
+}
+
+// Get Retrieves information for a board member.
+// Required scope: boards:read | Rate limiting: Level 1
+func (b *BoardMembersService) Get(boardID, boardMemberID string) (*BoardMember, error) {
+	response := &BoardMember{}
+
+	err := b.client.Get(b.constructURL(boardID, boardMemberID), response)
 
 	return response, err
 }
@@ -27,7 +37,7 @@ func (b *BoardMembersService) ShareBoard(payload ShareBoardInvitation, boardID s
 func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberSearchParams) (*ListBoardMembersResponse, error) {
 	response := &ListBoardMembersResponse{}
 
-	url := b.constructURL(boardID)
+	url := b.constructURL(boardID, "")
 
 	var err error
 	if len(queryParams) > 0 {
@@ -39,6 +49,10 @@ func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberS
 	return response, err
 }
 
-func (b *BoardMembersService) constructURL(boardID string) string {
-	return fmt.Sprintf("%s/%s/%s/%s/members", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID)
+func (b *BoardMembersService) constructURL(boardID, boardMemberID string) string {
+	if boardMemberID != "" {
+		return fmt.Sprintf("%s/%s/%s/%s/members/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID, boardMemberID)
+	} else {
+		return fmt.Sprintf("%s/%s/%s/%s/members", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID)
+	}
 }
