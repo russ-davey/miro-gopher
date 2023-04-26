@@ -43,3 +43,68 @@ func TestShareBoard(t *testing.T) {
 		})
 	})
 }
+
+func TestGetAllBoardMembers(t *testing.T) {
+	client, mux, closeAPIServer := mockMIROAPI("v2")
+	defer closeAPIServer()
+
+	expectedResults := &ListBoardMembersResponse{}
+	responseData := constructResponseAndResults("board_members_get_all.json", expectedResults)
+
+	Convey("Given no arguments", t, func() {
+		Convey("When the GetAll function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+				w.Write(responseData)
+				receivedRequest = r
+			})
+
+			results, err := client.BoardMembers.GetAll(testBoardID)
+
+			Convey("Then a slice of board member information is returned", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, expectedResults)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID))
+				})
+			})
+		})
+	})
+}
+
+func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
+	client, mux, closeAPIServer := mockMIROAPI("v2")
+	defer closeAPIServer()
+
+	expectedResults := &ListBoardMembersResponse{}
+	responseData := constructResponseAndResults("board_members_get_all.json", expectedResults)
+
+	Convey("Given a search param to limit the number of results returned", t, func() {
+		Convey("When the GetAll function is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+				w.Write(responseData)
+				receivedRequest = r
+			})
+
+			results, err := client.BoardMembers.GetAll(testBoardID, BoardMemberSearchParams{limit: "1"})
+
+			Convey("Then a slice of board member information is returned consisting of just one member", func() {
+				So(err, ShouldBeNil)
+				So(results, ShouldResemble, expectedResults)
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
+					So(receivedRequest.URL.Query().Get("limit"), ShouldEqual, "1")
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID))
+				})
+			})
+		})
+	})
+}

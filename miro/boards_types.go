@@ -34,12 +34,12 @@ type Board struct {
 
 type ListBoards struct {
 	Data   []*Board         `json:"data"`
-	Links  *ListBoardsLinks `json:"links"`
-	Type   string           `json:"type"`
 	Total  int              `json:"total"`
 	Size   int              `json:"size"`
 	Offset int              `json:"offset"`
 	Limit  int              `json:"limit"`
+	Links  *PaginationLinks `json:"links"`
+	Type   string           `json:"type"`
 }
 
 type BoardLinks struct {
@@ -47,17 +47,9 @@ type BoardLinks struct {
 	Self    string `json:"self"`
 }
 
-type ListBoardsLinks struct {
-	First string `json:"first,omitempty"`
-	Last  string `json:"last,omitempty"`
-	Next  string `json:"next,omitempty"`
-	Prev  string `json:"prev,omitempty"`
-	Self  string `json:"self,omitempty"`
-}
-
 type Access string
 
-type Invite string
+type InviteAccess string
 
 const (
 	AccessPrivate Access = "private"
@@ -65,10 +57,10 @@ const (
 	AccessEdit    Access = "edit"
 	AccessComment Access = "comment"
 
-	InviteAccessNoAccess  Invite = "no_access"
-	InviteAccessViewer    Invite = "viewer"
-	InviteAccessCommenter Invite = "commenter"
-	InviteAccessEditor    Invite = "editor"
+	InviteAccessNoAccess  InviteAccess = "no_access"
+	InviteAccessViewer    InviteAccess = "viewer"
+	InviteAccessCommenter InviteAccess = "commenter"
+	InviteAccessEditor    InviteAccess = "editor"
 )
 
 type SharingPolicy struct {
@@ -78,7 +70,7 @@ type SharingPolicy struct {
 	// InviteToAccountAndBoardLinkAccess Defines the user role when inviting a user via the invite to team and board link.
 	// For Enterprise users, this parameter is always set to no_access regardless of the value that you assign for this parameter.
 	// Valid options: viewer | commenter | editor | no_access
-	InviteToAccountAndBoardLinkAccess Invite `json:"inviteToAccountAndBoardLinkAccess,omitempty"`
+	InviteToAccountAndBoardLinkAccess InviteAccess `json:"inviteToAccountAndBoardLinkAccess,omitempty"`
 	// OrganizationAccess Defines the organization-level access to the board. If the board is created for a team that does
 	// not belong to an organization, the organizationAccess parameter is always set to the default value.
 	// Warning: may result in a "One of the requested features is not supported. (4.0408)" error message if you don't have the necessary access level.
@@ -91,21 +83,21 @@ type SharingPolicy struct {
 
 type CollabAccess string
 
-type CopyAcc string
+type CopyAccess string
 
-type SharingAcc string
+type SharingAccess string
 
 const (
 	CollabAccessAllEditors             CollabAccess = "all_editors"
 	CollabAccessBoardOwnersAndCoOwners CollabAccess = "board_owners_and_coowners"
 
-	CopyAccessAnyone      CopyAcc = "anyone"
-	CopyAccessTeamMembers CopyAcc = "team_members"
-	CopyAccessTeamEditors CopyAcc = "team_editors"
-	CopyAccessBoardOwner  CopyAcc = "board_owner"
+	CopyAccessAnyone      CopyAccess = "anyone"
+	CopyAccessTeamMembers CopyAccess = "team_members"
+	CopyAccessTeamEditors CopyAccess = "team_editors"
+	CopyAccessBoardOwner  CopyAccess = "board_owner"
 
-	SharingAccessTeamMemberWithEditingRights SharingAcc = "team_members_with_editing_rights"
-	SharingAccessOwnersAndCoOwners           SharingAcc = "owner_and_coowners"
+	SharingAccessTeamMemberWithEditingRights SharingAccess = "team_members_with_editing_rights"
+	SharingAccessOwnersAndCoOwners           SharingAccess = "owner_and_coowners"
 )
 
 // PermissionsPolicy Defines the permissions policies for the board.
@@ -116,13 +108,13 @@ type PermissionsPolicy struct {
 	CollaborationToolsStartAccess CollabAccess `json:"collaborationToolsStartAccess,omitempty"`
 	// CopyAccess Defines who can copy the board, copy objects, download images, and save the board as a template or PDF.
 	// Valid options: anyone | team_members | team_editors | board_owner
-	CopyAccess CopyAcc `json:"copyAccess,omitempty"`
+	CopyAccess CopyAccess `json:"copyAccess,omitempty"`
 	// CopyAccessLevel ...
 	CopyAccessLevel string `json:"copyAccessLevel,omitempty"`
 	// SharingAccess Defines who can change access and invite users to this board. To change the value for the sharingAccess
 	// parameter, contact Miro Customer Support.
 	// Valid options: team_members_with_editing_rights | board_owners_and_coowners
-	SharingAccess SharingAcc `json:"sharingAccess,omitempty"`
+	SharingAccess SharingAccess `json:"sharingAccess,omitempty"`
 }
 
 type Policy struct {
@@ -138,6 +130,21 @@ type Project struct {
 	ID   string `json:"id,omitempty"`
 	Type string `json:"type,omitempty"`
 }
+
+type Sort string
+
+const (
+	// SortDefault If team_id is present, last_created. Otherwise, last_opened
+	SortDefault Sort = "default"
+	// SortLastModified sort by the date and time when the board was last modified
+	SortLastModified Sort = "last_modified"
+	// SortLastOpened sort by the date and time when the board was last opened
+	SortLastOpened Sort = "last_opened"
+	// SortLastCreated sort by the date and time when the board was created
+	SortLastCreated Sort = "last_created"
+	// SortAlphabetically sort by the board name (alphabetically)
+	SortAlphabetically Sort = "alphabetically"
+)
 
 type BoardSearchParams struct {
 	// TeamID The team_id for which you want to retrieve the list of boards. If this parameter is sent in the request,
@@ -161,18 +168,3 @@ type BoardSearchParams struct {
 	// Options last_created and alphabetically are applicable only when you search for boards by team.
 	Sort Sort `query:"sort,omitempty"`
 }
-
-type Sort string
-
-const (
-	// SortDefault If team_id is present, last_created. Otherwise, last_opened
-	SortDefault Sort = "default"
-	// SortLastModified sort by the date and time when the board was last modified
-	SortLastModified Sort = "last_modified"
-	// SortLastOpened sort by the date and time when the board was last opened
-	SortLastOpened Sort = "last_opened"
-	// SortLastCreated sort by the date and time when the board was created
-	SortLastCreated Sort = "last_created"
-	// SortAlphabetically sort by the board name (alphabetically)
-	SortAlphabetically Sort = "alphabetically"
-)

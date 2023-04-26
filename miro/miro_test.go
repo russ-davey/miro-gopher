@@ -1,10 +1,13 @@
 package miro
 
 import (
+	"encoding/json"
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -31,6 +34,18 @@ func headerExists(req *http.Request, header string) bool {
 		return true
 	}
 	return false
+}
+
+func constructResponseAndResults(testData string, expectedResults interface{}) []byte {
+	responseData, err := os.ReadFile(fmt.Sprintf("./test_data/%s", testData))
+	if err != nil {
+		log.Fatalf("error reading test data: %v\n", err)
+	}
+	if err := json.Unmarshal(responseData, &expectedResults); err != nil {
+		log.Fatalf("error decoding test data: %v\n", err)
+	}
+
+	return responseData
 }
 
 func TestAddHeaders(t *testing.T) {

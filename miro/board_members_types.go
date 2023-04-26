@@ -12,9 +12,12 @@ const (
 )
 
 type ShareBoardInvitation struct {
-	Emails  []string `json:"emails"`
-	Role    Role     `json:"role,omitempty"`
-	Message string   `json:"message,omitempty"`
+	// Emails Email IDs of the users you want to invite to the board. You can invite up to 20 members per call (required).
+	Emails []string `json:"emails"`
+	// Role of the board member.
+	Role Role `json:"role,omitempty"`
+	// Message The message that will be sent in the invitation email.
+	Message string `json:"message,omitempty"`
 }
 
 type BoardInvitationResponse struct {
@@ -23,4 +26,27 @@ type BoardInvitationResponse struct {
 		Reason string `json:"reason,omitempty"`
 	} `json:"failed,omitempty"`
 	Successful int64 `json:"successful,omitempty"`
+}
+
+type BoardMember struct {
+	BasicEntityInfo
+	Role  string          `json:"role"`
+	Links PaginationLinks `json:"links,omitempty"`
+}
+
+type ListBoardMembersResponse struct {
+	Data   []BoardMember    `json:"data"`
+	Total  int              `json:"total"`
+	Size   int              `json:"size"`
+	Offset int              `json:"offset"`
+	Limit  int              `json:"limit"`
+	Links  *PaginationLinks `json:"links"`
+	Type   string           `json:"type"`
+}
+
+type BoardMemberSearchParams struct {
+	// limit The maximum number of board members to retrieve. Default: 20.
+	limit string `query:"limit,omitempty"`
+	// offset The (zero-based) offset of the first item in the collection to return. Default: 0.
+	offset string `query:"offset,omitempty"`
 }
