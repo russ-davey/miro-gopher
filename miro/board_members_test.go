@@ -20,7 +20,7 @@ func TestShareBoard(t *testing.T) {
 			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
 				json.NewEncoder(w).Encode(BoardInvitationResponse{
-					Successful: 3074457350804038700,
+					Successful: "3074457350804038700",
 				})
 				receivedRequest = r
 			})
@@ -33,7 +33,7 @@ func TestShareBoard(t *testing.T) {
 
 			Convey("Then a success message response is returned", func() {
 				So(err, ShouldBeNil)
-				So(results.Successful, ShouldEqual, 3074457350804038700)
+				So(results.Successful, ShouldEqual, "3074457350804038700")
 
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)
@@ -126,6 +126,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 
 	expectedResults := &ListBoardMembersResponse{}
 	responseData := constructResponseAndResults("board_members_get_all.json", expectedResults)
+	roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a search param to limit the number of results returned", t, func() {
 		Convey("When the GetAll function is called", func() {
@@ -147,6 +148,10 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 					So(receivedRequest.URL.Query().Get("limit"), ShouldEqual, "1")
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID))
+
+					Convey("And round-tripping the data does not result in any loss of data", func() {
+						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
+					})
 				})
 			})
 		})
