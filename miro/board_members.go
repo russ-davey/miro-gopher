@@ -34,8 +34,8 @@ func (b *BoardMembersService) Get(boardID, boardMemberID string) (*BoardMember, 
 // GetAll Retrieves a pageable list of members for a board.
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: BoardMemberSearchParams{}
-func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberSearchParams) (*ListBoardMembersResponse, error) {
-	response := &ListBoardMembersResponse{}
+func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberSearchParams) (*ListBoardMembers, error) {
+	response := &ListBoardMembers{}
 
 	url := b.constructURL(boardID, "")
 

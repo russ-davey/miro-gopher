@@ -52,6 +52,12 @@ func constructResponseAndResults(testData string, expectedResults interface{}) [
 
 // compareJSON validate structs by round-tripping the test data and comparing the original to the data unmarshalled/marshalled
 func compareJSON(json1, json2 []byte) bool {
+	sortedJSON1, sortedJSON2 := sortJSON(json1, json2)
+
+	return bytes.Equal(sortedJSON1, sortedJSON2)
+}
+
+func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 	// Parse the JSON bytes into maps
 	var map1 map[string]interface{}
 	var map2 map[string]interface{}
@@ -78,8 +84,25 @@ func compareJSON(json1, json2 []byte) bool {
 	sortedJSON1, _ := json.Marshal(sortedMap1)
 	sortedJSON2, _ := json.Marshal(sortedMap2)
 
-	return bytes.Equal(sortedJSON1, sortedJSON2)
+	return sortedJSON1, sortedJSON2
 }
+
+//func TestStructAgainstRealData(t *testing.T) {
+//client := NewClient(os.Getenv("MIRO_TOKEN"))
+//boardID := ""
+//items, _ := client.Items.GetAll(boardID)
+//jsonData, _ := json.Marshal(items)
+//
+//rawResponse := make(map[string]interface{})
+//client.Get(fmt.Sprintf("https://api.miro.com/v2/boards/%s/items", boardID), &rawResponse)
+//jsonDataRaw, _ := json.Marshal(rawResponse)
+//
+//processed, raw := sortJSON(jsonData, jsonDataRaw)
+
+//Convey("The unmarshalled data should match the raw data JSON data", t, func() {
+//	So(string(processed), ShouldEqual, string(raw))
+//})
+//}
 
 func TestAddHeaders(t *testing.T) {
 	c := Client{}

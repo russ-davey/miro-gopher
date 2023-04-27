@@ -38,7 +38,7 @@ type BoardMember struct {
 	Links PaginationLinks `json:"links,omitempty"`
 }
 
-type ListBoardMembersResponse struct {
+type ListBoardMembers struct {
 	Data   []*BoardMember   `json:"data"`
 	Total  int              `json:"total"`
 	Size   int              `json:"size"`
@@ -49,8 +49,10 @@ type ListBoardMembersResponse struct {
 }
 
 type BoardMemberSearchParams struct {
-	// limit The maximum number of board members to retrieve. Default: 20.
-	limit string `query:"limit,omitempty"`
-	// offset The (zero-based) offset of the first item in the collection to return. Default: 0.
-	offset string `query:"offset,omitempty"`
+	// Limit The maximum number of board members to retrieve.
+	// Default: 20.
+	Limit string `query:"limit,omitempty"`
+	// Offset The (zero-based) offset of the first item in the collection to return.
+	// Default: 0.
+	Offset string `query:"offset,omitempty"`
 }

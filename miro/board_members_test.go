@@ -87,7 +87,7 @@ func TestGetAllBoardMembers(t *testing.T) {
 	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
-	expectedResults := &ListBoardMembersResponse{}
+	expectedResults := &ListBoardMembers{}
 	responseData := constructResponseAndResults("board_members_get_all.json", expectedResults)
 	roundTrip, _ := json.Marshal(expectedResults)
 
@@ -124,7 +124,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 	client, mux, closeAPIServer := mockMIROAPI("v2")
 	defer closeAPIServer()
 
-	expectedResults := &ListBoardMembersResponse{}
+	expectedResults := &ListBoardMembers{}
 	responseData := constructResponseAndResults("board_members_get_all.json", expectedResults)
 	roundTrip, _ := json.Marshal(expectedResults)
 
@@ -136,7 +136,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.BoardMembers.GetAll(testBoardID, BoardMemberSearchParams{limit: "1"})
+			results, err := client.BoardMembers.GetAll(testBoardID, BoardMemberSearchParams{Limit: "1"})
 
 			Convey("Then a slice of board member information is returned consisting of just one member", func() {
 				So(err, ShouldBeNil)

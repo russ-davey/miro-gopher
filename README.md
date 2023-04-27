@@ -2,7 +2,7 @@
 
 API client for accessing the MIRO API
 
-Currently, only supports the `/boards` endpoint, but more to follow soon.
+Currently, only supports the `oauth`, `oauth_token`, `/boards` & `/boards/members` endpoints, but more to follow soon.
 
 For now the `GET`, `POST`, `PUT`, `PATCH` & `DELETE` methods are open to use for any other API calls to MIRO.
 

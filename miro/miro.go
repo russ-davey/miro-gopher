@@ -17,6 +17,7 @@ type Client struct {
 	AccessToken  *AccessTokenService
 	Boards       *BoardsService
 	BoardMembers *BoardMembersService
+	Items        *ItemsService
 }
 
 type ResponseError struct {
@@ -46,6 +47,7 @@ func NewClient(token string) *Client {
 	c.AccessToken = &AccessTokenService{client: c, BaseVersion: "v1"}
 	c.Boards = &BoardsService{client: c, BaseVersion: "v2"}
 	c.BoardMembers = &BoardMembersService{client: c, BaseVersion: "v2"}
+	c.Items = &ItemsService{client: c, BaseVersion: "v2"}
 
 	return c
 }
