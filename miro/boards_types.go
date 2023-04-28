@@ -14,22 +14,24 @@ type CreateBoard struct {
 }
 
 type Board struct {
-	ID                    string                `json:"id"`
-	Name                  string                `json:"name"`
-	Description           string                `json:"description"`
-	Team                  BasicEntityInfo       `json:"team"`
-	Picture               Picture               `json:"picture,omitempty"`
-	Policy                Policy                `json:"policy"`
-	ViewLink              string                `json:"viewLink"`
-	Owner                 BasicEntityInfo       `json:"owner"`
-	CurrentUserMembership CurrentUserMembership `json:"currentUserMembership"`
-	CreatedAt             time.Time             `json:"createdAt"`
-	CreatedBy             BasicEntityInfo       `json:"createdBy"`
-	ModifiedAt            time.Time             `json:"modifiedAt"`
-	ModifiedBy            BasicEntityInfo       `json:"modifiedBy"`
-	Links                 BoardLinks            `json:"links"`
-	Type                  string                `json:"type"`
-	Project               Project               `json:"project,omitempty"`
+	ID                    string                 `json:"id"`
+	Name                  string                 `json:"name"`
+	Description           string                 `json:"description"`
+	Team                  BasicEntityInfo        `json:"team"`
+	Picture               *Picture               `json:"picture,omitempty"`
+	Policy                Policy                 `json:"policy"`
+	PermissionsPolicy     PermissionsPolicy      `json:"permissionsPolicy,omitempty"`
+	SharingPolicy         SharingPolicy          `json:"sharingPolicy"`
+	ViewLink              string                 `json:"viewLink"`
+	Owner                 BasicEntityInfo        `json:"owner"`
+	CurrentUserMembership *CurrentUserMembership `json:"currentUserMembership,omitempty"`
+	CreatedAt             time.Time              `json:"createdAt"`
+	CreatedBy             BasicEntityInfo        `json:"createdBy"`
+	ModifiedAt            time.Time              `json:"modifiedAt"`
+	ModifiedBy            BasicEntityInfo        `json:"modifiedBy"`
+	Links                 BoardLinks             `json:"links"`
+	Type                  string                 `json:"type"`
+	Project               *Project               `json:"project,omitempty"`
 }
 
 type ListBoards struct {
