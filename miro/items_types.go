@@ -84,7 +84,7 @@ type Item struct {
 	} `json:"links"`
 	ModifiedAt time.Time        `json:"modifiedAt"`
 	ModifiedBy *BasicEntityInfo `json:"modifiedBy"`
-	Parent     Parent           `json:"parent,omitempty"`
+	Parent     *Parent          `json:"parent,omitempty"`
 	Position   Position         `json:"position"`
 	Style      Style            `json:"style"`
 	Type       string           `json:"type"`
