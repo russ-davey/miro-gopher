@@ -11,13 +11,13 @@ import (
 const testBoardMemberID = "2718282"
 
 func TestShareBoard(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	Convey("Given a Board ID", t, func() {
 		Convey("When the ShareBoard function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(testURL, func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
 				json.NewEncoder(w).Encode(BoardInvitationResponse{
 					Successful: "3074457350804038700",
@@ -47,7 +47,7 @@ func TestShareBoard(t *testing.T) {
 }
 
 func TestGetBoardMember(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := BoardMember{}
@@ -57,7 +57,7 @@ func TestGetBoardMember(t *testing.T) {
 	Convey("Given a board ID and a board member ID", t, func() {
 		Convey("When the Get function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testURL, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -84,7 +84,7 @@ func TestGetBoardMember(t *testing.T) {
 }
 
 func TestGetAllBoardMembers(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := &ListBoardMembers{}
@@ -94,7 +94,7 @@ func TestGetAllBoardMembers(t *testing.T) {
 	Convey("Given no arguments", t, func() {
 		Convey("When the GetAll function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(testURL, func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -121,7 +121,7 @@ func TestGetAllBoardMembers(t *testing.T) {
 }
 
 func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := &ListBoardMembers{}
@@ -131,7 +131,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 	Convey("Given a search param to limit the number of results returned", t, func() {
 		Convey("When the GetAll function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(testURL, func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -159,7 +159,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 }
 
 func TestUpdateBoardMember(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := BoardMember{}
@@ -168,7 +168,7 @@ func TestUpdateBoardMember(t *testing.T) {
 	Convey("Given a board ID, a board member ID and a new role", t, func() {
 		Convey("When the Update function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testURL, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
 				bodyData := RoleUpdate{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
@@ -202,13 +202,13 @@ func TestUpdateBoardMember(t *testing.T) {
 }
 
 func TestDeleteBoardMember(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and a board member ID", t, func() {
 		Convey("When the Delete function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testURL, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusNoContent)
 				receivedRequest = r
 			})

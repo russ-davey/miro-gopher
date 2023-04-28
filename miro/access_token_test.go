@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetAccessToken(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v1")
+	client, _, mux, closeAPIServer := mockMIROAPI("v1", "", "", "")
 	defer closeAPIServer()
 
 	expectedResults := &AccessToken{}
@@ -46,14 +46,14 @@ func TestGetAccessToken(t *testing.T) {
 }
 
 func TestRevokeAccessToken(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v1")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v1", EndpointOAUTH, "revoke", "")
 	defer closeAPIServer()
 
 	Convey("Given an access token", t, func() {
 		Convey("When the AccessToken Revoke function is called", func() {
 			var receivedRequest *http.Request
 
-			mux.HandleFunc(fmt.Sprintf("/v1/%s/revoke", EndpointOAUTH), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(testURL, func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusNoContent)
 				receivedRequest = r
 			})

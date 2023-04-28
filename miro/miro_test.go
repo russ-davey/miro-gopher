@@ -17,7 +17,7 @@ const (
 	testToken = "test-token"
 )
 
-func mockMIROAPI(apiVersion string) (*Client, *http.ServeMux, func()) {
+func mockMIROAPI(apiVersion, resourceURI, resourceID, endpoint string) (*Client, string, *http.ServeMux, func()) {
 	mux := http.NewServeMux()
 	handler := http.NewServeMux()
 
@@ -28,7 +28,16 @@ func mockMIROAPI(apiVersion string) (*Client, *http.ServeMux, func()) {
 	client := NewClient(testToken)
 	client.BaseURL = server.URL
 
-	return client, mux, server.Close
+	var testURL string
+	if resourceID == "" {
+		testURL = fmt.Sprintf("/%s/%s", apiVersion, resourceURI)
+	} else if endpoint == "" {
+		testURL = fmt.Sprintf("/%s/%s/%s", apiVersion, resourceURI, resourceID)
+	} else {
+		testURL = fmt.Sprintf("/%s/%s/%s/%s", apiVersion, resourceURI, resourceID, endpoint)
+	}
+
+	return client, testURL, mux, server.Close
 }
 
 func headerExists(req *http.Request, header string) bool {
@@ -54,6 +63,7 @@ func constructResponseAndResults(testData string, expectedResults interface{}) [
 func compareJSON(json1, json2 []byte) bool {
 	sortedJSON1, sortedJSON2 := sortJSON(json1, json2)
 
+	// Compare
 	return bytes.Equal(sortedJSON1, sortedJSON2)
 }
 
@@ -80,7 +90,7 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 	sort.Strings(keys1)
 	sort.Strings(keys2)
 
-	// Convert the sorted maps to JSON strings and compare them
+	// Convert the sorted maps to JSON strings
 	sortedJSON1, _ := json.Marshal(sortedMap1)
 	sortedJSON2, _ := json.Marshal(sortedMap2)
 
@@ -88,20 +98,31 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 }
 
 //func TestStructAgainstRealData(t *testing.T) {
-//client := NewClient(os.Getenv("MIRO_TOKEN"))
-//boardID := ""
-//items, _ := client.Items.GetAll(boardID)
-//jsonData, _ := json.Marshal(items)
+//	client := NewClient(os.Getenv("MIRO_TOKEN"))
 //
-//rawResponse := make(map[string]interface{})
-//client.Get(fmt.Sprintf("https://api.miro.com/v2/boards/%s/items", boardID), &rawResponse)
-//jsonDataRaw, _ := json.Marshal(rawResponse)
+//	version := "v2"
+//	endpoint := "boards"
+//	//entity := ""
 //
-//processed, raw := sortJSON(jsonData, jsonDataRaw)
-
-//Convey("The unmarshalled data should match the raw data JSON data", t, func() {
-//	So(string(processed), ShouldEqual, string(raw))
-//})
+//	response, err := client.Boards.GetAll()
+//	if err != nil {
+//		log.Fatalf("error: %v", err)
+//	}
+//	jsonData, _ := json.Marshal(response)
+//
+//	rawResponse := make(map[string]interface{})
+//	client.Get(fmt.Sprintf("https://api.miro.com/%s/%s", version, endpoint), &rawResponse)
+//	//client.Get(fmt.Sprintf("https://api.miro.com/%s/%s/%s", version, endpoint, entity), &rawResponse)
+//	jsonDataRaw, _ := json.Marshal(rawResponse)
+//
+//	processed, _ := sortJSON(jsonData, jsonDataRaw)
+//	fmt.Printf("== Processed: %s\n", processed)
+//	fmt.Println("===============================")
+//	//fmt.Printf("== Native   : %s\n", raw)
+//
+//	//Convey("The unmarshalled data should match the raw data JSON data", t, func() {
+//	//	So(string(processed), ShouldEqual, string(raw))
+//	//})
 //}
 
 func TestAddHeaders(t *testing.T) {

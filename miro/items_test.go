@@ -11,7 +11,7 @@ import (
 const testItemID = "16180339887"
 
 func TestGetAllItems(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := ListItems{}
@@ -21,7 +21,7 @@ func TestGetAllItems(t *testing.T) {
 	Convey("Given a board ID", t, func() {
 		Convey("When the GetAll function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/items", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(testURL, func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -48,7 +48,7 @@ func TestGetAllItems(t *testing.T) {
 }
 
 func TestGetAllItemsWithSearchParams(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := ListItems{}
@@ -58,7 +58,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 	Convey("Given a board ID", t, func() {
 		Convey("When the GetAll function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/items", EndpointBoards, testBoardID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(testURL, func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -87,7 +87,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 }
 
 func TestGetItem(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := &Item{}
@@ -96,7 +96,7 @@ func TestGetItem(t *testing.T) {
 	Convey("Given a board ID and an item ID", t, func() {
 		Convey("When the Get function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/items/%s", EndpointBoards, testBoardID, testItemID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testURL, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -119,7 +119,7 @@ func TestGetItem(t *testing.T) {
 }
 
 func TestUpdateItem(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := &Item{}
@@ -128,7 +128,7 @@ func TestUpdateItem(t *testing.T) {
 	Convey("Given a board ID, an item ID and a new role", t, func() {
 		Convey("When the Update function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/items/%s", EndpointBoards, testBoardID, testItemID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testURL, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
 				bodyData := ItemUpdate{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
@@ -164,13 +164,13 @@ func TestUpdateItem(t *testing.T) {
 }
 
 func TestDeleteItem(t *testing.T) {
-	client, mux, closeAPIServer := mockMIROAPI("v2")
+	client, testURL, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {
 		Convey("When the Delete function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v2/%s/%s/items/%s", EndpointBoards, testBoardID, testItemID), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testURL, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusNoContent)
 				receivedRequest = r
 			})
