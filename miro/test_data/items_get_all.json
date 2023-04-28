@@ -25,7 +25,7 @@
         "type": "user"
       },
       "parent": {
-        "id": 3074457362577955300,
+        "id": "3074457362577955300",
         "links": {
           "self": "http://api.miro.com/v2/boards/o9J_koQspF4=/object_type/3074457349143649487"
         }
