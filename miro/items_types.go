@@ -119,11 +119,15 @@ type PositionUpdate struct {
 	Y float64 `json:"y,omitempty"`
 }
 
+type ParentUpdate struct {
+	ID string `json:"id"`
+}
+
 type ItemUpdate struct {
 	// Parent Contains information about the parent this item attached to.
 	// Passing null for ID will attach widget to the canvas directly.
-	Parent int64 `json:"parent,omitempty"`
+	Parent *ParentUpdate `json:"parent,omitempty"`
 	// Position Contains location information about the item, such as its x coordinate, y coordinate,
 	// and the origin of the x and y coordinates.
-	Position PositionUpdate `json:"position,omitempty"`
+	Position *PositionUpdate `json:"position,omitempty"`
 }
