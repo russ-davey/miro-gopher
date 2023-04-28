@@ -33,6 +33,27 @@ import "github.com/russ-davey/miro-gopher/miro"
 
 client := miro.NewClient(token)
 ```
+
+---
+## Using the Native Functions
+If there is part of MIRO API that you would like to access, but it isn't currently supported by this package,
+then you can use the `Get`, `Post`, `Put`, `Patch`, & `Delete` functions to natively access them instead:
+
+```go
+client := NewClient(os.Getenv("MIRO_TOKEN"))
+
+response := make(map[string]interface{})
+
+err := client.Get("https://api.miro.com/v2/boards/3141592/items/16180339887", &response)
+if err != nil {
+    fmt.Printf("error: %v", err)
+} else {
+    jsonData, _ := json.Marshal(response)
+    fmt.Printf("MIRO API Response: %s\n", jsonData)
+}
+```
+
+
 ---
 ## /boards API Methods
 
