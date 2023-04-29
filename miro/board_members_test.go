@@ -25,11 +25,11 @@ func TestShareBoard(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.BoardMembers.ShareBoard(ShareBoardInvitation{
+			results, err := client.BoardMembers.ShareBoard(testBoardID, ShareBoardInvitation{
 				Emails:  []string{"alpha@quadrant.com", "beta@quadrant.com", "gramma@quadrant.com", "delta@quadrant.com"},
 				Role:    RoleEditor,
 				Message: "Join me on my awesome board, make it so",
-			}, testBoardID)
+			})
 
 			Convey("Then a success message response is returned", func() {
 				So(err, ShouldBeNil)

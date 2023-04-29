@@ -13,8 +13,8 @@ const (
 )
 
 type BoardsService struct {
-	client      *Client
-	BaseVersion string
+	client     *Client
+	APIVersion string
 }
 
 // Create a board with the specified name and sharing policies.
@@ -86,8 +86,8 @@ func (b *BoardsService) Delete(boardID string) error {
 
 func (b *BoardsService) constructURL(boardID string) string {
 	if boardID != "" {
-		return fmt.Sprintf("%s/%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID)
+		return fmt.Sprintf("%s/%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards, boardID)
 	} else {
-		return fmt.Sprintf("%s/%s/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards)
+		return fmt.Sprintf("%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards)
 	}
 }

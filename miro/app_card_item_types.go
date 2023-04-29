@@ -2,43 +2,6 @@ package miro
 
 import "time"
 
-type AppCardItem struct {
-	ID   string `json:"id"`
-	Data struct {
-		Description string   `json:"description"`
-		Fields      []Fields `json:"fields"`
-		Owned       bool     `json:"owned"`
-		Status      string   `json:"status"`
-		Title       string   `json:"title"`
-	} `json:"data"`
-	Style      Style           `json:"style"`
-	Position   Position        `json:"position"`
-	Geometry   Geometry        `json:"geometry"`
-	CreatedAt  time.Time       `json:"createdAt"`
-	CreatedBy  BasicEntityInfo `json:"createdBy"`
-	ModifiedAt time.Time       `json:"modifiedAt"`
-	ModifiedBy BasicEntityInfo `json:"modifiedBy"`
-	Parent     Parent          `json:"parent"`
-	Links      struct {
-		Related string `json:"related"`
-		Self    string `json:"self"`
-	} `json:"links"`
-	Type string `json:"type"`
-}
-
-type AppCardItemUpdate struct {
-	Data struct {
-		Description string   `json:"description"`
-		Fields      []Fields `json:"fields"`
-		Status      string   `json:"status"`
-		Title       string   `json:"title"`
-	} `json:"data"`
-	Style    Style          `json:"style"`
-	Position PositionUpdate `json:"position"`
-	Geometry Geometry       `json:"geometry"`
-	Parent   ParentUpdate   `json:"parent"`
-}
-
 type Fields struct {
 	// IconShape The shape of the icon on the preview field.
 	IconShape string `json:"iconShape"`
@@ -53,14 +16,6 @@ type Fields struct {
 	// Value The actual data value of the custom field. It can be any type of information that you want to convey.
 	Value string `json:"value"`
 }
-
-type Status string
-
-const (
-	StatusConnected    Status = "connected"
-	StatusDisconnected Status = "disconnected"
-	StatusDisabled     Status = "disabled"
-)
 
 type AppCardItemData struct {
 	// Fields Array where each object represents a custom preview field. Preview fields are displayed on the bottom half of the app card in the compact view.
@@ -84,4 +39,33 @@ type CreateAppCardItem struct {
 	Geometry Geometry `json:"geometry"`
 	// Parent Contains information about the parent this item attached to. Passing null for ID will attach widget to the canvas directly.
 	Parent ParentUpdate `json:"parent"`
+}
+
+type Status string
+
+const (
+	StatusConnected    Status = "connected"
+	StatusDisconnected Status = "disconnected"
+	StatusDisabled     Status = "disabled"
+)
+
+type AppCardItem struct {
+	ID   string `json:"id"`
+	Data struct {
+		Description string   `json:"description"`
+		Fields      []Fields `json:"fields"`
+		Owned       bool     `json:"owned"`
+		Status      string   `json:"status"`
+		Title       string   `json:"title"`
+	} `json:"data"`
+	Style      Style           `json:"style"`
+	Position   Position        `json:"position"`
+	Geometry   Geometry        `json:"geometry"`
+	CreatedAt  time.Time       `json:"createdAt"`
+	CreatedBy  BasicEntityInfo `json:"createdBy"`
+	ModifiedAt time.Time       `json:"modifiedAt"`
+	ModifiedBy BasicEntityInfo `json:"modifiedBy"`
+	Parent     Parent          `json:"parent"`
+	Links      Links           `json:"links"`
+	Type       string          `json:"type"`
 }

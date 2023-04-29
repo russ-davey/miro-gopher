@@ -45,19 +45,6 @@ type Parent struct {
 	Links PaginationLinks `json:"links,omitempty"`
 }
 
-type Geometry struct {
-	Height   float64 `json:"height,omitempty"`
-	Rotation float64 `json:"rotation,omitempty"`
-	Width    float64 `json:"width,omitempty"`
-}
-
-type Position struct {
-	Origin     Origin  `json:"origin"`
-	RelativeTo string  `json:"relativeTo"`
-	X          float64 `json:"x"`
-	Y          float64 `json:"y"`
-}
-
 type Style struct {
 	BorderColor       string `json:"borderColor,omitempty"`
 	BorderOpacity     string `json:"borderOpacity,omitempty"`
@@ -73,15 +60,12 @@ type Style struct {
 }
 
 type Item struct {
-	CreatedAt time.Time       `json:"createdAt"`
-	CreatedBy BasicEntityInfo `json:"createdBy"`
-	Data      ItemData        `json:"data"`
-	Geometry  Geometry        `json:"geometry"`
-	ID        string          `json:"id"`
-	Links     struct {
-		Related string `json:"related,omitempty"`
-		Self    string `json:"self"`
-	} `json:"links"`
+	CreatedAt  time.Time        `json:"createdAt"`
+	CreatedBy  BasicEntityInfo  `json:"createdBy"`
+	Data       ItemData         `json:"data"`
+	Geometry   Geometry         `json:"geometry"`
+	ID         string           `json:"id"`
+	Links      Links            `json:"links"`
 	ModifiedAt time.Time        `json:"modifiedAt"`
 	ModifiedBy *BasicEntityInfo `json:"modifiedBy"`
 	Parent     *Parent          `json:"parent,omitempty"`
@@ -98,25 +82,6 @@ type ListItems struct {
 	Limit  int             `json:"limit"`
 	Links  PaginationLinks `json:"links"`
 	Type   string          `json:"type"`
-}
-
-type Origin string
-
-const Center Origin = "center"
-
-type PositionUpdate struct {
-	// Origin Area of the item that is referenced by its x and y coordinates. For example, an item with a center origin will
-	// have its x and y coordinates point to its center. The center point of the board has x: 0 and y: 0 coordinates.
-	// Currently, only one option is supported: center
-	Origin Origin `json:"origin,omitempty"`
-	// X-axis coordinate of the location of the item on the board.
-	// By default, all items have absolute positioning to the board, not the current viewport.
-	// The center point of the board has x: 0 and y: 0 coordinates.
-	X float64 `json:"x,omitempty"`
-	// Y-axis coordinate of the location of the item on the board.
-	// By default, all items have absolute positioning to the board, not the current viewport.
-	// The center point of the board has x: 0 and y: 0 coordinates.
-	Y float64 `json:"y,omitempty"`
 }
 
 type ParentUpdate struct {

@@ -6,17 +6,18 @@ import (
 
 type BoardMembersService struct {
 	client      *Client
-	BaseVersion string
+	APIVersion  string
+	SubResource string
 }
 
 // ShareBoard Shares the board and Invites new members to collaborate on a board by sending an invitation email.
 // Depending on the board's Sharing policy, there might be various scenarios where membership in the team is required in
 // order to share the board with a user.
 // Required scope: boards:write | Rate limiting: Level 3
-func (b *BoardMembersService) ShareBoard(payload ShareBoardInvitation, boardID string) (*BoardInvitationResponse, error) {
+func (b *BoardMembersService) ShareBoard(boardID string, body ShareBoardInvitation) (*BoardInvitationResponse, error) {
 	response := &BoardInvitationResponse{}
 
-	err := b.client.Post(b.constructURL(boardID, ""), payload, response)
+	err := b.client.Post(b.constructURL(boardID, ""), body, response)
 
 	return response, err
 }
@@ -65,10 +66,10 @@ func (b *BoardMembersService) Delete(boardID, boardMemberID string) error {
 	return b.client.Delete(b.constructURL(boardID, boardMemberID))
 }
 
-func (b *BoardMembersService) constructURL(boardID, boardMemberID string) string {
-	if boardMemberID != "" {
-		return fmt.Sprintf("%s/%s/%s/%s/members/%s", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID, boardMemberID)
+func (b *BoardMembersService) constructURL(boardID, resourceID string) string {
+	if resourceID != "" {
+		return fmt.Sprintf("%s/%s/%s/%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards, boardID, b.SubResource, resourceID)
 	} else {
-		return fmt.Sprintf("%s/%s/%s/%s/members", b.client.BaseURL, b.BaseVersion, EndpointBoards, boardID)
+		return fmt.Sprintf("%s/%s/%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards, boardID, b.SubResource)
 	}
 }

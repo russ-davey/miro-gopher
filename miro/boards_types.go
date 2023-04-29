@@ -29,7 +29,7 @@ type Board struct {
 	CreatedBy             BasicEntityInfo        `json:"createdBy"`
 	ModifiedAt            time.Time              `json:"modifiedAt"`
 	ModifiedBy            BasicEntityInfo        `json:"modifiedBy"`
-	Links                 BoardLinks             `json:"links"`
+	Links                 Links                  `json:"links"`
 	Type                  string                 `json:"type"`
 	Project               *Project               `json:"project,omitempty"`
 }
@@ -42,11 +42,6 @@ type ListBoards struct {
 	Limit  int              `json:"limit"`
 	Links  *PaginationLinks `json:"links"`
 	Type   string           `json:"type"`
-}
-
-type BoardLinks struct {
-	Related string `json:"related"`
-	Self    string `json:"self"`
 }
 
 type Access string

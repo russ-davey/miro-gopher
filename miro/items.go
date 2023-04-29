@@ -4,7 +4,8 @@ import "fmt"
 
 type ItemsService struct {
 	client      *Client
-	BaseVersion string
+	APIVersion  string
+	SubResource string
 }
 
 // GetAll Retrieves a list of items for a specific board. You can retrieve all items on the board, a list of child items
@@ -60,10 +61,10 @@ func (i *ItemsService) Delete(boardID, itemID string) error {
 	return i.client.Delete(i.constructURL(boardID, itemID))
 }
 
-func (i *ItemsService) constructURL(boardID, itemID string) string {
-	if itemID != "" {
-		return fmt.Sprintf("%s/%s/%s/%s/items/%s", i.client.BaseURL, i.BaseVersion, EndpointBoards, boardID, itemID)
+func (i *ItemsService) constructURL(boardID, resourceID string) string {
+	if resourceID != "" {
+		return fmt.Sprintf("%s/%s/%s/%s/%s/%s", i.client.BaseURL, i.APIVersion, EndpointBoards, boardID, i.SubResource, resourceID)
 	} else {
-		return fmt.Sprintf("%s/%s/%s/%s/items", i.client.BaseURL, i.BaseVersion, EndpointBoards, boardID)
+		return fmt.Sprintf("%s/%s/%s/%s/%s", i.client.BaseURL, i.APIVersion, EndpointBoards, boardID, i.SubResource)
 	}
 }

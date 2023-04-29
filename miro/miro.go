@@ -18,6 +18,8 @@ type Client struct {
 	Boards       *BoardsService
 	BoardMembers *BoardMembersService
 	Items        *ItemsService
+	AppCardItems *AppCardItemsService
+	CardItems    *CardItemsService
 }
 
 type ResponseError struct {
@@ -44,12 +46,18 @@ func NewClient(token string) *Client {
 		token:   token,
 		ctx:     context.Background(),
 	}
-	c.AccessToken = &AccessTokenService{client: c, BaseVersion: "v1"}
-	c.Boards = &BoardsService{client: c, BaseVersion: "v2"}
-	c.BoardMembers = &BoardMembersService{client: c, BaseVersion: "v2"}
-	c.Items = &ItemsService{client: c, BaseVersion: "v2"}
+	buildAPIMap(c)
 
 	return c
+}
+
+func buildAPIMap(c *Client) {
+	c.AccessToken = &AccessTokenService{client: c, APIVersion: "v1"}
+	c.Boards = &BoardsService{client: c, APIVersion: "v2"}
+	c.BoardMembers = &BoardMembersService{client: c, APIVersion: "v2", SubResource: "members"}
+	c.Items = &ItemsService{client: c, APIVersion: "v2", SubResource: "items"}
+	c.AppCardItems = &AppCardItemsService{client: c, APIVersion: "v2", SubResource: "app_cards"}
+	c.CardItems = &CardItemsService{client: c, APIVersion: "v2", SubResource: "cards"}
 }
 
 // Get Native GET function
@@ -71,10 +79,11 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 
 	if res.StatusCode != http.StatusOK {
 		respErr := &ResponseError{}
+		// TODO: add context to error message to make it easier to troubleshoot
 		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
 			return err
 		}
-		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+		return constructErrorMsg(res, respErr)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -102,7 +111,7 @@ func (c *Client) Post(url string, body, response interface{}) error {
 		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
 			return err
 		}
-		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+		return constructErrorMsg(res, respErr)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -129,7 +138,7 @@ func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
 		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
 			return err
 		}
-		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+		return constructErrorMsg(res, respErr)
 	}
 	return nil
 }
@@ -161,7 +170,7 @@ func (c *Client) Put(url string, body, response interface{}, queryParams ...Para
 		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
 			return err
 		}
-		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+		return constructErrorMsg(res, respErr)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -189,7 +198,7 @@ func (c *Client) Patch(url string, body, response interface{}) error {
 		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
 			return err
 		}
-		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+		return constructErrorMsg(res, respErr)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -212,7 +221,7 @@ func (c *Client) Delete(url string) error {
 		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
 			return err
 		}
-		return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+		return constructErrorMsg(res, respErr)
 	}
 
 	return nil
@@ -240,4 +249,8 @@ func bodyToBuffer(body interface{}) (io.ReadWriter, error) {
 		}
 	}
 	return bufBody, nil
+}
+
+func constructErrorMsg(res *http.Response, respErr *ResponseError) error {
+	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
 }

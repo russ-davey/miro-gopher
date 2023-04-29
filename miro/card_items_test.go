@@ -6,13 +6,14 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"net/http"
 	"testing"
+	"time"
 )
 
-func TestCreateAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+func TestCreateCardItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "cards")
 	defer closeAPIServer()
 
-	expectedResults := &AppCardItem{}
+	expectedResults := &CardItem{}
 	responseData := constructResponseAndResults("app_card_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
@@ -24,23 +25,16 @@ func TestCreateAppCardItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.AppCardItems.Create(testBoardID,
-				CreateAppCardItem{
-					Data: AppCardItemData{
-						Fields: []Fields{
-							{
-								IconShape: "round",
-								FillColor: "#2fa9e3",
-								IconUrl:   "https://cdn-icons-png.flaticon.com/512/5695/5695864.png",
-								TextColor: "#1a1a1a",
-								Tooltip:   "Tooltip",
-								Value:     "Status: In Progress",
-							},
-						},
-						Status: StatusConnected,
+			results, err := client.CardItems.Create(testBoardID,
+				CreateCardItem{
+					Data: CardItemData{
+						Title:       "Card Item",
+						AssigneeId:  "3074457362577955300",
+						Description: "sample card description",
+						DueDate:     time.Now(),
 					},
-					Style: Style{
-						FillColor: "#2d9bf0",
+					Style: CardItemStyle{
+						CardTheme: "#2d9bf0",
 					},
 					Position: PositionUpdate{
 						Origin: Center,
@@ -72,11 +66,11 @@ func TestCreateAppCardItem(t *testing.T) {
 	})
 }
 
-func TestGetAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+func TestGetCardItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "cards")
 	defer closeAPIServer()
 
-	expectedResults := &AppCardItem{}
+	expectedResults := &CardItem{}
 	responseData := constructResponseAndResults("app_card_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
@@ -87,7 +81,7 @@ func TestGetAppCardItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.AppCardItems.Get(testBoardID, testItemID)
+			results, err := client.CardItems.Get(testBoardID, testItemID)
 
 			Convey("Then the item information is returned", func() {
 				So(err, ShouldBeNil)
@@ -104,22 +98,22 @@ func TestGetAppCardItem(t *testing.T) {
 	})
 }
 
-func TestUpdateAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+func TestUpdateCardItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "cards")
 	defer closeAPIServer()
 
-	expectedResults := &AppCardItem{}
+	expectedResults := &CardItem{}
 	responseData := constructResponseAndResults("app_card_item_get.json", &expectedResults)
 
-	Convey("Given a board ID, an item ID and a AppCardItemUpdate struct", t, func() {
+	Convey("Given a board ID, an item ID and a CardItemUpdate struct", t, func() {
 		Convey("When the Update function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
-				bodyData := CreateAppCardItem{}
+				bodyData := CreateCardItem{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
 				// encode test data
-				resData := AppCardItem{}
+				resData := CardItem{}
 				json.Unmarshal(responseData, &resData)
 				// update test data
 				resData.Position.X = bodyData.Position.X
@@ -130,7 +124,7 @@ func TestUpdateAppCardItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.AppCardItems.Update(testBoardID, testItemID, CreateAppCardItem{
+			results, err := client.CardItems.Update(testBoardID, testItemID, CreateCardItem{
 				Position: PositionUpdate{X: -2.7315},
 			})
 
@@ -150,8 +144,8 @@ func TestUpdateAppCardItem(t *testing.T) {
 
 }
 
-func TestDeleteAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+func TestDeleteCardItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "cards")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {
@@ -162,7 +156,7 @@ func TestDeleteAppCardItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			err := client.AppCardItems.Delete(testBoardID, testItemID)
+			err := client.CardItems.Delete(testBoardID, testItemID)
 
 			Convey("Then the item is deleted (no error is returned)", func() {
 				So(err, ShouldBeNil)
