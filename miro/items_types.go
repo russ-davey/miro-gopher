@@ -52,7 +52,7 @@ type Geometry struct {
 }
 
 type Position struct {
-	Origin     string  `json:"origin"`
+	Origin     Origin  `json:"origin"`
 	RelativeTo string  `json:"relativeTo"`
 	X          float64 `json:"x"`
 	Y          float64 `json:"y"`
