@@ -23,6 +23,7 @@ type Client struct {
 	Items        *ItemsService
 	AppCardItems *AppCardItemsService
 	CardItems    *CardItemsService
+	ShapeItems   *ShapeItemsService
 }
 
 type ResponseError struct {
@@ -62,6 +63,7 @@ func buildAPIMap(c *Client) {
 	c.Items = &ItemsService{client: c, APIVersion: "v2", SubResource: "items"}
 	c.AppCardItems = &AppCardItemsService{client: c, APIVersion: "v2", SubResource: "app_cards"}
 	c.CardItems = &CardItemsService{client: c, APIVersion: "v2", SubResource: "cards"}
+	c.ShapeItems = &ShapeItemsService{client: c, APIVersion: "v2", SubResource: "shapes"}
 }
 
 // Get Native GET function
