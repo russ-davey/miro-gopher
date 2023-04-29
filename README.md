@@ -52,7 +52,15 @@ if err != nil {
     fmt.Printf("MIRO API Response: %s\n", jsonData)
 }
 ```
+---
+## Using a Customised HTTP client
+By default, this package will use a fine-tuned HTTP client, but you may want to use your own.
 
+```go
+client := NewClient(os.Getenv("MIRO_TOKEN"))
+
+client.HTTPClient = &http.Client{Timeout: 500 * time.Millisecond}
+```
 
 ---
 ## /boards API Methods
