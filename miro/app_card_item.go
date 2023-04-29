@@ -10,10 +10,10 @@ type AppCardItemsService struct {
 
 // Create Adds an app card item to a board.
 // Required scope: boards:write | Rate limiting: Level 2
-func (a *AppCardItemsService) Create(boardID string, body CreateAppCardItem) (*AppCardItem, error) {
+func (a *AppCardItemsService) Create(boardID string, payload CreateAppCardItem) (*AppCardItem, error) {
 	response := &AppCardItem{}
 
-	err := a.client.Post(a.constructURL(boardID, ""), body, response)
+	err := a.client.Post(a.constructURL(boardID, ""), payload, response)
 
 	return response, err
 }

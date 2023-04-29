@@ -10,10 +10,10 @@ type CardItemsService struct {
 
 // Create Adds a card item to a board
 // Required scope: boards:write | Rate limiting: Level 2
-func (c *CardItemsService) Create(boardID string, body CreateCardItem) (*CardItem, error) {
+func (c *CardItemsService) Create(boardID string, payload CreateCardItem) (*CardItem, error) {
 	response := &CardItem{}
 
-	err := c.client.Post(c.constructURL(boardID, ""), body, response)
+	err := c.client.Post(c.constructURL(boardID, ""), payload, response)
 
 	return response, err
 }

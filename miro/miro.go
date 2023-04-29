@@ -89,8 +89,8 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 }
 
 // Post Native POST function
-func (c *Client) Post(url string, body, response interface{}) error {
-	bufBody, err := bodyToBuffer(body)
+func (c *Client) Post(url string, payload, response interface{}) error {
+	bufBody, err := payloadToBuffer(payload)
 	if err != nil {
 		return err
 	}
@@ -144,12 +144,12 @@ func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
 }
 
 // Put Native PUT function
-func (c *Client) Put(url string, body, response interface{}, queryParams ...Parameter) error {
+func (c *Client) Put(url string, payload, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
 
-	bufBody, err := bodyToBuffer(body)
+	bufBody, err := payloadToBuffer(payload)
 	if err != nil {
 		return err
 	}
@@ -176,8 +176,8 @@ func (c *Client) Put(url string, body, response interface{}, queryParams ...Para
 }
 
 // Patch Native PATCH function
-func (c *Client) Patch(url string, body, response interface{}) error {
-	bufBody, err := bodyToBuffer(body)
+func (c *Client) Patch(url string, payload, response interface{}) error {
+	bufBody, err := payloadToBuffer(payload)
 	if err != nil {
 		return err
 	}
@@ -239,7 +239,7 @@ func (c *Client) addHeaders(r *http.Request) {
 	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
 }
 
-func bodyToBuffer(body interface{}) (io.ReadWriter, error) {
+func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 	var bufBody io.ReadWriter
 	if body != nil {
 		if jsonBody, err := json.Marshal(body); err != nil {

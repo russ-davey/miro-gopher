@@ -19,10 +19,10 @@ type BoardsService struct {
 
 // Create a board with the specified name and sharing policies.
 // Required scope: boards:write | Rate limiting: Level 3
-func (b *BoardsService) Create(body CreateBoard) (*Board, error) {
+func (b *BoardsService) Create(payload CreateBoard) (*Board, error) {
 	response := &Board{}
 
-	err := b.client.Post(b.constructURL(""), body, response)
+	err := b.client.Post(b.constructURL(""), payload, response)
 
 	return response, err
 }
@@ -58,10 +58,10 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 // Copy Creates a copy of an existing board. You can also update the name, description, sharing policy, and permissions
 // policy for the new board in the request body.
 // Required scope: boards:write | Rate limiting: Level 4
-func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) {
+func (b *BoardsService) Copy(payload CreateBoard, copyFrom string) (*Board, error) {
 	response := &Board{}
 
-	err := b.client.Put(b.constructURL(""), body, response, Parameter{
+	err := b.client.Put(b.constructURL(""), payload, response, Parameter{
 		QueryParamCopyFrom: copyFrom,
 	})
 
@@ -70,10 +70,10 @@ func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) 
 
 // Update a specific board.
 // Required scope: boards:write | Rate limiting: Level 2
-func (b *BoardsService) Update(boardID string, body CreateBoard) (*Board, error) {
+func (b *BoardsService) Update(boardID string, payload CreateBoard) (*Board, error) {
 	response := &Board{}
 
-	err := b.client.Patch(b.constructURL(boardID), body, response)
+	err := b.client.Patch(b.constructURL(boardID), payload, response)
 
 	return response, err
 }

@@ -14,10 +14,10 @@ type BoardMembersService struct {
 // Depending on the board's Sharing policy, there might be various scenarios where membership in the team is required in
 // order to share the board with a user.
 // Required scope: boards:write | Rate limiting: Level 3
-func (b *BoardMembersService) ShareBoard(boardID string, body ShareBoardInvitation) (*BoardInvitationResponse, error) {
+func (b *BoardMembersService) ShareBoard(boardID string, payload ShareBoardInvitation) (*BoardInvitationResponse, error) {
 	response := &BoardInvitationResponse{}
 
-	err := b.client.Post(b.constructURL(boardID, ""), body, response)
+	err := b.client.Post(b.constructURL(boardID, ""), payload, response)
 
 	return response, err
 }
