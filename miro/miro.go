@@ -79,12 +79,7 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 	}
 
 	if res.StatusCode != http.StatusOK {
-		respErr := &ResponseError{}
-		// TODO: add context to error message to make it easier to troubleshoot
-		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
-			return err
-		}
-		return constructErrorMsg(res, respErr)
+		return constructErrorMsg(res)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -108,11 +103,7 @@ func (c *Client) Post(url string, payload, response interface{}) error {
 	}
 
 	if res.StatusCode != http.StatusCreated {
-		respErr := &ResponseError{}
-		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
-			return err
-		}
-		return constructErrorMsg(res, respErr)
+		return constructErrorMsg(res)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -135,11 +126,7 @@ func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
 	}
 
 	if res.StatusCode != http.StatusNoContent {
-		respErr := &ResponseError{}
-		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
-			return err
-		}
-		return constructErrorMsg(res, respErr)
+		return constructErrorMsg(res)
 	}
 	return nil
 }
@@ -167,11 +154,7 @@ func (c *Client) Put(url string, payload, response interface{}, queryParams ...P
 	}
 
 	if res.StatusCode != http.StatusCreated {
-		respErr := &ResponseError{}
-		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
-			return err
-		}
-		return constructErrorMsg(res, respErr)
+		return constructErrorMsg(res)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -195,11 +178,7 @@ func (c *Client) Patch(url string, payload, response interface{}) error {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		respErr := &ResponseError{}
-		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
-			return err
-		}
-		return constructErrorMsg(res, respErr)
+		return constructErrorMsg(res)
 	}
 	return json.NewDecoder(res.Body).Decode(&response)
 }
@@ -218,11 +197,7 @@ func (c *Client) Delete(url string) error {
 	}
 
 	if res.StatusCode != http.StatusNoContent {
-		respErr := &ResponseError{}
-		if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
-			return err
-		}
-		return constructErrorMsg(res, respErr)
+		return constructErrorMsg(res)
 	}
 
 	return nil
@@ -252,7 +227,11 @@ func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 	return bufBody, nil
 }
 
-func constructErrorMsg(res *http.Response, respErr *ResponseError) error {
+func constructErrorMsg(res *http.Response) error {
+	respErr := &ResponseError{}
+	if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
+		return err
+	}
 	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
 }
 
