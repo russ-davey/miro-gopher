@@ -29,10 +29,10 @@ func (b *BoardsService) Create(body CreateBoard) (*Board, error) {
 
 // Get Retrieves information about a board.
 // Required scope: boards:read | Rate limiting: Level 1
-func (b *BoardsService) Get(id string) (*Board, error) {
+func (b *BoardsService) Get(boardID string) (*Board, error) {
 	response := &Board{}
 
-	err := b.client.Get(b.constructURL(id), response)
+	err := b.client.Get(b.constructURL(boardID), response)
 
 	return response, err
 }
@@ -68,20 +68,20 @@ func (b *BoardsService) Copy(body CreateBoard, copyFrom string) (*Board, error) 
 	return response, err
 }
 
-// Update Updates a specific board.
+// Update a specific board.
 // Required scope: boards:write | Rate limiting: Level 2
-func (b *BoardsService) Update(body CreateBoard, id string) (*Board, error) {
+func (b *BoardsService) Update(boardID string, body CreateBoard) (*Board, error) {
 	response := &Board{}
 
-	err := b.client.Patch(b.constructURL(id), body, response)
+	err := b.client.Patch(b.constructURL(boardID), body, response)
 
 	return response, err
 }
 
 // Delete Deletes a board.
 // Required scope: boards:write | Rate limiting: Level 3
-func (b *BoardsService) Delete(id string) error {
-	return b.client.Delete(b.constructURL(id))
+func (b *BoardsService) Delete(boardID string) error {
+	return b.client.Delete(b.constructURL(boardID))
 }
 
 func (b *BoardsService) constructURL(boardID string) string {
