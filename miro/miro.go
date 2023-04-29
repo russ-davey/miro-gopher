@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 type Client struct {
@@ -72,7 +73,7 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 	}
 
 	c.addHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient().Do(req)
 	if err != nil {
 		return err
 	}
@@ -101,7 +102,7 @@ func (c *Client) Post(url string, payload, response interface{}) error {
 	}
 
 	c.addHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient().Do(req)
 	if err != nil {
 		return err
 	}
@@ -128,7 +129,7 @@ func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
 	}
 
 	c.addHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient().Do(req)
 	if err != nil {
 		return err
 	}
@@ -160,7 +161,7 @@ func (c *Client) Put(url string, payload, response interface{}, queryParams ...P
 	}
 
 	c.addHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient().Do(req)
 	if err != nil {
 		return err
 	}
@@ -188,7 +189,7 @@ func (c *Client) Patch(url string, payload, response interface{}) error {
 	}
 
 	c.addHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient().Do(req)
 	if err != nil {
 		return err
 	}
@@ -211,7 +212,7 @@ func (c *Client) Delete(url string) error {
 	}
 
 	c.addHeaders(req)
-	res, err := http.DefaultClient.Do(req)
+	res, err := httpClient().Do(req)
 	if err != nil {
 		return err
 	}
@@ -253,4 +254,10 @@ func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 
 func constructErrorMsg(res *http.Response, respErr *ResponseError) error {
 	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+}
+
+func httpClient() *http.Client {
+	return &http.Client{
+		Timeout: time.Second * 10,
+	}
 }
