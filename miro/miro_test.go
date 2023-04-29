@@ -17,7 +17,7 @@ const (
 	testToken = "test-token"
 )
 
-func mockMIROAPI(apiVersion, resourceURI, resourceID, endpoint string) (*Client, string, *http.ServeMux, func()) {
+func mockMIROAPI(apiVersion, resource, pathParam, subResource string) (*Client, string, *http.ServeMux, func()) {
 	mux := http.NewServeMux()
 	handler := http.NewServeMux()
 
@@ -28,16 +28,16 @@ func mockMIROAPI(apiVersion, resourceURI, resourceID, endpoint string) (*Client,
 	client := NewClient(testToken)
 	client.BaseURL = server.URL
 
-	var testURL string
-	if resourceID == "" {
-		testURL = fmt.Sprintf("/%s/%s", apiVersion, resourceURI)
-	} else if endpoint == "" {
-		testURL = fmt.Sprintf("/%s/%s/%s", apiVersion, resourceURI, resourceID)
+	var resourcePath string
+	if pathParam == "" {
+		resourcePath = fmt.Sprintf("/%s/%s", apiVersion, resource)
+	} else if subResource == "" {
+		resourcePath = fmt.Sprintf("/%s/%s/%s", apiVersion, resource, pathParam)
 	} else {
-		testURL = fmt.Sprintf("/%s/%s/%s/%s", apiVersion, resourceURI, resourceID, endpoint)
+		resourcePath = fmt.Sprintf("/%s/%s/%s/%s", apiVersion, resource, pathParam, subResource)
 	}
 
-	return client, testURL, mux, server.Close
+	return client, resourcePath, mux, server.Close
 }
 
 func headerExists(req *http.Request, header string) bool {
