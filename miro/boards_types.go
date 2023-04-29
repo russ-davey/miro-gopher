@@ -165,3 +165,13 @@ type BoardSearchParams struct {
 	// Options last_created and alphabetically are applicable only when you search for boards by team.
 	Sort Sort `query:"sort,omitempty"`
 }
+
+type CurrentUserMembership struct {
+	BasicEntityInfo
+	Role string `json:"role"`
+}
+
+type Picture struct {
+	ID       string `json:"id"`
+	ImageURL string `json:"imageURL"`
+}
