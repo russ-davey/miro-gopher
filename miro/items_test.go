@@ -63,7 +63,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.Items.GetAll(testBoardID, ItemSearchParams{Type: Frame, Limit: "1"})
+			results, err := client.Items.GetAll(testBoardID, ItemSearchParams{Type: ItemTypeFrame, Limit: "1"})
 
 			Convey("Then a slice of item information is returned", func() {
 				So(err, ShouldBeNil)
@@ -72,7 +72,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
-					So(receivedRequest.URL.Query().Get("type"), ShouldEqual, Frame)
+					So(receivedRequest.URL.Query().Get("type"), ShouldEqual, ItemTypeFrame)
 					So(receivedRequest.URL.Query().Get("limit"), ShouldEqual, "1")
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items", EndpointBoards, testBoardID))

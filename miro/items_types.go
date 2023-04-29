@@ -5,15 +5,15 @@ import "time"
 type ItemType string
 
 const (
-	AppCard    ItemType = "app_card"
-	Card       ItemType = "card"
-	Document   ItemType = "document"
-	Embed      ItemType = "embed"
-	Frame      ItemType = "frame"
-	Image      ItemType = "image"
-	Shape      ItemType = "shape"
-	StickyNote ItemType = "sticky_note"
-	Text       ItemType = "text"
+	ItemTypeAppCard    ItemType = "app_card"
+	ItemTypeCard       ItemType = "card"
+	ItemTypeDocument   ItemType = "document"
+	ItemTypeEmbed      ItemType = "embed"
+	ItemTypeFrame      ItemType = "frame"
+	ItemTypeImage      ItemType = "image"
+	ItemTypeShape      ItemType = "shape"
+	ItemTypeStickyNote ItemType = "sticky_note"
+	ItemTypeText       ItemType = "text"
 )
 
 type ItemSearchParams struct {
@@ -43,20 +43,6 @@ type ItemData struct {
 type Parent struct {
 	ID    string          `json:"id,omitempty"`
 	Links PaginationLinks `json:"links,omitempty"`
-}
-
-type Style struct {
-	BorderColor       string `json:"borderColor,omitempty"`
-	BorderOpacity     string `json:"borderOpacity,omitempty"`
-	BorderStyle       string `json:"borderStyle,omitempty"`
-	BorderWidth       string `json:"borderWidth,omitempty"`
-	Color             string `json:"color,omitempty"`
-	FillColor         string `json:"fillColor,omitempty"`
-	FillOpacity       string `json:"fillOpacity,omitempty"`
-	FontFamily        string `json:"fontFamily,omitempty"`
-	FontSize          string `json:"fontSize,omitempty"`
-	TextAlign         string `json:"textAlign,omitempty"`
-	TextAlignVertical string `json:"textAlignVertical,omitempty"`
 }
 
 type Item struct {

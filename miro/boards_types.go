@@ -44,9 +44,10 @@ type ListBoards struct {
 	Type   string           `json:"type"`
 }
 
-type Access string
-
-type InviteAccess string
+type (
+	Access       string
+	InviteAccess string
+)
 
 const (
 	AccessPrivate Access = "private"

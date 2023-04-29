@@ -28,6 +28,40 @@ type Position struct {
 	Y          float64 `json:"y,omitempty"`
 }
 
+type (
+	BorderStyle       string
+	TextAlign         string
+	TextAlignVertical string
+)
+
+const (
+	BorderStyleNormal BorderStyle = "normal"
+	BorderStyleDotted BorderStyle = "dotted"
+	BorderStyleDashed BorderStyle = "dashed"
+
+	TextAlignCenter TextAlign = "center"
+	TextAlignLeft   TextAlign = "left"
+	TextAlignRight  TextAlign = "right"
+
+	TextAlignVerticalTop    TextAlignVertical = "top"
+	TextAlignVerticalMiddle TextAlignVertical = "middle"
+	TextAlignVerticalBottom TextAlignVertical = "bottom"
+)
+
+type Style struct {
+	BorderColor       string            `json:"borderColor,omitempty"`
+	BorderOpacity     string            `json:"borderOpacity,omitempty"`
+	BorderStyle       BorderStyle       `json:"borderStyle,omitempty"`
+	BorderWidth       string            `json:"borderWidth,omitempty"`
+	Color             string            `json:"color,omitempty"`
+	FillColor         string            `json:"fillColor,omitempty"`
+	FillOpacity       string            `json:"fillOpacity,omitempty"`
+	FontFamily        string            `json:"fontFamily,omitempty"`
+	FontSize          string            `json:"fontSize,omitempty"`
+	TextAlign         TextAlign         `json:"textAlign,omitempty"`
+	TextAlignVertical TextAlignVertical `json:"textAlignVertical,omitempty"`
+}
+
 type Origin string
 
 const Center Origin = "center"
