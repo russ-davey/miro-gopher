@@ -12,8 +12,10 @@ import (
 )
 
 type Client struct {
-	BaseURL      string
-	token        string
+	BaseURL string
+	token   string
+	// HTTPClient a fine-tuned HTTP client, but you can inject your own if, for example, you wanted to lower the timeouts
+	HTTPClient   *http.Client
 	ctx          context.Context
 	AccessToken  *AccessTokenService
 	Boards       *BoardsService
@@ -43,9 +45,10 @@ func NewClient(token string) *Client {
 	}
 
 	c := &Client{
-		BaseURL: baseURL,
-		token:   token,
-		ctx:     context.Background(),
+		BaseURL:    baseURL,
+		token:      token,
+		HTTPClient: httpClient(),
+		ctx:        context.Background(),
 	}
 	buildAPIMap(c)
 
@@ -73,15 +76,14 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 	}
 
 	c.addHeaders(req)
-	res, err := httpClient().Do(req)
-	if err != nil {
+	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
+	} else {
+		if resp.StatusCode != http.StatusOK {
+			return constructErrorMsg(resp)
+		}
+		return json.NewDecoder(resp.Body).Decode(&response)
 	}
-
-	if res.StatusCode != http.StatusOK {
-		return constructErrorMsg(res)
-	}
-	return json.NewDecoder(res.Body).Decode(&response)
 }
 
 // Post Native POST function
@@ -97,15 +99,14 @@ func (c *Client) Post(url string, payload, response interface{}) error {
 	}
 
 	c.addHeaders(req)
-	res, err := httpClient().Do(req)
-	if err != nil {
+	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
+	} else {
+		if resp.StatusCode != http.StatusCreated {
+			return constructErrorMsg(resp)
+		}
+		return json.NewDecoder(resp.Body).Decode(&response)
 	}
-
-	if res.StatusCode != http.StatusCreated {
-		return constructErrorMsg(res)
-	}
-	return json.NewDecoder(res.Body).Decode(&response)
 }
 
 // PostNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
@@ -120,15 +121,14 @@ func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
 	}
 
 	c.addHeaders(req)
-	res, err := httpClient().Do(req)
-	if err != nil {
+	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
+	} else {
+		if resp.StatusCode != http.StatusNoContent {
+			return constructErrorMsg(resp)
+		}
+		return nil
 	}
-
-	if res.StatusCode != http.StatusNoContent {
-		return constructErrorMsg(res)
-	}
-	return nil
 }
 
 // Put Native PUT function
@@ -148,15 +148,14 @@ func (c *Client) Put(url string, payload, response interface{}, queryParams ...P
 	}
 
 	c.addHeaders(req)
-	res, err := httpClient().Do(req)
-	if err != nil {
+	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
+	} else {
+		if resp.StatusCode != http.StatusCreated {
+			return constructErrorMsg(resp)
+		}
+		return json.NewDecoder(resp.Body).Decode(&response)
 	}
-
-	if res.StatusCode != http.StatusCreated {
-		return constructErrorMsg(res)
-	}
-	return json.NewDecoder(res.Body).Decode(&response)
 }
 
 // Patch Native PATCH function
@@ -172,15 +171,14 @@ func (c *Client) Patch(url string, payload, response interface{}) error {
 	}
 
 	c.addHeaders(req)
-	res, err := httpClient().Do(req)
-	if err != nil {
+	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
+	} else {
+		if resp.StatusCode != http.StatusOK {
+			return constructErrorMsg(resp)
+		}
+		return json.NewDecoder(resp.Body).Decode(&response)
 	}
-
-	if res.StatusCode != http.StatusOK {
-		return constructErrorMsg(res)
-	}
-	return json.NewDecoder(res.Body).Decode(&response)
 }
 
 // Delete Native DELETE function
@@ -191,16 +189,14 @@ func (c *Client) Delete(url string) error {
 	}
 
 	c.addHeaders(req)
-	res, err := httpClient().Do(req)
-	if err != nil {
+	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
+	} else {
+		if resp.StatusCode != http.StatusNoContent {
+			return constructErrorMsg(resp)
+		}
+		return nil
 	}
-
-	if res.StatusCode != http.StatusNoContent {
-		return constructErrorMsg(res)
-	}
-
-	return nil
 }
 
 func (c *Client) addHeaders(r *http.Request) {
@@ -227,16 +223,24 @@ func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 	return bufBody, nil
 }
 
-func constructErrorMsg(res *http.Response) error {
+func constructErrorMsg(resp *http.Response) error {
 	respErr := &ResponseError{}
-	if err := json.NewDecoder(res.Body).Decode(respErr); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(respErr); err != nil {
 		return err
 	}
-	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", res.StatusCode, respErr.Message, respErr.Code)
+	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", resp.StatusCode, respErr.Message, respErr.Code)
 }
 
 func httpClient() *http.Client {
+	transport := &http.Transport{
+		// Enable keep-alive connections. By default, the http.DefaultClient does not use HTTP keep-alive, which means
+		// that a new TCP connection would be established for each request.
+		MaxIdleConnsPerHost: 10,
+		IdleConnTimeout:     30 * time.Second,
+	}
+
 	return &http.Client{
-		Timeout: time.Second * 10,
+		Timeout:   time.Second * 10,
+		Transport: transport,
 	}
 }
