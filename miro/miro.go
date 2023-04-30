@@ -268,7 +268,7 @@ func constructErrorMsg(resp *http.Response) error {
 func constructURL(urlParts ...string) (string, error) {
 	for _, part := range urlParts {
 		if part == "" {
-			return "", errors.New("arguments cannot be empty")
+			return "", errors.New("resource arguments cannot be empty")
 		}
 	}
 	return strings.Join(urlParts, "/"), nil
