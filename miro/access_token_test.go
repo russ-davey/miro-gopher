@@ -19,7 +19,7 @@ func TestGetAccessToken(t *testing.T) {
 	Convey("Given no arguments", t, func() {
 		Convey("When the AccessToken Get function is called", func() {
 			var receivedRequest *http.Request
-			mux.HandleFunc(fmt.Sprintf("/v1/%s", EndpointOAUTHToken), func(w http.ResponseWriter, r *http.Request) {
+			mux.HandleFunc(fmt.Sprintf("/v1/%s", endpointOAUTHToken), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
@@ -34,7 +34,7 @@ func TestGetAccessToken(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v1/%s", EndpointOAUTHToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v1/%s", endpointOAUTHToken))
 
 					Convey("And round-tripping the data does not result in any loss of data", func() {
 						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
@@ -46,7 +46,7 @@ func TestGetAccessToken(t *testing.T) {
 }
 
 func TestRevokeAccessToken(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v1", EndpointOAUTH, "revoke", "")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v1", endpointOAUTH, "revoke", "")
 	defer closeAPIServer()
 
 	Convey("Given an access token", t, func() {
@@ -68,7 +68,7 @@ func TestRevokeAccessToken(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodPost)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Query().Get("access_token"), ShouldEqual, testToken)
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v1/%s/revoke", EndpointOAUTH))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v1/%s/revoke", endpointOAUTH))
 				})
 			})
 		})

@@ -1,12 +1,10 @@
 package miro
 
-import "fmt"
-
 const (
-	// EndpointOAUTHToken /oauth-token endpoint
-	EndpointOAUTHToken = "oauth-token"
-	// EndpointOAUTH /oauth endpoint
-	EndpointOAUTH = "oauth"
+	// endpointOAUTHToken /oauth-token endpoint
+	endpointOAUTHToken = "oauth-token"
+	// endpointOAUTH /oauth endpoint
+	endpointOAUTH = "oauth"
 )
 
 type AccessTokenService struct {
@@ -18,18 +16,23 @@ type AccessTokenService struct {
 func (a *AccessTokenService) Get() (*AccessToken, error) {
 	response := &AccessToken{}
 
-	url := fmt.Sprintf("%s/%s/%s", a.client.BaseURL, a.apiVersion, EndpointOAUTHToken)
-	err := a.client.Get(url, response)
-
-	return response, err
+	if url, err := constructURL(a.client.BaseURL, a.apiVersion, endpointOAUTHToken); err != nil {
+		return response, err
+	} else {
+		err = a.client.Get(url, response)
+		return response, err
+	}
 }
 
 // Revoke Revoking an access token means that the access token will no longer work. When an access token is revoked,
 // the refresh token is also revoked and no longer valid. This does not uninstall the application for the user.
 func (a *AccessTokenService) Revoke(accessToken string) error {
-	url := fmt.Sprintf("%s/%s/%s/revoke", a.client.BaseURL, a.apiVersion, EndpointOAUTH)
-
-	return a.client.postNoContent(url, Parameter{
-		"access_token": accessToken,
-	})
+	if url, err := constructURL(a.client.BaseURL, a.apiVersion, endpointOAUTH, "revoke"); err != nil {
+		return err
+	} else {
+		err = a.client.postNoContent(url, Parameter{
+			"access_token": accessToken,
+		})
+		return err
+	}
 }
