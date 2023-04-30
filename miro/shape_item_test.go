@@ -25,7 +25,7 @@ func TestCreateShapeItem(t *testing.T) {
 			})
 
 			results, err := client.ShapeItems.Create("uXjVMNoCEUs=",
-				CreateShapeItem{
+				SetShapeItem{
 					Data: ShapeItemData{
 						Shape:   ShapeTriangle,
 						Content: "Bill Cipher",
@@ -33,7 +33,7 @@ func TestCreateShapeItem(t *testing.T) {
 					Style: Style{
 						FillColor: "#8fd14f",
 					},
-					Position: PositionUpdate{
+					Position: PositionSet{
 						Origin: Center,
 						X:      100,
 						Y:      100,
@@ -43,7 +43,7 @@ func TestCreateShapeItem(t *testing.T) {
 						Rotation: 0,
 						Width:    320,
 					},
-					Parent: ParentUpdate{
+					Parent: ParentSet{
 						ID: "123214124",
 					},
 				})
@@ -107,7 +107,7 @@ func TestUpdateShapeItem(t *testing.T) {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
-				bodyData := CreateShapeItem{}
+				bodyData := SetShapeItem{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
 				// encode test data
 				resData := ShapeItem{}
@@ -121,7 +121,7 @@ func TestUpdateShapeItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.ShapeItems.Update("uXjVMNoCEUs=", testItemID, CreateShapeItem{Data: ShapeItemData{Shape: ShapeTriangle}})
+			results, err := client.ShapeItems.Update("uXjVMNoCEUs=", testItemID, SetShapeItem{Data: ShapeItemData{Shape: ShapeTriangle}})
 
 			Convey("Then the item information is returned which includes the new role", func() {
 				So(err, ShouldBeNil)

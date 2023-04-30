@@ -101,28 +101,35 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 //	client := NewClient(os.Getenv("MIRO_TOKEN"))
 //
 //	version := "v2"
-//	endpoint := "boards"
-//	//entity := ""
+//	resource := "boards"
+//	subResource := "shapes"
+//	boardID := "="
+//	itemID := ""
 //
-//	response, err := client.Boards.GetAll()
+//	//response, err := client.ShapeItems.Create(boardID, SetShapeItem{
+//	//	Data:     ShapeItemData{Shape: ShapeTriangle, Content: "A Triangle"},
+//	//	Position: PositionSet{Origin: Center, X: 1.5, Y: 1.5},
+//	//})
+//	response, err := client.ShapeItems.Get(boardID, itemID)
 //	if err != nil {
 //		log.Fatalf("error: %v", err)
 //	}
 //	jsonData, _ := json.Marshal(response)
+//	//fmt.Println(string(jsonData))
 //
 //	rawResponse := make(map[string]interface{})
-//	client.Get(fmt.Sprintf("https://api.miro.com/%s/%s", version, endpoint), &rawResponse)
-//	//client.Get(fmt.Sprintf("https://api.miro.com/%s/%s/%s", version, endpoint, entity), &rawResponse)
-//	jsonDataRaw, _ := json.Marshal(rawResponse)
+//	//client.Get(fmt.Sprintf("https://api.miro.com/%s/%s", version, endpoint), &rawResponse)
+//	client.Get(fmt.Sprintf("https://api.miro.com/%s/%s/%s/%s/%s", version, resource, boardID, subResource, itemID), &rawResponse)
+//	jsonDataNative, _ := json.Marshal(rawResponse)
 //
-//	processed, _ := sortJSON(jsonData, jsonDataRaw)
+//	processed, native := sortJSON(jsonData, jsonDataNative)
 //	fmt.Printf("== Processed: %s\n", processed)
 //	fmt.Println("===============================")
-//	//fmt.Printf("== Native   : %s\n", raw)
+//	fmt.Printf("== Native   : %s\n", native)
 //
-//	//Convey("The unmarshalled data should match the raw data JSON data", t, func() {
-//	//	So(string(processed), ShouldEqual, string(raw))
-//	//})
+//	Convey("The unmarshalled data should match the raw data JSON data", t, func() {
+//		So(string(processed), ShouldEqual, string(native))
+//	})
 //}
 
 func TestAddHeaders(t *testing.T) {

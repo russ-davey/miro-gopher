@@ -28,6 +28,15 @@ type Position struct {
 	Y          float64 `json:"y,omitempty"`
 }
 
+type Parent struct {
+	ID    string          `json:"id,omitempty"`
+	Links PaginationLinks `json:"links,omitempty"`
+}
+
+type ParentSet struct {
+	ID string `json:"id"`
+}
+
 type (
 	BorderStyle       string
 	TextAlign         string
@@ -66,7 +75,7 @@ type Origin string
 
 const Center Origin = "center"
 
-type PositionUpdate struct {
+type PositionSet struct {
 	// Origin Area of the item that is referenced by its x and y coordinates. For example, an item with a center origin will
 	// have its x and y coordinates point to its center. The center point of the board has x: 0 and y: 0 coordinates.
 	// Currently, only one option is supported: center

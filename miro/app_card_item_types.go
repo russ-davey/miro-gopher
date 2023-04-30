@@ -28,17 +28,17 @@ type AppCardItemData struct {
 	Description string `json:"description"`
 }
 
-type CreateAppCardItem struct {
+type SetAppCardItem struct {
 	// Data Contains app card item data, such as the title, description, or fields.
 	Data AppCardItemData `json:"data"`
 	// Style Contains information about the style of an app card item, such as the fill color.
 	Style Style `json:"style"`
 	// Position Contains location information about the item, such as its x coordinate, y coordinate, and theorigin of the x and y coordinates.
-	Position PositionUpdate `json:"position"`
+	Position PositionSet `json:"position"`
 	// Geometry Contains geometrical information about the item, such as its width or height.
 	Geometry Geometry `json:"geometry"`
 	// Parent Contains information about the parent this item attached to. Passing null for ID will attach widget to the canvas directly.
-	Parent ParentUpdate `json:"parent"`
+	Parent ParentSet `json:"parent"`
 }
 
 type Status string
@@ -65,7 +65,7 @@ type AppCardItem struct {
 	CreatedBy  BasicEntityInfo `json:"createdBy"`
 	ModifiedAt time.Time       `json:"modifiedAt"`
 	ModifiedBy BasicEntityInfo `json:"modifiedBy"`
-	Parent     Parent          `json:"parent"`
+	Parent     *Parent         `json:"parent,omitempty"`
 	Links      Links           `json:"links"`
 	Type       string          `json:"type"`
 }

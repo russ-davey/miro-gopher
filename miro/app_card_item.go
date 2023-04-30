@@ -10,7 +10,7 @@ type AppCardItemsService struct {
 
 // Create Adds an app card item to a board.
 // Required scope: boards:write | Rate limiting: Level 2
-func (a *AppCardItemsService) Create(boardID string, payload CreateAppCardItem) (*AppCardItem, error) {
+func (a *AppCardItemsService) Create(boardID string, payload SetAppCardItem) (*AppCardItem, error) {
 	response := &AppCardItem{}
 
 	err := a.client.Post(a.constructURL(boardID, ""), payload, response)
@@ -30,10 +30,10 @@ func (a *AppCardItemsService) Get(boardID, itemID string) (*AppCardItem, error) 
 
 // Update an app card item on a board based on the data and style properties provided in the request body.
 // Required scope: boards:write | Rate limiting: Level 2
-func (a *AppCardItemsService) Update(boardID, itemID string, appCardItemUpdate CreateAppCardItem) (*AppCardItem, error) {
+func (a *AppCardItemsService) Update(boardID, itemID string, payload SetAppCardItem) (*AppCardItem, error) {
 	response := &AppCardItem{}
 
-	err := a.client.Patch(a.constructURL(boardID, itemID), appCardItemUpdate, response)
+	err := a.client.Patch(a.constructURL(boardID, itemID), payload, response)
 
 	return response, err
 }

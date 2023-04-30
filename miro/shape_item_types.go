@@ -35,17 +35,17 @@ type ShapeItemData struct {
 	Content string `json:"content"`
 }
 
-type CreateShapeItem struct {
+type SetShapeItem struct {
 	// Data Contains shape item data, such as the content or shape type of the shape.
 	Data ShapeItemData `json:"data"`
 	// Style Contains information about the shape style, such as the border color or opacity.
 	Style Style `json:"style"`
 	// Position Contains location information about the item, such as its x coordinate, y coordinate, and the origin of the x and y coordinates.
-	Position PositionUpdate `json:"position"`
+	Position PositionSet `json:"position"`
 	// Geometry Contains geometrical information about the item, such as its width or height.
 	Geometry Geometry `json:"geometry"`
 	// Parent Contains information about the parent this item attached to. Passing null for ID will attach widget to the canvas directly.
-	Parent ParentUpdate `json:"parent"`
+	Parent ParentSet `json:"parent"`
 }
 
 type ShapeItem struct {
@@ -58,7 +58,7 @@ type ShapeItem struct {
 	CreatedBy  BasicEntityInfo `json:"createdBy"`
 	ModifiedAt time.Time       `json:"modifiedAt"`
 	ModifiedBy BasicEntityInfo `json:"modifiedBy"`
-	Parent     Parent          `json:"parent"`
+	Parent     *Parent         `json:"parent,omitempty"`
 	Links      Links           `json:"links"`
 	Type       string          `json:"type"`
 }

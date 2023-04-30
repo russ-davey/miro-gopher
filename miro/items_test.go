@@ -144,7 +144,7 @@ func TestUpdateItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.Items.Update(testBoardID, testItemID, ItemUpdate{Position: &PositionUpdate{X: -1.5643}})
+			results, err := client.Items.Update(testBoardID, testItemID, ItemUpdate{Position: PositionSet{X: -1.5643}})
 
 			Convey("Then the board member information is returned which includes the new role", func() {
 				So(err, ShouldBeNil)

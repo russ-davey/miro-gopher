@@ -10,7 +10,7 @@ type ShapeItemsService struct {
 
 // Create Adds a shape item to a board
 // Required scope: boards:write | Rate limiting: Level 2
-func (s *ShapeItemsService) Create(boardID string, payload CreateShapeItem) (*ShapeItem, error) {
+func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*ShapeItem, error) {
 	response := &ShapeItem{}
 
 	err := s.client.Post(s.constructURL(boardID, ""), payload, response)
@@ -30,10 +30,10 @@ func (s *ShapeItemsService) Get(boardID, itemID string) (*ShapeItem, error) {
 
 // Update a shape item on a board based on the data and style properties provided in the request body.
 // Required scope: boards:write | Rate limiting: Level 2
-func (s *ShapeItemsService) Update(boardID, itemID string, itemUpdate CreateShapeItem) (*ShapeItem, error) {
+func (s *ShapeItemsService) Update(boardID, itemID string, payload SetShapeItem) (*ShapeItem, error) {
 	response := &ShapeItem{}
 
-	err := s.client.Patch(s.constructURL(boardID, itemID), itemUpdate, response)
+	err := s.client.Patch(s.constructURL(boardID, itemID), payload, response)
 
 	return response, err
 }

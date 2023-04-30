@@ -13,12 +13,12 @@ type CardItemStyle struct {
 	CardTheme string `json:"cardTheme"`
 }
 
-type CreateCardItem struct {
-	Data     CardItemData   `json:"data"`
-	Style    CardItemStyle  `json:"style"`
-	Position PositionUpdate `json:"position"`
-	Geometry Geometry       `json:"geometry"`
-	Parent   ParentUpdate   `json:"parent"`
+type SetCardItem struct {
+	Data     CardItemData  `json:"data"`
+	Style    CardItemStyle `json:"style"`
+	Position PositionSet   `json:"position"`
+	Geometry Geometry      `json:"geometry"`
+	Parent   ParentSet     `json:"parent"`
 }
 
 type CardItem struct {
@@ -31,7 +31,7 @@ type CardItem struct {
 	CreatedBy  BasicEntityInfo `json:"createdBy"`
 	ModifiedAt time.Time       `json:"modifiedAt"`
 	ModifiedBy BasicEntityInfo `json:"modifiedBy"`
-	Parent     Parent          `json:"parent"`
+	Parent     *Parent         `json:"parent,omitempty"`
 	Links      Links           `json:"links"`
 	Type       string          `json:"type"`
 }

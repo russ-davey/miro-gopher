@@ -26,7 +26,7 @@ func TestCreateCardItem(t *testing.T) {
 			})
 
 			results, err := client.CardItems.Create(testBoardID,
-				CreateCardItem{
+				SetCardItem{
 					Data: CardItemData{
 						Title:       "Card Item",
 						AssigneeId:  "3074457362577955300",
@@ -36,7 +36,7 @@ func TestCreateCardItem(t *testing.T) {
 					Style: CardItemStyle{
 						CardTheme: "#2d9bf0",
 					},
-					Position: PositionUpdate{
+					Position: PositionSet{
 						Origin: Center,
 						X:      2.5,
 						Y:      2.5,
@@ -46,7 +46,7 @@ func TestCreateCardItem(t *testing.T) {
 						Rotation: 1.25,
 						Width:    320.4,
 					},
-					Parent: ParentUpdate{
+					Parent: ParentSet{
 						ID: "123214124",
 					},
 				})
@@ -110,7 +110,7 @@ func TestUpdateCardItem(t *testing.T) {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
-				bodyData := CreateCardItem{}
+				bodyData := SetCardItem{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
 				// encode test data
 				resData := CardItem{}
@@ -124,8 +124,8 @@ func TestUpdateCardItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.CardItems.Update(testBoardID, testItemID, CreateCardItem{
-				Position: PositionUpdate{X: -2.7315},
+			results, err := client.CardItems.Update(testBoardID, testItemID, SetCardItem{
+				Position: PositionSet{X: -2.7315},
 			})
 
 			Convey("Then the item information is returned which includes the new role", func() {

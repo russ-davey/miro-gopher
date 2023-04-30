@@ -40,11 +40,6 @@ type ItemData struct {
 	Shape       string `json:"shape,omitempty"`
 }
 
-type Parent struct {
-	ID    string          `json:"id,omitempty"`
-	Links PaginationLinks `json:"links,omitempty"`
-}
-
 type Item struct {
 	CreatedAt  time.Time        `json:"createdAt"`
 	CreatedBy  BasicEntityInfo  `json:"createdBy"`
@@ -70,15 +65,11 @@ type ListItems struct {
 	Type   string          `json:"type"`
 }
 
-type ParentUpdate struct {
-	ID string `json:"id"`
-}
-
 type ItemUpdate struct {
 	// Parent Contains information about the parent this item attached to.
 	// Passing null for ID will attach widget to the canvas directly.
-	Parent *ParentUpdate `json:"parent,omitempty"`
+	Parent ParentSet `json:"parent"`
 	// Position Contains location information about the item, such as its x coordinate, y coordinate,
 	// and the origin of the x and y coordinates.
-	Position *PositionUpdate `json:"position,omitempty"`
+	Position PositionSet `json:"position"`
 }

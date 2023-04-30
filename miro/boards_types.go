@@ -2,7 +2,7 @@ package miro
 
 import "time"
 
-type CreateBoard struct {
+type SetBoard struct {
 	// Description of the board.
 	Description string `json:"description"`
 	// Name for the board.
@@ -79,11 +79,11 @@ type SharingPolicy struct {
 	TeamAccess Access `json:"teamAccess,omitempty"`
 }
 
-type CollabAccess string
-
-type CopyAccess string
-
-type SharingAccess string
+type (
+	CollabAccess  string
+	CopyAccess    string
+	SharingAccess string
+)
 
 const (
 	CollabAccessAllEditors             CollabAccess = "all_editors"

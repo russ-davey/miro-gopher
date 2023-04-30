@@ -43,19 +43,19 @@ func TestCreateBoard(t *testing.T) {
 
 	timeStamp := getTimeNow()
 
-	testData := CreateBoard{
+	testData := SetBoard{
 		Description: testBoardDesc,
 		Name:        testBoardName,
 		TeamID:      testTeamID,
 	}
 	expectedResults := boardResponse(testBoardID, testBoardDesc, testTeamID, timeStamp)
 
-	Convey("Given a CreateBoard struct", t, func() {
+	Convey("Given a SetBoard struct", t, func() {
 		Convey("When the Boards Create function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("/v2/%s", EndpointBoards), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
-				boardCreateData := CreateBoard{}
+				boardCreateData := SetBoard{}
 				json.NewDecoder(r.Body).Decode(&boardCreateData)
 
 				json.NewEncoder(w).Encode(boardResponse(testBoardID, boardCreateData.Description, boardCreateData.TeamID, timeStamp))
@@ -291,7 +291,7 @@ func TestCopyBoard(t *testing.T) {
 
 	timeStamp := getTimeNow()
 
-	testData := CreateBoard{
+	testData := SetBoard{
 		Description: testBoardDesc,
 		Name:        testBoardName,
 		TeamID:      testTeamID,
@@ -315,7 +315,7 @@ func TestCopyBoard(t *testing.T) {
 	mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("copy_from") != "" {
 			w.WriteHeader(http.StatusCreated)
-			boardCreateData := CreateBoard{}
+			boardCreateData := SetBoard{}
 			json.NewDecoder(r.Body).Decode(&boardCreateData)
 			json.NewEncoder(w).Encode(boardResponse(testBoardID, boardCreateData.Description, boardCreateData.TeamID, timeStamp))
 		} else {
@@ -328,7 +328,7 @@ func TestCopyBoard(t *testing.T) {
 		receivedRequest = r
 	})
 
-	Convey("Given a CreateBoard struct", t, func() {
+	Convey("Given a SetBoard struct", t, func() {
 		Convey(fmt.Sprintf("When the Boards Copy function is called with valid data"), func() {
 			results, err := client.Boards.Copy(testData, testBoardID)
 
@@ -364,18 +364,18 @@ func TestUpdateBoard(t *testing.T) {
 
 	expectedResult := boardResponse(testBoardID, "A new description", testTeamID, timeStamp)
 
-	Convey("Given a board ID and a CreateBoard struct", t, func() {
+	Convey("Given a board ID and a SetBoard struct", t, func() {
 		Convey("When the Boards Update function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
-				boardCreateData := CreateBoard{}
+				boardCreateData := SetBoard{}
 				json.NewDecoder(r.Body).Decode(&boardCreateData)
 
 				json.NewEncoder(w).Encode(boardResponse(testBoardID, boardCreateData.Description, boardCreateData.TeamID, timeStamp))
 				receivedRequest = r
 			})
 
-			results, err := client.Boards.Update(testBoardID, CreateBoard{
+			results, err := client.Boards.Update(testBoardID, SetBoard{
 				Description: "A new description",
 				Name:        testBoardName,
 				TeamID:      testTeamID,
