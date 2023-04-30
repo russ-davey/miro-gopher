@@ -2,9 +2,9 @@ package miro
 
 type ShapeItemsService struct {
 	client      *Client
-	APIVersion  string
-	Resource    string
-	SubResource string
+	apiVersion  string
+	resource    string
+	subResource string
 }
 
 // Create Adds a shape item to a board
@@ -12,9 +12,12 @@ type ShapeItemsService struct {
 func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*ShapeItem, error) {
 	response := &ShapeItem{}
 
-	err := s.client.Post(s.constructURL(boardID, ""), payload, response)
-
-	return response, err
+	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource); err != nil {
+		return response, err
+	} else {
+		err = s.client.Post(url, payload, response)
+		return response, err
+	}
 }
 
 // Get Retrieves information for a specific shape item on a board
@@ -22,9 +25,12 @@ func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*Shape
 func (s *ShapeItemsService) Get(boardID, itemID string) (*ShapeItem, error) {
 	response := &ShapeItem{}
 
-	err := s.client.Get(s.constructURL(boardID, itemID), response)
-
-	return response, err
+	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = s.client.Get(url, response)
+		return response, err
+	}
 }
 
 // Update a shape item on a board based on the data and style properties provided in the request body.
@@ -32,17 +38,20 @@ func (s *ShapeItemsService) Get(boardID, itemID string) (*ShapeItem, error) {
 func (s *ShapeItemsService) Update(boardID, itemID string, payload SetShapeItem) (*ShapeItem, error) {
 	response := &ShapeItem{}
 
-	err := s.client.Patch(s.constructURL(boardID, itemID), payload, response)
-
-	return response, err
+	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = s.client.Patch(url, payload, response)
+		return response, err
+	}
 }
 
 // Delete a shape item from the board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (s *ShapeItemsService) Delete(boardID, itemID string) error {
-	return s.client.Delete(s.constructURL(boardID, itemID))
-}
-
-func (s *ShapeItemsService) constructURL(boardID, resourceID string) string {
-	return constructURL(s.client.BaseURL, s.APIVersion, s.Resource, boardID, s.SubResource, resourceID)
+	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil {
+		return err
+	} else {
+		return s.client.Delete(url)
+	}
 }

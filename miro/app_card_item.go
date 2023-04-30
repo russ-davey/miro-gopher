@@ -2,9 +2,9 @@ package miro
 
 type AppCardItemsService struct {
 	client      *Client
-	APIVersion  string
-	Resource    string
-	SubResource string
+	apiVersion  string
+	resource    string
+	subResource string
 }
 
 // Create Adds an app card item to a board.
@@ -12,9 +12,12 @@ type AppCardItemsService struct {
 func (a *AppCardItemsService) Create(boardID string, payload SetAppCardItem) (*AppCardItem, error) {
 	response := &AppCardItem{}
 
-	err := a.client.Post(a.constructURL(boardID, ""), payload, response)
-
-	return response, err
+	if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource); err != nil {
+		return response, err
+	} else {
+		err = a.client.Post(url, payload, response)
+		return response, err
+	}
 }
 
 // Get Retrieves information for a specific app card item on a board.
@@ -22,9 +25,12 @@ func (a *AppCardItemsService) Create(boardID string, payload SetAppCardItem) (*A
 func (a *AppCardItemsService) Get(boardID, itemID string) (*AppCardItem, error) {
 	response := &AppCardItem{}
 
-	err := a.client.Get(a.constructURL(boardID, itemID), response)
-
-	return response, err
+	if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = a.client.Get(url, response)
+		return response, err
+	}
 }
 
 // Update an app card item on a board based on the data and style properties provided in the request body.
@@ -32,17 +38,20 @@ func (a *AppCardItemsService) Get(boardID, itemID string) (*AppCardItem, error) 
 func (a *AppCardItemsService) Update(boardID, itemID string, payload SetAppCardItem) (*AppCardItem, error) {
 	response := &AppCardItem{}
 
-	err := a.client.Patch(a.constructURL(boardID, itemID), payload, response)
-
-	return response, err
+	if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = a.client.Patch(url, payload, response)
+		return response, err
+	}
 }
 
 // Delete an app card item from a board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (a *AppCardItemsService) Delete(boardID, itemID string) error {
-	return a.client.Delete(a.constructURL(boardID, itemID))
-}
-
-func (a *AppCardItemsService) constructURL(boardID, resourceID string) string {
-	return constructURL(a.client.BaseURL, a.APIVersion, a.Resource, boardID, a.SubResource, resourceID)
+	if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource, itemID); err != nil {
+		return err
+	} else {
+		return a.client.Delete(url)
+	}
 }

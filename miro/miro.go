@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -69,13 +70,13 @@ func NewClient(token string) *Client {
 }
 
 func buildAPIMap(c *Client) {
-	c.AccessToken = &AccessTokenService{client: c, APIVersion: "v1"}
-	c.Boards = &BoardsService{client: c, Resource: "boards", APIVersion: "v2"}
-	c.BoardMembers = &BoardMembersService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "members"}
-	c.Items = &ItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "items"}
-	c.AppCardItems = &AppCardItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "app_cards"}
-	c.CardItems = &CardItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "cards"}
-	c.ShapeItems = &ShapeItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "shapes"}
+	c.AccessToken = &AccessTokenService{client: c, apiVersion: "v1"}
+	c.Boards = &BoardsService{client: c, apiVersion: "v2", resource: "boards"}
+	c.BoardMembers = &BoardMembersService{client: c, apiVersion: "v2", resource: "boards", subResource: "members"}
+	c.Items = &ItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "items"}
+	c.AppCardItems = &AppCardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "app_cards"}
+	c.CardItems = &CardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "cards"}
+	c.ShapeItems = &ShapeItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "shapes"}
 }
 
 // Get Native GET function
@@ -264,14 +265,11 @@ func constructErrorMsg(resp *http.Response) error {
 	return fmt.Errorf("unexpected status code: %d, message: %s (%s), details:\n  %s", resp.StatusCode, respErr.Message, respErr.Code, strings.Join(details, "\n  "))
 }
 
-func constructURL(baseURL, apiVersion, resource, resourceID, subResource, subResourceID string) string {
-	if resourceID == "" {
-		return fmt.Sprintf("%s/%s/%s", baseURL, apiVersion, resource)
-	} else if subResource == "" {
-		return fmt.Sprintf("%s/%s/%s/%s", baseURL, apiVersion, resource, resourceID)
-	} else if subResourceID == "" {
-		return fmt.Sprintf("%s/%s/%s/%s/%s", baseURL, apiVersion, resource, resourceID, subResource)
-	} else {
-		return fmt.Sprintf("%s/%s/%s/%s/%s/%s", baseURL, apiVersion, resource, resourceID, subResource, subResourceID)
+func constructURL(urlParts ...string) (string, error) {
+	for _, part := range urlParts {
+		if part == "" {
+			return "", errors.New("arguments cannot be empty")
+		}
 	}
+	return strings.Join(urlParts, "/"), nil
 }

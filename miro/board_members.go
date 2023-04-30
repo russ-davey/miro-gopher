@@ -2,9 +2,9 @@ package miro
 
 type BoardMembersService struct {
 	client      *Client
-	APIVersion  string
-	Resource    string
-	SubResource string
+	apiVersion  string
+	resource    string
+	subResource string
 }
 
 // ShareBoard Shares the board and Invites new members to collaborate on a board by sending an invitation email.
@@ -14,19 +14,25 @@ type BoardMembersService struct {
 func (b *BoardMembersService) ShareBoard(boardID string, payload ShareBoardInvitation) (*BoardInvitationResponse, error) {
 	response := &BoardInvitationResponse{}
 
-	err := b.client.Post(b.constructURL(boardID, ""), payload, response)
-
-	return response, err
+	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource); err != nil {
+		return response, err
+	} else {
+		err = b.client.Post(url, payload, response)
+		return response, err
+	}
 }
 
 // Get Retrieves information for a board member.
 // Required scope: boards:read | Rate limiting: Level 1
-func (b *BoardMembersService) Get(boardID, boardMemberID string) (*BoardMember, error) {
+func (b *BoardMembersService) Get(boardID, itemID string) (*BoardMember, error) {
 	response := &BoardMember{}
 
-	err := b.client.Get(b.constructURL(boardID, boardMemberID), response)
-
-	return response, err
+	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = b.client.Get(url, response)
+		return response, err
+	}
 }
 
 // GetAll Retrieves a pageable list of members for a board.
@@ -35,34 +41,39 @@ func (b *BoardMembersService) Get(boardID, boardMemberID string) (*BoardMember, 
 func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberSearchParams) (*ListBoardMembers, error) {
 	response := &ListBoardMembers{}
 
-	url := b.constructURL(boardID, "")
-
-	var err error
-	if len(queryParams) > 0 {
-		err = b.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource); err != nil {
+		return response, err
 	} else {
-		err = b.client.Get(url, response)
-	}
+		var err error
+		if len(queryParams) > 0 {
+			err = b.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+		} else {
+			err = b.client.Get(url, response)
+		}
 
-	return response, err
+		return response, err
+	}
 }
 
-// Update Updates the role of a board member.
+// Update the role of a board member.
 // Required scope: boards:write | Rate limiting: Level 2
-func (b *BoardMembersService) Update(boardID, boardMemberID string, role Role) (*BoardMember, error) {
+func (b *BoardMembersService) Update(boardID, itemID string, role Role) (*BoardMember, error) {
 	response := &BoardMember{}
 
-	err := b.client.Patch(b.constructURL(boardID, boardMemberID), RoleUpdate{Role: role}, response)
-
-	return response, err
+	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = b.client.Patch(url, RoleUpdate{Role: role}, response)
+		return response, err
+	}
 }
 
 // Delete Removes a board member from a board.
 // Required scope: boards:write | Rate limiting: Level 2
-func (b *BoardMembersService) Delete(boardID, boardMemberID string) error {
-	return b.client.Delete(b.constructURL(boardID, boardMemberID))
-}
-
-func (b *BoardMembersService) constructURL(boardID, resourceID string) string {
-	return constructURL(b.client.BaseURL, b.APIVersion, b.Resource, boardID, b.SubResource, resourceID)
+func (b *BoardMembersService) Delete(boardID, itemID string) error {
+	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil {
+		return err
+	} else {
+		return b.client.Delete(url)
+	}
 }

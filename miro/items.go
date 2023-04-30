@@ -2,9 +2,9 @@ package miro
 
 type ItemsService struct {
 	client      *Client
-	APIVersion  string
-	Resource    string
-	SubResource string
+	apiVersion  string
+	resource    string
+	subResource string
 }
 
 // GetAll Retrieves a list of items for a specific board. You can retrieve all items on the board, a list of child items
@@ -22,16 +22,18 @@ type ItemsService struct {
 func (i *ItemsService) GetAll(boardID string, queryParams ...ItemSearchParams) (*ListItems, error) {
 	response := &ListItems{}
 
-	url := i.constructURL(boardID, "")
-
-	var err error
-	if len(queryParams) > 0 {
-		err = i.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource); err != nil {
+		return response, err
 	} else {
-		err = i.client.Get(url, response)
-	}
+		var err error
+		if len(queryParams) > 0 {
+			err = i.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+		} else {
+			err = i.client.Get(url, response)
+		}
 
-	return response, err
+		return response, err
+	}
 }
 
 // Get Retrieves information for a specific item on a board.
@@ -39,27 +41,33 @@ func (i *ItemsService) GetAll(boardID string, queryParams ...ItemSearchParams) (
 func (i *ItemsService) Get(boardID, itemID string) (*Item, error) {
 	response := &Item{}
 
-	err := i.client.Get(i.constructURL(boardID, itemID), response)
-
-	return response, err
+	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = i.client.Get(url, response)
+		return response, err
+	}
 }
 
 // Update item position or parent
 // Required scope: boards:write | Rate limiting: Level 2
-func (i *ItemsService) Update(boardID, itemID string, itemUpdate ItemUpdate) (*Item, error) {
+func (i *ItemsService) Update(boardID, itemID string, payload ItemUpdate) (*Item, error) {
 	response := &Item{}
 
-	err := i.client.Patch(i.constructURL(boardID, itemID), itemUpdate, response)
-
-	return response, err
+	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = i.client.Patch(url, payload, response)
+		return response, err
+	}
 }
 
 // Delete an item from a board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (i *ItemsService) Delete(boardID, itemID string) error {
-	return i.client.Delete(i.constructURL(boardID, itemID))
-}
-
-func (i *ItemsService) constructURL(boardID, resourceID string) string {
-	return constructURL(i.client.BaseURL, i.APIVersion, i.Resource, boardID, i.SubResource, resourceID)
+	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil {
+		return err
+	} else {
+		return i.client.Delete(url)
+	}
 }
