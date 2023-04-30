@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -26,11 +27,22 @@ type Client struct {
 	ShapeItems   *ShapeItemsService
 }
 
+type Field struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
+}
+
+type Context struct {
+	Fields []Field `json:"fields"`
+}
+
 type ResponseError struct {
 	// Status code of the error
 	Status int `json:"status"`
 	// Code of the error
 	Code string `json:"code"`
+	// Context details of the error
+	Context Context `json:"context"`
 	// Description of the error
 	Message string `json:"message"`
 	// Type of the error
@@ -244,7 +256,12 @@ func constructErrorMsg(resp *http.Response) error {
 	if err := json.NewDecoder(resp.Body).Decode(respErr); err != nil {
 		return err
 	}
-	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", resp.StatusCode, respErr.Message, respErr.Code)
+
+	details := make([]string, 0)
+	for _, field := range respErr.Context.Fields {
+		details = append(details, fmt.Sprintf("%s: %s", field.Field, field.Message))
+	}
+	return fmt.Errorf("unexpected status code: %d, message: %s (%s), details:\n  %s", resp.StatusCode, respErr.Message, respErr.Code, strings.Join(details, "\n  "))
 }
 
 func constructURL(baseURL, apiVersion, resource, resourceID, subResource, subResourceID string) string {
