@@ -58,12 +58,12 @@ func NewClient(token string) *Client {
 
 func buildAPIMap(c *Client) {
 	c.AccessToken = &AccessTokenService{client: c, APIVersion: "v1"}
-	c.Boards = &BoardsService{client: c, APIVersion: "v2"}
-	c.BoardMembers = &BoardMembersService{client: c, APIVersion: "v2", SubResource: "members"}
-	c.Items = &ItemsService{client: c, APIVersion: "v2", SubResource: "items"}
-	c.AppCardItems = &AppCardItemsService{client: c, APIVersion: "v2", SubResource: "app_cards"}
-	c.CardItems = &CardItemsService{client: c, APIVersion: "v2", SubResource: "cards"}
-	c.ShapeItems = &ShapeItemsService{client: c, APIVersion: "v2", SubResource: "shapes"}
+	c.Boards = &BoardsService{client: c, Resource: "boards", APIVersion: "v2"}
+	c.BoardMembers = &BoardMembersService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "members"}
+	c.Items = &ItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "items"}
+	c.AppCardItems = &AppCardItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "app_cards"}
+	c.CardItems = &CardItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "cards"}
+	c.ShapeItems = &ShapeItemsService{client: c, APIVersion: "v2", Resource: "boards", SubResource: "shapes"}
 }
 
 // Get Native GET function
@@ -111,8 +111,8 @@ func (c *Client) Post(url string, payload, response interface{}) error {
 	}
 }
 
-// PostNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
-func (c *Client) PostNoContent(url string, queryParams ...Parameter) error {
+// postNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
+func (c *Client) postNoContent(url string, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
@@ -201,6 +201,20 @@ func (c *Client) Delete(url string) error {
 	}
 }
 
+func httpClient() *http.Client {
+	transport := &http.Transport{
+		// Enable keep-alive connections. By default, the http.DefaultClient does not use HTTP keep-alive, which means
+		// that a new TCP connection would be established for each request.
+		MaxIdleConnsPerHost: 10,
+		IdleConnTimeout:     30 * time.Second,
+	}
+
+	return &http.Client{
+		Timeout:   time.Second * 10,
+		Transport: transport,
+	}
+}
+
 func (c *Client) addHeaders(r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -233,16 +247,14 @@ func constructErrorMsg(resp *http.Response) error {
 	return fmt.Errorf("unexpected status code: %d, message: %s (%s)", resp.StatusCode, respErr.Message, respErr.Code)
 }
 
-func httpClient() *http.Client {
-	transport := &http.Transport{
-		// Enable keep-alive connections. By default, the http.DefaultClient does not use HTTP keep-alive, which means
-		// that a new TCP connection would be established for each request.
-		MaxIdleConnsPerHost: 10,
-		IdleConnTimeout:     30 * time.Second,
-	}
-
-	return &http.Client{
-		Timeout:   time.Second * 10,
-		Transport: transport,
+func constructURL(baseURL, apiVersion, resource, resourceID, subResource, subResourceID string) string {
+	if resourceID == "" {
+		return fmt.Sprintf("%s/%s/%s", baseURL, apiVersion, resource)
+	} else if subResource == "" {
+		return fmt.Sprintf("%s/%s/%s/%s", baseURL, apiVersion, resource, resourceID)
+	} else if subResourceID == "" {
+		return fmt.Sprintf("%s/%s/%s/%s/%s", baseURL, apiVersion, resource, resourceID, subResource)
+	} else {
+		return fmt.Sprintf("%s/%s/%s/%s/%s/%s", baseURL, apiVersion, resource, resourceID, subResource, subResourceID)
 	}
 }

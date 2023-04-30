@@ -11,7 +11,7 @@ import (
 const testBoardMemberID = "2718282"
 
 func TestShareBoard(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	Convey("Given a Board ID", t, func() {
@@ -39,7 +39,7 @@ func TestShareBoard(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodPost)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", endpointBoards, testBoardID))
 				})
 			})
 		})
@@ -47,7 +47,7 @@ func TestShareBoard(t *testing.T) {
 }
 
 func TestGetBoardMember(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := BoardMember{}
@@ -72,7 +72,7 @@ func TestGetBoardMember(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", endpointBoards, testBoardID, testBoardMemberID))
 
 					Convey("And round-tripping the data does not result in any loss of data", func() {
 						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
@@ -84,7 +84,7 @@ func TestGetBoardMember(t *testing.T) {
 }
 
 func TestGetAllBoardMembers(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := &ListBoardMembers{}
@@ -109,7 +109,7 @@ func TestGetAllBoardMembers(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", endpointBoards, testBoardID))
 
 					Convey("And round-tripping the data does not result in any loss of data", func() {
 						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
@@ -121,7 +121,7 @@ func TestGetAllBoardMembers(t *testing.T) {
 }
 
 func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := &ListBoardMembers{}
@@ -147,7 +147,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.URL.Query().Get("limit"), ShouldEqual, "1")
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members", endpointBoards, testBoardID))
 
 					Convey("And round-tripping the data does not result in any loss of data", func() {
 						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
@@ -159,7 +159,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 }
 
 func TestUpdateBoardMember(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	expectedResults := BoardMember{}
@@ -194,7 +194,7 @@ func TestUpdateBoardMember(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodPatch)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", endpointBoards, testBoardID, testBoardMemberID))
 				})
 			})
 		})
@@ -202,7 +202,7 @@ func TestUpdateBoardMember(t *testing.T) {
 }
 
 func TestDeleteBoardMember(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "members")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and a board member ID", t, func() {
@@ -222,7 +222,7 @@ func TestDeleteBoardMember(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodDelete)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", EndpointBoards, testBoardID, testBoardMemberID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", endpointBoards, testBoardID, testBoardMemberID))
 				})
 			})
 		})

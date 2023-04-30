@@ -123,9 +123,9 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 //	jsonDataNative, _ := json.Marshal(rawResponse)
 //
 //	processed, native := sortJSON(jsonData, jsonDataNative)
-//	fmt.Printf("== Processed: %s\n", processed)
+//	fmt.Printf("== Processed ==: %s\n", processed)
 //	fmt.Println("===============================")
-//	fmt.Printf("== Native   : %s\n", native)
+//	fmt.Printf("==  Native  == : %s\n", native)
 //
 //	Convey("The unmarshalled data should match the raw data JSON data", t, func() {
 //		So(string(processed), ShouldEqual, string(native))

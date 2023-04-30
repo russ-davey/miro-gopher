@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, "uXjVMNoCEUs=", "shapes")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
 	defer closeAPIServer()
 
 	expectedResults := &ShapeItem{}
@@ -64,7 +64,7 @@ func TestCreateShapeItem(t *testing.T) {
 }
 
 func TestGetShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, "uXjVMNoCEUs=", "shapes")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
 	defer closeAPIServer()
 
 	expectedResults := &ShapeItem{}
@@ -96,7 +96,7 @@ func TestGetShapeItem(t *testing.T) {
 }
 
 func TestUpdateShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, "uXjVMNoCEUs=", "shapes")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
 	defer closeAPIServer()
 
 	expectedResults := &ShapeItem{}
@@ -140,7 +140,7 @@ func TestUpdateShapeItem(t *testing.T) {
 }
 
 func TestDeleteShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, "uXjVMNoCEUs=", "shapes")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {

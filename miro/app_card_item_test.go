@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "app_cards")
 	defer closeAPIServer()
 
 	expectedResults := &AppCardItem{}
@@ -73,7 +73,7 @@ func TestCreateAppCardItem(t *testing.T) {
 }
 
 func TestGetAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "app_cards")
 	defer closeAPIServer()
 
 	expectedResults := &AppCardItem{}
@@ -105,7 +105,7 @@ func TestGetAppCardItem(t *testing.T) {
 }
 
 func TestUpdateAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "app_cards")
 	defer closeAPIServer()
 
 	expectedResults := &AppCardItem{}
@@ -151,7 +151,7 @@ func TestUpdateAppCardItem(t *testing.T) {
 }
 
 func TestDeleteAppCardItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "app_cards")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "app_cards")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {

@@ -29,7 +29,7 @@ func (a *AccessTokenService) Get() (*AccessToken, error) {
 func (a *AccessTokenService) Revoke(accessToken string) error {
 	url := fmt.Sprintf("%s/%s/%s/revoke", a.client.BaseURL, a.APIVersion, EndpointOAUTH)
 
-	return a.client.PostNoContent(url, Parameter{
+	return a.client.postNoContent(url, Parameter{
 		"access_token": accessToken,
 	})
 }

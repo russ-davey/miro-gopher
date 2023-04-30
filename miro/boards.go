@@ -1,20 +1,9 @@
 package miro
 
-import (
-	"fmt"
-)
-
-const (
-	// EndpointBoards /boards endpoint
-	EndpointBoards = "boards"
-
-	// QueryParamCopyFrom Unique identifier (ID) of the board that you want to copy (required).
-	QueryParamCopyFrom = "copy_from"
-)
-
 type BoardsService struct {
 	client     *Client
 	APIVersion string
+	Resource   string
 }
 
 // Create a board with the specified name and sharing policies.
@@ -61,9 +50,7 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 func (b *BoardsService) Copy(payload SetBoard, copyFrom string) (*Board, error) {
 	response := &Board{}
 
-	err := b.client.Put(b.constructURL(""), payload, response, Parameter{
-		QueryParamCopyFrom: copyFrom,
-	})
+	err := b.client.Put(b.constructURL(""), payload, response, Parameter{"copy_from": copyFrom})
 
 	return response, err
 }
@@ -78,16 +65,12 @@ func (b *BoardsService) Update(boardID string, payload SetBoard) (*Board, error)
 	return response, err
 }
 
-// Delete Deletes a board.
+// Delete a board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (b *BoardsService) Delete(boardID string) error {
 	return b.client.Delete(b.constructURL(boardID))
 }
 
 func (b *BoardsService) constructURL(boardID string) string {
-	if boardID != "" {
-		return fmt.Sprintf("%s/%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards, boardID)
-	} else {
-		return fmt.Sprintf("%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards)
-	}
+	return constructURL(b.client.BaseURL, b.APIVersion, b.Resource, boardID, "", "")
 }

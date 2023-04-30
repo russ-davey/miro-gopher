@@ -1,12 +1,9 @@
 package miro
 
-import (
-	"fmt"
-)
-
 type BoardMembersService struct {
 	client      *Client
 	APIVersion  string
+	Resource    string
 	SubResource string
 }
 
@@ -67,9 +64,5 @@ func (b *BoardMembersService) Delete(boardID, boardMemberID string) error {
 }
 
 func (b *BoardMembersService) constructURL(boardID, resourceID string) string {
-	if resourceID != "" {
-		return fmt.Sprintf("%s/%s/%s/%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards, boardID, b.SubResource, resourceID)
-	} else {
-		return fmt.Sprintf("%s/%s/%s/%s/%s", b.client.BaseURL, b.APIVersion, EndpointBoards, boardID, b.SubResource)
-	}
+	return constructURL(b.client.BaseURL, b.APIVersion, b.Resource, boardID, b.SubResource, resourceID)
 }

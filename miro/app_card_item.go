@@ -1,10 +1,9 @@
 package miro
 
-import "fmt"
-
 type AppCardItemsService struct {
 	client      *Client
 	APIVersion  string
+	Resource    string
 	SubResource string
 }
 
@@ -45,9 +44,5 @@ func (a *AppCardItemsService) Delete(boardID, itemID string) error {
 }
 
 func (a *AppCardItemsService) constructURL(boardID, resourceID string) string {
-	if resourceID != "" {
-		return fmt.Sprintf("%s/%s/%s/%s/%s/%s", a.client.BaseURL, a.APIVersion, EndpointBoards, boardID, a.SubResource, resourceID)
-	} else {
-		return fmt.Sprintf("%s/%s/%s/%s/%s", a.client.BaseURL, a.APIVersion, EndpointBoards, boardID, a.SubResource)
-	}
+	return constructURL(a.client.BaseURL, a.APIVersion, a.Resource, boardID, a.SubResource, resourceID)
 }

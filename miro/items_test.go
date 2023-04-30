@@ -11,7 +11,7 @@ import (
 const testItemID = "16180339887"
 
 func TestGetAllItems(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := ListItems{}
@@ -36,7 +36,7 @@ func TestGetAllItems(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items", endpointBoards, testBoardID))
 
 					//Convey("And round-tripping the data does not result in any loss of data", func() {
 					//	So(compareJSON(responseData, roundTrip), ShouldBeTrue)
@@ -48,7 +48,7 @@ func TestGetAllItems(t *testing.T) {
 }
 
 func TestGetAllItemsWithSearchParams(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := ListItems{}
@@ -75,7 +75,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 					So(receivedRequest.URL.Query().Get("type"), ShouldEqual, ItemTypeFrame)
 					So(receivedRequest.URL.Query().Get("limit"), ShouldEqual, "1")
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items", EndpointBoards, testBoardID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items", endpointBoards, testBoardID))
 
 					//Convey("And round-tripping the data does not result in any loss of data", func() {
 					//	So(compareJSON(responseData, roundTrip), ShouldBeTrue)
@@ -87,7 +87,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 }
 
 func TestGetItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := &Item{}
@@ -111,7 +111,7 @@ func TestGetItem(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items/%s", EndpointBoards, testBoardID, testItemID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items/%s", endpointBoards, testBoardID, testItemID))
 				})
 			})
 		})
@@ -119,7 +119,7 @@ func TestGetItem(t *testing.T) {
 }
 
 func TestUpdateItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	expectedResults := &Item{}
@@ -155,7 +155,7 @@ func TestUpdateItem(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodPatch)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items/%s", EndpointBoards, testBoardID, testItemID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items/%s", endpointBoards, testBoardID, testItemID))
 				})
 			})
 		})
@@ -164,7 +164,7 @@ func TestUpdateItem(t *testing.T) {
 }
 
 func TestDeleteItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", EndpointBoards, testBoardID, "items")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {
@@ -184,7 +184,7 @@ func TestDeleteItem(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodDelete)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
-					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items/%s", EndpointBoards, testBoardID, testItemID))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items/%s", endpointBoards, testBoardID, testItemID))
 				})
 			})
 		})
