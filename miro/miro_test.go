@@ -103,7 +103,7 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 //	//version := "v2"
 //	//resource := "boards"
 //	//subResource := "shapes"
-//	boardID := ""
+//	boardID := "="
 //	//itemID := ""
 //
 //	response, err := client.ShapeItems.Update(boardID, "", SetShapeItem{

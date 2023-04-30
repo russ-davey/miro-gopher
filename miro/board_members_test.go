@@ -162,8 +162,8 @@ func TestUpdateBoardMember(t *testing.T) {
 	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "members")
 	defer closeAPIServer()
 
-	expectedResults := BoardMember{}
-	responseData := constructResponseAndResults("board_members_get.json", &expectedResults)
+	responseBody := BoardMember{}
+	constructResponseAndResults("board_members_get.json", &responseBody)
 
 	Convey("Given a board ID, a board member ID and a new role", t, func() {
 		Convey("When the Update function is called", func() {
@@ -172,13 +172,10 @@ func TestUpdateBoardMember(t *testing.T) {
 				// decode body
 				bodyData := RoleUpdate{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
-				// encode test data
-				resData := BoardMember{}
-				json.Unmarshal(responseData, &resData)
 				// update test data
-				resData.Role = bodyData.Role
+				responseBody.Role = bodyData.Role
 				// marshal test data
-				jsonData, _ := json.Marshal(resData)
+				jsonData, _ := json.Marshal(responseBody)
 				w.Write(jsonData)
 
 				receivedRequest = r

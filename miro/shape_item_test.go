@@ -24,29 +24,12 @@ func TestCreateShapeItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.ShapeItems.Create("uXjVMNoCEUs=",
-				SetShapeItem{
-					Data: ShapeItemData{
-						Shape:   ShapeTriangle,
-						Content: "Bill Cipher",
-					},
-					Style: Style{
-						FillColor: "#8fd14f",
-					},
-					Position: PositionSet{
-						Origin: Center,
-						X:      100,
-						Y:      100,
-					},
-					Geometry: Geometry{
-						Height:   60,
-						Rotation: 0,
-						Width:    320,
-					},
-					Parent: ParentSet{
-						ID: "123214124",
-					},
-				})
+			results, err := client.ShapeItems.Create("uXjVMNoCEUs=", SetShapeItem{
+				Data: ShapeItemData{
+					Shape:   ShapeTriangle,
+					Content: "Bill Cipher",
+				},
+			})
 
 			Convey("Then the item is created", func() {
 				So(err, ShouldBeNil)
@@ -99,8 +82,8 @@ func TestUpdateShapeItem(t *testing.T) {
 	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
 	defer closeAPIServer()
 
-	expectedResults := &ShapeItem{}
-	responseData := constructResponseAndResults("shape_item_get.json", &expectedResults)
+	responseBody := &ShapeItem{}
+	constructResponseAndResults("shape_item_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a ShapeItemUpdate struct", t, func() {
 		Convey("When the Update function is called", func() {
@@ -109,23 +92,22 @@ func TestUpdateShapeItem(t *testing.T) {
 				// decode body
 				bodyData := SetShapeItem{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
-				// encode test data
-				resData := ShapeItem{}
-				json.Unmarshal(responseData, &resData)
 				// update test data
-				resData.Data.Shape = bodyData.Data.Shape
+				responseBody.Data = bodyData.Data
 				// marshal test data
-				jsonData, _ := json.Marshal(resData)
+				jsonData, _ := json.Marshal(responseBody)
 				w.Write(jsonData)
 
 				receivedRequest = r
 			})
 
-			results, err := client.ShapeItems.Update("uXjVMNoCEUs=", testItemID, SetShapeItem{Data: ShapeItemData{Shape: ShapeTriangle}})
+			results, err := client.ShapeItems.Update("uXjVMNoCEUs=", testItemID, SetShapeItem{Data: ShapeItemData{
+				Shape: "triangle", Content: "Bill Cipher"}})
 
 			Convey("Then the item information is returned which includes the new role", func() {
 				So(err, ShouldBeNil)
 				So(results.Data.Shape, ShouldEqual, "triangle")
+				So(results.Data.Content, ShouldEqual, "Bill Cipher")
 
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)

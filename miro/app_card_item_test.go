@@ -108,8 +108,8 @@ func TestUpdateAppCardItem(t *testing.T) {
 	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "app_cards")
 	defer closeAPIServer()
 
-	expectedResults := &AppCardItem{}
-	responseData := constructResponseAndResults("app_card_item_get.json", &expectedResults)
+	responseBody := &AppCardItem{}
+	constructResponseAndResults("app_card_item_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a AppCardItemUpdate struct", t, func() {
 		Convey("When the Update function is called", func() {
@@ -118,13 +118,10 @@ func TestUpdateAppCardItem(t *testing.T) {
 				// decode body
 				bodyData := SetAppCardItem{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
-				// encode test data
-				resData := AppCardItem{}
-				json.Unmarshal(responseData, &resData)
 				// update test data
-				resData.Position.X = bodyData.Position.X
+				responseBody.Position.X = bodyData.Position.X
 				// marshal test data
-				jsonData, _ := json.Marshal(resData)
+				jsonData, _ := json.Marshal(responseBody)
 				w.Write(jsonData)
 
 				receivedRequest = r
