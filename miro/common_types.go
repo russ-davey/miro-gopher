@@ -58,14 +58,16 @@ const (
 )
 
 type Style struct {
-	BorderColor       string            `json:"borderColor,omitempty"`
-	BorderOpacity     string            `json:"borderOpacity,omitempty"`
-	BorderStyle       BorderStyle       `json:"borderStyle,omitempty"`
-	BorderWidth       string            `json:"borderWidth,omitempty"`
-	Color             string            `json:"color,omitempty"`
-	FillColor         string            `json:"fillColor,omitempty"`
-	FillOpacity       string            `json:"fillOpacity,omitempty"`
-	FontFamily        string            `json:"fontFamily,omitempty"`
+	BorderColor   string      `json:"borderColor,omitempty"`
+	BorderOpacity string      `json:"borderOpacity,omitempty"`
+	BorderStyle   BorderStyle `json:"borderStyle,omitempty"`
+	BorderWidth   string      `json:"borderWidth,omitempty"`
+	Color         string      `json:"color,omitempty"`
+	FillColor     string      `json:"fillColor,omitempty"`
+	FillOpacity   string      `json:"fillOpacity,omitempty"`
+	// FontFamily Defines the font type for the text. Default: arial.
+	FontFamily string `json:"fontFamily,omitempty"`
+	// FontSize Defines the font size, in dp, for the text. Default: 14, minimum: 10, maximum 288.
 	FontSize          string            `json:"fontSize,omitempty"`
 	TextAlign         TextAlign         `json:"textAlign,omitempty"`
 	TextAlignVertical TextAlignVertical `json:"textAlignVertical,omitempty"`
@@ -83,11 +85,11 @@ type PositionSet struct {
 	// X-axis coordinate of the location of the item on the board.
 	// By default, all items have absolute positioning to the board, not the current viewport.
 	// The center point of the board has x: 0 and y: 0 coordinates.
-	X float64 `json:"x,omitempty"`
+	X float64 `json:"x"`
 	// Y-axis coordinate of the location of the item on the board.
 	// By default, all items have absolute positioning to the board, not the current viewport.
 	// The center point of the board has x: 0 and y: 0 coordinates.
-	Y float64 `json:"y,omitempty"`
+	Y float64 `json:"y"`
 }
 
 type Links struct {
