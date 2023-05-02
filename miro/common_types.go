@@ -39,14 +39,20 @@ type ParentSet struct {
 
 type (
 	BorderStyle       string
+	StrokeStyle       string
 	TextAlign         string
 	TextAlignVertical string
+	TextOrientation   string
 )
 
 const (
 	BorderStyleNormal BorderStyle = "normal"
 	BorderStyleDotted BorderStyle = "dotted"
 	BorderStyleDashed BorderStyle = "dashed"
+
+	StrokeStyleNormal StrokeStyle = "normal"
+	StrokeStyleDotted StrokeStyle = "dotted"
+	StrokeStyleDashed StrokeStyle = "dashed"
 
 	TextAlignCenter TextAlign = "center"
 	TextAlignLeft   TextAlign = "left"
@@ -55,6 +61,9 @@ const (
 	TextAlignVerticalTop    TextAlignVertical = "top"
 	TextAlignVerticalMiddle TextAlignVertical = "middle"
 	TextAlignVerticalBottom TextAlignVertical = "bottom"
+
+	TextOrientationHorizontal TextOrientation = "horizontal"
+	TextOrientationAligned    TextOrientation = "aligned"
 )
 
 type Style struct {

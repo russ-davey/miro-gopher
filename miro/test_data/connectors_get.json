@@ -1,0 +1,56 @@
+{
+  "captions": [
+    {
+      "content": "<p>Caption text</p>",
+      "position": "50%",
+      "textAlignVertical": "top"
+    }
+  ],
+  "createdAt": "2022-03-30T17:26:50.000Z",
+  "createdBy": {
+    "id": "3458764517517852417",
+    "type": "user"
+  },
+  "endItem": {
+    "id": "3458764517517818867",
+    "links": {
+      "self": "http://api.miro.com/v2/boards/o9J_koQspF4=/object_type/3074457349143649487"
+    },
+    "position": {
+      "x": "50%",
+      "y": "0%"
+    }
+  },
+  "id": "3458764517517818867",
+  "isSupported": true,
+  "links": {
+    "self": "http://api.miro.com/v2/boards/o9J_koQspF4=/object_type/3074457349143649487"
+  },
+  "modifiedAt": "2022-03-30T17:26:50.000Z",
+  "modifiedBy": {
+    "id": "3458764517517852417",
+    "type": "user"
+  },
+  "shape": "curved",
+  "startItem": {
+    "id": "3458764517517818867",
+    "links": {
+      "self": "http://api.miro.com/v2/boards/o9J_koQspF4=/object_type/3074457349143649487"
+    },
+    "position": {
+      "x": "50%",
+      "y": "0%"
+    }
+  },
+  "style": {
+    "color": "#9510ac",
+    "endStrokeCap": "none",
+    "fontSize": "15",
+    "startStrokeCap": "none",
+    "strokeColor": "#2d9bf0",
+    "strokeStyle": "normal",
+    "strokeWidth": "2.0",
+    "textOrientation": "horizontal"
+  },
+  "type": "string"
+}

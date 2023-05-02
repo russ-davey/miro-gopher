@@ -11,6 +11,7 @@ import (
 	"os"
 	"sort"
 	"testing"
+	"time"
 )
 
 const (
@@ -80,10 +81,22 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 	var keys1 []string
 	var keys2 []string
 	for k, v := range map1 {
+		if k == "modifiedAt" || k == "createdAt" {
+			if strValue, ok := v.(string); ok {
+				t, _ := time.Parse(time.RFC3339, strValue)
+				v = t.String()
+			}
+		}
 		keys1 = append(keys1, k)
 		sortedMap1[k] = v
 	}
 	for k, v := range map2 {
+		if k == "modifiedAt" || k == "createdAt" {
+			if strValue, ok := v.(string); ok {
+				t, _ := time.Parse(time.RFC3339, strValue)
+				v = t.String()
+			}
+		}
 		keys2 = append(keys2, k)
 		sortedMap2[k] = v
 	}

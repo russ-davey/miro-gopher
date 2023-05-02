@@ -26,6 +26,7 @@ type Client struct {
 	AppCardItems *AppCardItemsService
 	CardItems    *CardItemsService
 	ShapeItems   *ShapeItemsService
+	Connectors   *ConnectorsService
 }
 
 type Field struct {
@@ -77,6 +78,7 @@ func buildAPIMap(c *Client) {
 	c.AppCardItems = &AppCardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "app_cards"}
 	c.CardItems = &CardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "cards"}
 	c.ShapeItems = &ShapeItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "shapes"}
+	c.Connectors = &ConnectorsService{client: c, apiVersion: "v2", resource: "boards", subResource: "connectors"}
 }
 
 // Get Native GET function

@@ -85,7 +85,7 @@ func TestUpdateShapeItem(t *testing.T) {
 	responseBody := &ShapeItem{}
 	constructResponseAndResults("shape_item_get.json", &responseBody)
 
-	Convey("Given a board ID, an item ID and a ShapeItemUpdate struct", t, func() {
+	Convey("Given a board ID, an item ID and a SetShapeItem struct", t, func() {
 		Convey("When the Update function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
