@@ -17,16 +17,17 @@ type Client struct {
 	BaseURL string
 	token   string
 	// HTTPClient a fine-tuned HTTP client, but you can inject your own if, for example, you wanted to lower the timeouts
-	HTTPClient   *http.Client
-	ctx          context.Context
-	AccessToken  *AccessTokenService
-	Boards       *BoardsService
-	BoardMembers *BoardMembersService
-	Items        *ItemsService
-	AppCardItems *AppCardItemsService
-	CardItems    *CardItemsService
-	ShapeItems   *ShapeItemsService
-	Connectors   *ConnectorsService
+	HTTPClient    *http.Client
+	ctx           context.Context
+	AccessToken   *AccessTokenService
+	Boards        *BoardsService
+	BoardMembers  *BoardMembersService
+	Items         *ItemsService
+	AppCardItems  *AppCardItemsService
+	CardItems     *CardItemsService
+	ShapeItems    *ShapeItemsService
+	Connectors    *ConnectorsService
+	DocumentItems *DocumentsService
 }
 
 type Field struct {
@@ -79,6 +80,7 @@ func buildAPIMap(c *Client) {
 	c.CardItems = &CardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "cards"}
 	c.ShapeItems = &ShapeItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "shapes"}
 	c.Connectors = &ConnectorsService{client: c, apiVersion: "v2", resource: "boards", subResource: "connectors"}
+	c.DocumentItems = &DocumentsService{client: c, apiVersion: "v2", resource: "boards", subResource: "documents"}
 }
 
 // Get Native GET function

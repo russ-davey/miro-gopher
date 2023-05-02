@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestCreateShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
+func TestCreateDocumentItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
 	defer closeAPIServer()
 
-	expectedResults := &ShapeItem{}
-	responseData := constructResponseAndResults("shape_item_get.json", &expectedResults)
+	expectedResults := &DocumentItem{}
+	responseData := constructResponseAndResults("document_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
 		Convey("When the Create method is called", func() {
@@ -24,11 +24,8 @@ func TestCreateShapeItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.ShapeItems.Create("uXjVMNoCEUs=", SetShapeItem{
-				Data: ShapeItemData{
-					Shape:   ShapeTriangle,
-					Content: "Bill Cipher",
-				},
+			results, err := client.DocumentItems.Create(testBoardID, SetDocumentItem{
+				Data: DocumentItemData{Title: "A test", DocumentURL: "http://testing"},
 			})
 
 			Convey("Then the item is created", func() {
@@ -46,12 +43,13 @@ func TestCreateShapeItem(t *testing.T) {
 	})
 }
 
-func TestGetShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
+func TestGetDocumentItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
 	defer closeAPIServer()
 
-	expectedResults := &ShapeItem{}
-	responseData := constructResponseAndResults("shape_item_get.json", &expectedResults)
+	expectedResults := &DocumentItem{}
+	responseData := constructResponseAndResults("document_item_get.json", &expectedResults)
+	roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
 		Convey("When the Get function is called", func() {
@@ -61,7 +59,7 @@ func TestGetShapeItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.ShapeItems.Get("uXjVMNoCEUs=", testItemID)
+			results, err := client.DocumentItems.Get(testBoardID, testItemID)
 
 			Convey("Then the item information is returned", func() {
 				So(err, ShouldBeNil)
@@ -72,25 +70,29 @@ func TestGetShapeItem(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("%s/%s", testResourcePath, testItemID))
+
+					Convey("And round-tripping the data does not result in any loss of data", func() {
+						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
+					})
 				})
 			})
 		})
 	})
 }
 
-func TestUpdateShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
+func TestUpdateDocumentItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
 	defer closeAPIServer()
 
-	responseBody := &ShapeItem{}
-	constructResponseAndResults("shape_item_get.json", &responseBody)
+	responseBody := &DocumentItem{}
+	constructResponseAndResults("document_item_get.json", &responseBody)
 
-	Convey("Given a board ID, an item ID and a SetShapeItem struct", t, func() {
+	Convey("Given a board ID, an item ID and a SetDocumentItem struct", t, func() {
 		Convey("When the Update function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
-				bodyData := SetShapeItem{}
+				bodyData := DocumentItem{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
 				// update test data
 				responseBody.Data = bodyData.Data
@@ -101,13 +103,13 @@ func TestUpdateShapeItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.ShapeItems.Update("uXjVMNoCEUs=", testItemID, SetShapeItem{Data: ShapeItemData{
-				Shape: "triangle", Content: "Bill Cipher"}})
+			results, err := client.DocumentItems.Update(testBoardID, testItemID, SetDocumentItem{
+				Data: DocumentItemData{Title: "A test", DocumentURL: "http://testing"}})
 
-			Convey("Then the item information is returned which includes the new data", func() {
+			Convey("Then the item information is returned which includes the new role", func() {
 				So(err, ShouldBeNil)
-				So(results.Data.Shape, ShouldEqual, "triangle")
-				So(results.Data.Content, ShouldEqual, "Bill Cipher")
+				So(results.Data.Title, ShouldEqual, "A test")
+				So(results.Data.DocumentURL, ShouldEqual, "http://testing")
 
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)
@@ -121,8 +123,8 @@ func TestUpdateShapeItem(t *testing.T) {
 
 }
 
-func TestDeleteShapeItem(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "uXjVMNoCEUs=", "shapes")
+func TestDeleteDocumentItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {
@@ -133,7 +135,7 @@ func TestDeleteShapeItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			err := client.ShapeItems.Delete("uXjVMNoCEUs=", testItemID)
+			err := client.DocumentItems.Delete(testBoardID, testItemID)
 
 			Convey("Then the item is deleted (no error is returned)", func() {
 				So(err, ShouldBeNil)

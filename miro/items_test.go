@@ -16,7 +16,6 @@ func TestGetAllItems(t *testing.T) {
 
 	expectedResults := ListItems{}
 	responseData := constructResponseAndResults("items_get_all.json", &expectedResults)
-	//roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a board ID", t, func() {
 		Convey("When the GetAll function is called", func() {
@@ -37,10 +36,6 @@ func TestGetAllItems(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/items", endpointBoards, testBoardID))
-
-					//Convey("And round-tripping the data does not result in any loss of data", func() {
-					//	So(compareJSON(responseData, roundTrip), ShouldBeTrue)
-					//})
 				})
 			})
 		})
