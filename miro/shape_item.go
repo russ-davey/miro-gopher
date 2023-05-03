@@ -15,7 +15,7 @@ func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*Shape
 	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource); err != nil {
 		return response, err
 	} else {
-		err = s.client.Post(url, payload, response)
+		err = s.client.Post(s.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -28,7 +28,7 @@ func (s *ShapeItemsService) Get(boardID, itemID string) (*ShapeItem, error) {
 	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = s.client.Get(url, response)
+		err = s.client.Get(s.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -41,7 +41,7 @@ func (s *ShapeItemsService) Update(boardID, itemID string, payload SetShapeItem)
 	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = s.client.Patch(url, payload, response)
+		err = s.client.Patch(s.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -52,6 +52,6 @@ func (s *ShapeItemsService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil {
 		return err
 	} else {
-		return s.client.Delete(url)
+		return s.client.Delete(s.client.ctx, url)
 	}
 }

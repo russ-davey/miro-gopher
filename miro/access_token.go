@@ -19,7 +19,7 @@ func (a *AccessTokenService) Get() (*AccessToken, error) {
 	if url, err := constructURL(a.client.BaseURL, a.apiVersion, endpointOAUTHToken); err != nil {
 		return response, err
 	} else {
-		err = a.client.Get(url, response)
+		err = a.client.Get(a.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -30,7 +30,7 @@ func (a *AccessTokenService) Revoke(accessToken string) error {
 	if url, err := constructURL(a.client.BaseURL, a.apiVersion, endpointOAUTH, "revoke"); err != nil {
 		return err
 	} else {
-		err = a.client.postNoContent(url, Parameter{
+		err = a.client.postNoContent(a.client.ctx, url, Parameter{
 			"access_token": accessToken,
 		})
 		return err

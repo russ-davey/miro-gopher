@@ -15,7 +15,7 @@ func (c *CardItemsService) Create(boardID string, payload SetCardItem) (*CardIte
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
 		return response, err
 	} else {
-		err = c.client.Post(url, payload, response)
+		err = c.client.Post(c.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -28,7 +28,7 @@ func (c *CardItemsService) Get(boardID, itemID string) (*CardItem, error) {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = c.client.Get(url, response)
+		err = c.client.Get(c.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -41,7 +41,7 @@ func (c *CardItemsService) Update(boardID, itemID string, payload SetCardItem) (
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = c.client.Patch(url, payload, response)
+		err = c.client.Patch(c.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -52,6 +52,6 @@ func (c *CardItemsService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return err
 	} else {
-		return c.client.Delete(url)
+		return c.client.Delete(c.client.ctx, url)
 	}
 }

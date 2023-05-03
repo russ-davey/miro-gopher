@@ -17,7 +17,7 @@ func (b *BoardMembersService) ShareBoard(boardID string, payload ShareBoardInvit
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource); err != nil {
 		return response, err
 	} else {
-		err = b.client.Post(url, payload, response)
+		err = b.client.Post(b.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -30,7 +30,7 @@ func (b *BoardMembersService) Get(boardID, itemID string) (*BoardMember, error) 
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = b.client.Get(url, response)
+		err = b.client.Get(b.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -46,9 +46,9 @@ func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberS
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			err = b.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+			err = b.client.Get(b.client.ctx, url, response, ParseQueryTags(queryParams[0])...)
 		} else {
-			err = b.client.Get(url, response)
+			err = b.client.Get(b.client.ctx, url, response)
 		}
 
 		return response, err
@@ -63,7 +63,7 @@ func (b *BoardMembersService) Update(boardID, itemID string, role Role) (*BoardM
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = b.client.Patch(url, RoleUpdate{Role: role}, response)
+		err = b.client.Patch(b.client.ctx, url, RoleUpdate{Role: role}, response)
 		return response, err
 	}
 }
@@ -74,6 +74,6 @@ func (b *BoardMembersService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil {
 		return err
 	} else {
-		return b.client.Delete(url)
+		return b.client.Delete(b.client.ctx, url)
 	}
 }

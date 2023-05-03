@@ -27,9 +27,9 @@ func (i *ItemsService) GetAll(boardID string, queryParams ...ItemSearchParams) (
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			err = i.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+			err = i.client.Get(i.client.ctx, url, response, ParseQueryTags(queryParams[0])...)
 		} else {
-			err = i.client.Get(url, response)
+			err = i.client.Get(i.client.ctx, url, response)
 		}
 
 		return response, err
@@ -44,7 +44,7 @@ func (i *ItemsService) Get(boardID, itemID string) (*Item, error) {
 	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = i.client.Get(url, response)
+		err = i.client.Get(i.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -57,7 +57,7 @@ func (i *ItemsService) Update(boardID, itemID string, payload ItemUpdate) (*Item
 	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = i.client.Patch(url, payload, response)
+		err = i.client.Patch(i.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -68,6 +68,6 @@ func (i *ItemsService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil {
 		return err
 	} else {
-		return i.client.Delete(url)
+		return i.client.Delete(i.client.ctx, url)
 	}
 }

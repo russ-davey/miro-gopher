@@ -15,7 +15,7 @@ func (c *ConnectorsService) Create(boardID string, payload SetConnector) (*Conne
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
 		return response, err
 	} else {
-		err = c.client.Post(url, payload, response)
+		err = c.client.Post(c.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -28,7 +28,7 @@ func (c *ConnectorsService) Get(boardID, itemID string) (*Connector, error) {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = c.client.Get(url, response)
+		err = c.client.Get(c.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -53,9 +53,9 @@ func (c *ConnectorsService) GetAll(boardID string, queryParams ...ConnectorSearc
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			err = c.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+			err = c.client.Get(c.client.ctx, url, response, ParseQueryTags(queryParams[0])...)
 		} else {
-			err = c.client.Get(url, response)
+			err = c.client.Get(c.client.ctx, url, response)
 		}
 
 		return response, err
@@ -70,7 +70,7 @@ func (c *ConnectorsService) Update(boardID, itemID string, payload SetConnector)
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = c.client.Patch(url, payload, response)
+		err = c.client.Patch(c.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -81,6 +81,6 @@ func (c *ConnectorsService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return err
 	} else {
-		return c.client.Delete(url)
+		return c.client.Delete(c.client.ctx, url)
 	}
 }

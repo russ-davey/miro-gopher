@@ -84,12 +84,12 @@ func buildAPIMap(c *Client) {
 }
 
 // Get Native GET function
-func (c *Client) Get(url string, response interface{}, queryParams ...Parameter) error {
+func (c *Client) Get(ctx context.Context, url string, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
@@ -106,13 +106,13 @@ func (c *Client) Get(url string, response interface{}, queryParams ...Parameter)
 }
 
 // Post Native POST function
-func (c *Client) Post(url string, payload, response interface{}) error {
+func (c *Client) Post(ctx context.Context, url string, payload, response interface{}) error {
 	bufBody, err := payloadToBuffer(payload)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url, bufBody)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bufBody)
 	if err != nil {
 		return err
 	}
@@ -129,12 +129,12 @@ func (c *Client) Post(url string, payload, response interface{}) error {
 }
 
 // postNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
-func (c *Client) postNoContent(url string, queryParams ...Parameter) error {
+func (c *Client) postNoContent(ctx context.Context, url string, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
 	if err != nil {
 		return err
 	}
@@ -151,7 +151,7 @@ func (c *Client) postNoContent(url string, queryParams ...Parameter) error {
 }
 
 // Put Native PUT function
-func (c *Client) Put(url string, payload, response interface{}, queryParams ...Parameter) error {
+func (c *Client) Put(ctx context.Context, url string, payload, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
 	}
@@ -161,7 +161,7 @@ func (c *Client) Put(url string, payload, response interface{}, queryParams ...P
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPut, url, bufBody)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, bufBody)
 	if err != nil {
 		return err
 	}
@@ -178,13 +178,13 @@ func (c *Client) Put(url string, payload, response interface{}, queryParams ...P
 }
 
 // Patch Native PATCH function
-func (c *Client) Patch(url string, payload, response interface{}) error {
+func (c *Client) Patch(ctx context.Context, url string, payload, response interface{}) error {
 	bufBody, err := payloadToBuffer(payload)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPatch, url, bufBody)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, bufBody)
 	if err != nil {
 		return err
 	}
@@ -201,8 +201,8 @@ func (c *Client) Patch(url string, payload, response interface{}) error {
 }
 
 // Delete Native DELETE function
-func (c *Client) Delete(url string) error {
-	req, err := http.NewRequest(http.MethodDelete, url, nil)
+func (c *Client) Delete(ctx context.Context, url string) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
 	if err != nil {
 		return err
 	}
@@ -259,7 +259,7 @@ func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 func constructErrorMsg(resp *http.Response) error {
 	respErr := &ResponseError{}
 	if err := json.NewDecoder(resp.Body).Decode(respErr); err != nil {
-		return err
+		return errors.New(fmt.Sprintf("unexpected status code: %d", resp.StatusCode))
 	}
 
 	details := make([]string, 0)

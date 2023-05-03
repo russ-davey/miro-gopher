@@ -15,23 +15,10 @@ func (c *DocumentsService) Create(boardID string, payload SetDocumentItem) (*Doc
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
 		return response, err
 	} else {
-		err = c.client.Post(url, payload, response)
+		err = c.client.Post(c.client.ctx, url, payload, response)
 		return response, err
 	}
 }
-
-// CreateFromFile Adds a document item to a board by specifying the URL where the document is hosted. Creates a document item using file from device.
-// Required scope: boards:write | Rate limiting: Level 2
-//func (c *DocumentsService) CreateFromFile(boardID string, payload SetDocumentItem) (*DocumentItem, error) {
-//	response := &DocumentItem{}
-//
-//	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
-//		return response, err
-//	} else {
-//		err = c.client.Post(url, payload, response)
-//		return response, err
-//	}
-//}
 
 // Get Retrieves information for a specific document item on a board.
 // Required scope: boards:read | Rate limiting: Level 1
@@ -41,7 +28,7 @@ func (c *DocumentsService) Get(boardID, itemID string) (*DocumentItem, error) {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = c.client.Get(url, response)
+		err = c.client.Get(c.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -54,7 +41,7 @@ func (c *DocumentsService) Update(boardID, itemID string, payload SetDocumentIte
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return response, err
 	} else {
-		err = c.client.Patch(url, payload, response)
+		err = c.client.Patch(c.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -67,7 +54,7 @@ func (c *DocumentsService) Update(boardID, itemID string, payload SetDocumentIte
 //	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 //		return response, err
 //	} else {
-//		err = c.client.Patch(url, payload, response)
+//		err = c.client.Patch(c.client.ctx, url, payload, response)
 //		return response, err
 //	}
 //}
@@ -78,6 +65,6 @@ func (c *DocumentsService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
 		return err
 	} else {
-		return c.client.Delete(url)
+		return c.client.Delete(c.client.ctx, url)
 	}
 }

@@ -14,7 +14,7 @@ func (b *BoardsService) Create(payload SetBoard) (*Board, error) {
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil {
 		return response, err
 	} else {
-		err = b.client.Post(url, payload, response)
+		err = b.client.Post(b.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -27,7 +27,7 @@ func (b *BoardsService) Get(boardID string) (*Board, error) {
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID); err != nil {
 		return response, err
 	} else {
-		err = b.client.Get(url, response)
+		err = b.client.Get(b.client.ctx, url, response)
 		return response, err
 	}
 }
@@ -43,9 +43,9 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			err = b.client.Get(url, response, ParseQueryTags(queryParams[0])...)
+			err = b.client.Get(b.client.ctx, url, response, ParseQueryTags(queryParams[0])...)
 		} else {
-			err = b.client.Get(url, response)
+			err = b.client.Get(b.client.ctx, url, response)
 		}
 
 		return response, err
@@ -61,7 +61,7 @@ func (b *BoardsService) Copy(payload SetBoard, copyFrom string) (*Board, error) 
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil {
 		return response, err
 	} else {
-		err = b.client.Put(url, payload, response, Parameter{"copy_from": copyFrom})
+		err = b.client.Put(b.client.ctx, url, payload, response, Parameter{"copy_from": copyFrom})
 		return response, err
 	}
 }
@@ -74,7 +74,7 @@ func (b *BoardsService) Update(boardID string, payload SetBoard) (*Board, error)
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID); err != nil {
 		return response, err
 	} else {
-		err = b.client.Patch(url, payload, response)
+		err = b.client.Patch(b.client.ctx, url, payload, response)
 		return response, err
 	}
 }
@@ -85,6 +85,6 @@ func (b *BoardsService) Delete(boardID string) error {
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID); err != nil {
 		return err
 	} else {
-		return b.client.Delete(url)
+		return b.client.Delete(b.client.ctx, url)
 	}
 }
