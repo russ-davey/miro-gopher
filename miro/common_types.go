@@ -105,3 +105,14 @@ type Links struct {
 	Related string `json:"related,omitempty"`
 	Self    string `json:"self,omitempty"`
 }
+
+type UploadFileItem struct {
+	// Title URL where the document is hosted. (required)
+	Title string `json:"title"`
+	// Position Contains location information about the item, such as its x coordinate, y coordinate, and the origin of the x and y coordinates.
+	Position PositionSet `json:"position"`
+	// Geometry Contains geometrical information about the item, such as its width or height.
+	Geometry Geometry `json:"geometry"`
+	// Parent Contains information about the parent this item attached to. Passing null for ID will attach widget to the canvas directly.
+	Parent *ParentSet `json:"parent,omitempty"`
+}

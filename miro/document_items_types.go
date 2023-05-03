@@ -17,7 +17,7 @@ type DocumentItemData struct {
 	// DocumentURL A short text header to identify the document.
 	DocumentURL string `json:"documentUrl"`
 	// Title URL where the document is hosted. (required)
-	Title string `json:"title"`
+	Title string `json:"title,omitempty"`
 }
 
 type DocumentItem struct {
@@ -29,7 +29,7 @@ type DocumentItem struct {
 	CreatedBy  BasicEntityInfo  `json:"createdBy"`
 	ModifiedAt time.Time        `json:"modifiedAt"`
 	ModifiedBy BasicEntityInfo  `json:"modifiedBy"`
-	Parent     Parent           `json:"parent"`
+	Parent     *Parent          `json:"parent,omitempty"`
 	Links      Links            `json:"links"`
 	Type       string           `json:"type"`
 }

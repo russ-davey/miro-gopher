@@ -7,7 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"os"
 	"strings"
 	"time"
@@ -118,6 +120,53 @@ func (c *Client) Post(ctx context.Context, url string, payload, response interfa
 	}
 
 	c.addHeaders(req)
+	if resp, err := c.HTTPClient.Do(req); err != nil {
+		return err
+	} else {
+		if resp.StatusCode != http.StatusCreated {
+			return constructErrorMsg(resp)
+		}
+		return json.NewDecoder(resp.Body).Decode(&response)
+	}
+}
+
+func (c *Client) PostMultipart(ctx context.Context, url, filename string, payloads map[string]io.Reader, response interface{}) error {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	for key, value := range payloads {
+		var part io.Writer
+		var err error
+
+		switch key {
+		case "resource":
+			part, err = writer.CreateFormFile(key, filename)
+		case "data":
+			part, err = createFormMetaData(key, filename, writer)
+		}
+		if err != nil {
+			return err
+		}
+
+		if _, err = io.Copy(part, value); err != nil {
+			return err
+		}
+	}
+
+	// finalize the multipart request
+	if err := writer.Close(); err != nil {
+		return err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+	if err != nil {
+		return err
+	}
+
+	// set the content type
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+
 	if resp, err := c.HTTPClient.Do(req); err != nil {
 		return err
 	} else {
@@ -254,6 +303,16 @@ func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 		}
 	}
 	return bufBody, nil
+}
+
+func createFormMetaData(fieldName, filename string, writer *multipart.Writer) (io.Writer, error) {
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition",
+		fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
+			fieldName, filename))
+	h.Set("Content-Type", "application/json")
+
+	return writer.CreatePart(h)
 }
 
 func constructErrorMsg(resp *http.Response) error {
