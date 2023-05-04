@@ -18,9 +18,9 @@ type PaginationLinks struct {
 }
 
 type Geometry struct {
-	Height   float64 `json:"height,omitempty"`
-	Rotation float64 `json:"rotation,omitempty"`
-	Width    float64 `json:"width,omitempty"`
+	Height   float64 `json:"height"`
+	Rotation float64 `json:"rotation"`
+	Width    float64 `json:"width"`
 }
 
 type Position struct {
@@ -101,6 +101,11 @@ type PositionSet struct {
 	// By default, all items have absolute positioning to the board, not the current viewport.
 	// The center point of the board has x: 0 and y: 0 coordinates.
 	Y float64 `json:"y"`
+}
+
+type GeometrySet struct {
+	Height float64 `json:"height,omitempty"`
+	Width  float64 `json:"width,omitempty"`
 }
 
 type Links struct {
