@@ -24,7 +24,7 @@ func TestCreateFrame(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.FrameItems.Create(testBoardID,
+			results, err := client.Frames.Create(testBoardID,
 				SetFrameItem{})
 
 			Convey("Then the item is created", func() {
@@ -58,7 +58,7 @@ func TestGetFrame(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.FrameItems.Get(testBoardID, testItemID)
+			results, err := client.Frames.Get(testBoardID, testItemID)
 
 			Convey("Then the item information is returned", func() {
 				So(err, ShouldBeNil)
@@ -94,7 +94,7 @@ func TestGetAllFrames(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.FrameItems.GetAll(testBoardID)
+			results, err := client.Frames.GetAll(testBoardID)
 
 			Convey("Then a slice of item information is returned", func() {
 				So(err, ShouldBeNil)
@@ -126,7 +126,7 @@ func TestGetAllFramesWithSearchParams(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.FrameItems.GetAll(testBoardID, FrameSearchParams{Limit: "1"})
+			results, err := client.Frames.GetAll(testBoardID, FrameSearchParams{Limit: "1"})
 
 			Convey("Then a slice of item information is returned consisting of just one item", func() {
 				So(err, ShouldBeNil)
@@ -167,7 +167,7 @@ func TestUpdateFrameItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.FrameItems.Update(testBoardID, testItemID, SetFrameItem{
+			results, err := client.Frames.Update(testBoardID, testItemID, SetFrameItem{
 				Position: PositionSet{X: -2.7315},
 			})
 
@@ -199,7 +199,7 @@ func TestDeleteFrame(t *testing.T) {
 				receivedRequest = r
 			})
 
-			err := client.FrameItems.Delete(testBoardID, testItemID)
+			err := client.Frames.Delete(testBoardID, testItemID)
 
 			Convey("Then the item is deleted (no error is returned)", func() {
 				So(err, ShouldBeNil)
