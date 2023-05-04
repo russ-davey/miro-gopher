@@ -38,20 +38,29 @@ func (c *DocumentsService) Upload(boardID, filePath string, payload UploadFileIt
 	if err != nil {
 		return response, err
 	}
+	fileName := path.Base(file.Name())
 
 	buf := &bytes.Buffer{}
 	if err := json.NewEncoder(buf).Encode(payload); err != nil {
 		return nil, err
 	}
 
-	reader := make(map[string]io.Reader)
-	reader["resource"] = io.Reader(file)
-	reader["data"] = buf
+	multiParts := make(MultiParts)
+	multiParts["resource"] = MultiPart{
+		Reader:      io.Reader(file),
+		FileName:    fileName,
+		ContentType: "application/octet-stream",
+	}
+	multiParts["data"] = MultiPart{
+		Reader:      buf,
+		FileName:    fileName,
+		ContentType: "application/json",
+	}
 
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
 		return response, err
 	} else {
-		err = c.client.PostMultipart(c.client.ctx, url, path.Base(file.Name()), reader, response)
+		err = c.client.PostMultipart(c.client.ctx, url, multiParts, response)
 		return response, err
 	}
 }
@@ -82,18 +91,41 @@ func (c *DocumentsService) Update(boardID, itemID string, payload SetDocumentIte
 	}
 }
 
-//// UpdateFromFile a document item on a board. Update document item using file from device.
-//// Required scope: boards:write | Rate limiting: Level 2
-//func (c *DocumentsService) UpdateFromFile(boardID, itemID string, payload SetDocumentItem) (*DocumentItem, error) {
-//	response := &DocumentItem{}
-//
-//	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
-//		return response, err
-//	} else {
-//		err = c.client.Patch(c.client.ctx, url, payload, response)
-//		return response, err
-//	}
-//}
+// UpdateFromFile update document item using file from device.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *DocumentsService) UpdateFromFile(boardID, itemID, filePath string, payload UploadFileItem) (*DocumentItem, error) {
+	response := &DocumentItem{}
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		return response, err
+	}
+	fileName := path.Base(file.Name())
+
+	buf := &bytes.Buffer{}
+	if err := json.NewEncoder(buf).Encode(payload); err != nil {
+		return nil, err
+	}
+
+	multiParts := make(MultiParts)
+	multiParts["resource"] = MultiPart{
+		Reader:      io.Reader(file),
+		FileName:    fileName,
+		ContentType: "application/octet-stream",
+	}
+	multiParts["data"] = MultiPart{
+		Reader:      buf,
+		FileName:    fileName,
+		ContentType: "application/json",
+	}
+
+	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
+		return response, err
+	} else {
+		err = c.client.PatchMultipart(c.client.ctx, url, multiParts, response)
+		return response, err
+	}
+}
 
 // Delete a document item from the board.
 // Required scope: boards:write | Rate limiting: Level 3

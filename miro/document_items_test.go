@@ -43,6 +43,51 @@ func TestCreateDocumentItem(t *testing.T) {
 	})
 }
 
+func TestUploadDocumentItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
+	defer closeAPIServer()
+
+	responseBody := &DocumentItem{}
+	constructResponseAndResults("document_item_get.json", &responseBody)
+
+	Convey("Given a board ID and an item ID", t, func() {
+		Convey("When the Upload method is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
+				r.ParseMultipartForm(32 << 20)
+
+				file, _, _ := r.FormFile("data")
+				defer file.Close()
+
+				bodyData := UploadFileItem{}
+				json.NewDecoder(file).Decode(&bodyData)
+
+				responseBody.Data.Title = bodyData.Title
+				jsonData, _ := json.Marshal(responseBody)
+
+				w.WriteHeader(http.StatusCreated)
+				w.Write(jsonData)
+
+				receivedRequest = r
+			})
+
+			results, err := client.DocumentItems.Upload(testBoardID, "./test_data/document_item_get.json", UploadFileItem{Title: "A test upload"})
+
+			Convey("Then the item is uploaded", func() {
+				So(err, ShouldBeNil)
+				So(results.Data.Title, ShouldEqual, "A test upload")
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodPost)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, testResourcePath)
+				})
+			})
+		})
+	})
+}
+
 func TestGetDocumentItem(t *testing.T) {
 	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
 	defer closeAPIServer()
@@ -120,7 +165,50 @@ func TestUpdateDocumentItem(t *testing.T) {
 			})
 		})
 	})
+}
 
+func TestUploadUpdateDocumentItem(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "documents")
+	defer closeAPIServer()
+
+	responseBody := &DocumentItem{}
+	constructResponseAndResults("document_item_get.json", &responseBody)
+
+	Convey("Given a board ID and an item ID", t, func() {
+		Convey("When the UpdateFromFile method is called", func() {
+			var receivedRequest *http.Request
+			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
+				r.ParseMultipartForm(32 << 20)
+
+				file, _, _ := r.FormFile("data")
+				defer file.Close()
+
+				bodyData := UploadFileItem{}
+				json.NewDecoder(file).Decode(&bodyData)
+
+				responseBody.Data.Title = bodyData.Title
+				jsonData, _ := json.Marshal(responseBody)
+
+				w.Write(jsonData)
+
+				receivedRequest = r
+			})
+
+			results, err := client.DocumentItems.UpdateFromFile(testBoardID, testItemID, "./test_data/document_item_get.json", UploadFileItem{Title: "A test upload update"})
+
+			Convey("Then the item is uploaded", func() {
+				So(err, ShouldBeNil)
+				So(results.Data.Title, ShouldEqual, "A test upload update")
+
+				Convey("And the request contains the expected headers and parameters", func() {
+					So(receivedRequest, ShouldNotBeNil)
+					So(receivedRequest.Method, ShouldEqual, http.MethodPatch)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
+					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("%s/%s", testResourcePath, testItemID))
+				})
+			})
+		})
+	})
 }
 
 func TestDeleteDocumentItem(t *testing.T) {
