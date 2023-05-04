@@ -130,26 +130,17 @@ func (c *Client) Post(ctx context.Context, url string, payload, response interfa
 	}
 }
 
-func (c *Client) PostMultipart(ctx context.Context, url, filename string, payloads map[string]io.Reader, response interface{}) error {
+func (c *Client) PostMultipart(ctx context.Context, url string, parts MultiParts, response interface{}) error {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
-	for key, value := range payloads {
-		var part io.Writer
-		var err error
-
-		switch key {
-		case "resource":
-			part, err = writer.CreateFormFile(key, filename)
-		case "data":
-			part, err = createFormMetaData(key, filename, writer)
-		}
-		if err != nil {
+	for key, value := range parts {
+		if part, err := createFormPart(key, value.FileName, value.ContentType, writer); err != nil {
 			return err
-		}
-
-		if _, err = io.Copy(part, value); err != nil {
-			return err
+		} else {
+			if _, err = io.Copy(part, value.Reader); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -249,6 +240,44 @@ func (c *Client) Patch(ctx context.Context, url string, payload, response interf
 	}
 }
 
+func (c *Client) PatchMultipart(ctx context.Context, url string, parts MultiParts, response interface{}) error {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	for key, value := range parts {
+		if part, err := createFormPart(key, value.FileName, value.ContentType, writer); err != nil {
+			return err
+		} else {
+			if _, err = io.Copy(part, value.Reader); err != nil {
+				return err
+			}
+		}
+	}
+
+	// finalize the multipart request
+	if err := writer.Close(); err != nil {
+		return err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, body)
+	if err != nil {
+		return err
+	}
+
+	// set the content type
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+
+	if resp, err := c.HTTPClient.Do(req); err != nil {
+		return err
+	} else {
+		if resp.StatusCode != http.StatusOK {
+			return constructErrorMsg(resp)
+		}
+		return json.NewDecoder(resp.Body).Decode(&response)
+	}
+}
+
 // Delete Native DELETE function
 func (c *Client) Delete(ctx context.Context, url string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
@@ -305,12 +334,12 @@ func payloadToBuffer(body interface{}) (io.ReadWriter, error) {
 	return bufBody, nil
 }
 
-func createFormMetaData(fieldName, filename string, writer *multipart.Writer) (io.Writer, error) {
+func createFormPart(fieldName, filename, contentType string, writer *multipart.Writer) (io.Writer, error) {
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",
 		fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
 			fieldName, filename))
-	h.Set("Content-Type", "application/json")
+	h.Set("Content-Type", contentType)
 
 	return writer.CreatePart(h)
 }

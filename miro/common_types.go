@@ -1,5 +1,7 @@
 package miro
 
+import "io"
+
 // BasicEntityInfo info type for different entities (i.e. users, teams & organizations)
 type BasicEntityInfo struct {
 	ID   string `json:"id,omitempty"`
@@ -116,3 +118,11 @@ type UploadFileItem struct {
 	// Parent Contains information about the parent this item attached to. Passing null for ID will attach widget to the canvas directly.
 	Parent *ParentSet `json:"parent,omitempty"`
 }
+
+type MultiPart struct {
+	Reader      io.Reader
+	FileName    string
+	ContentType string
+}
+
+type MultiParts map[string]MultiPart
