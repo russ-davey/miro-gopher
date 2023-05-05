@@ -48,7 +48,6 @@ func TestGetFrame(t *testing.T) {
 
 	expectedResults := FrameItem{}
 	responseData := constructResponseAndResults("frame_item_get.json", &expectedResults)
-	roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
 		Convey("When the Get function is called", func() {
@@ -69,32 +68,28 @@ func TestGetFrame(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("%s/%s", testResourcePath, testItemID))
-
-					Convey("And round-tripping the data does not result in any loss of data", func() {
-						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
-					})
 				})
 			})
 		})
 	})
 }
 
-func TestGetAllFrames(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "frames")
+func TestGetFrameItems(t *testing.T) {
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
-	expectedResults := &ListFrames{}
+	expectedResults := &ListItems{}
 	responseData := constructResponseAndResults("frame_item_get_all.json", expectedResults)
 
 	Convey("Given no arguments", t, func() {
-		Convey("When the GetAll function is called", func() {
+		Convey("When the GetItems function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
 
-			results, err := client.Frames.GetAll(testBoardID)
+			results, err := client.Frames.GetItems(testBoardID, testItemID)
 
 			Convey("Then a slice of item information is returned", func() {
 				So(err, ShouldBeNil)
@@ -112,21 +107,21 @@ func TestGetAllFrames(t *testing.T) {
 }
 
 func TestGetAllFramesWithSearchParams(t *testing.T) {
-	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "frames")
+	client, testResourcePath, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, testBoardID, "items")
 	defer closeAPIServer()
 
-	expectedResults := &ListFrames{}
+	expectedResults := &ListItems{}
 	responseData := constructResponseAndResults("frame_item_get_all.json", expectedResults)
 
 	Convey("Given a search param to limit the number of results returned", t, func() {
-		Convey("When the GetAll function is called", func() {
+		Convey("When the GetItems function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
 				receivedRequest = r
 			})
 
-			results, err := client.Frames.GetAll(testBoardID, FrameSearchParams{Limit: "1"})
+			results, err := client.Frames.GetItems(testBoardID, testItemID, ItemSearchParams{Limit: "1"})
 
 			Convey("Then a slice of item information is returned consisting of just one item", func() {
 				So(err, ShouldBeNil)

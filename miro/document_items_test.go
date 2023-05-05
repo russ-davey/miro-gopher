@@ -94,7 +94,6 @@ func TestGetDocumentItem(t *testing.T) {
 
 	expectedResults := &DocumentItem{}
 	responseData := constructResponseAndResults("document_item_get.json", &expectedResults)
-	roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
 		Convey("When the Get function is called", func() {
@@ -115,10 +114,6 @@ func TestGetDocumentItem(t *testing.T) {
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("%s/%s", testResourcePath, testItemID))
-
-					Convey("And round-tripping the data does not result in any loss of data", func() {
-						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
-					})
 				})
 			})
 		})

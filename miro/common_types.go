@@ -19,7 +19,7 @@ type PaginationLinks struct {
 
 type Geometry struct {
 	Height   float64 `json:"height"`
-	Rotation float64 `json:"rotation"`
+	Rotation float64 `json:"rotation,omitempty"`
 	Width    float64 `json:"width"`
 }
 
