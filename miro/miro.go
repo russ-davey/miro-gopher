@@ -354,11 +354,16 @@ func constructErrorMsg(resp *http.Response) error {
 		return errors.New(fmt.Sprintf("unexpected status code: %d", resp.StatusCode))
 	}
 
-	details := make([]string, 0)
-	for _, field := range respErr.Context.Fields {
-		details = append(details, fmt.Sprintf("%s: %s", field.Field, field.Message))
+	var errorDetails string
+	if len(respErr.Context.Fields) > 0 {
+		details := make([]string, 1)
+		for _, field := range respErr.Context.Fields {
+			details = append(details, fmt.Sprintf("%s: %s", field.Field, field.Message))
+		}
+		errorDetails = strings.Join(details, "\n  ")
 	}
-	return fmt.Errorf("unexpected status code: %d, message: %s (%s), details:\n  %s", resp.StatusCode, respErr.Message, respErr.Code, strings.Join(details, "\n  "))
+
+	return fmt.Errorf("unexpected status code: %d, message: %s (%s)%s", resp.StatusCode, respErr.Message, respErr.Code, errorDetails)
 }
 
 func constructURL(urlParts ...string) (string, error) {
