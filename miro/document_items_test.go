@@ -24,8 +24,8 @@ func TestCreateDocumentItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.DocumentItems.Create(testBoardID, SetDocumentItem{
-				Data: DocumentItemData{Title: "A test", DocumentURL: "http://testing"},
+			results, err := client.DocumentItems.Create(testBoardID, DocumentItemSet{
+				Data: ItemDataSet{Title: "A test", URL: "http://testing"},
 			})
 
 			Convey("Then the item is created", func() {
@@ -127,15 +127,16 @@ func TestUpdateDocumentItem(t *testing.T) {
 	responseBody := &DocumentItem{}
 	constructResponseAndResults("document_item_get.json", &responseBody)
 
-	Convey("Given a board ID, an item ID and a SetDocumentItem struct", t, func() {
+	Convey("Given a board ID, an item ID and a DocumentItemSet struct", t, func() {
 		Convey("When the Update function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
-				bodyData := DocumentItem{}
+				bodyData := DocumentItemSet{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
 				// update test data
-				responseBody.Data = bodyData.Data
+				responseBody.Data.Title = bodyData.Data.Title
+				responseBody.Data.DocumentURL = bodyData.Data.URL
 				// marshal test data
 				jsonData, _ := json.Marshal(responseBody)
 				w.Write(jsonData)
@@ -143,8 +144,8 @@ func TestUpdateDocumentItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.DocumentItems.Update(testBoardID, testItemID, SetDocumentItem{
-				Data: DocumentItemData{Title: "A test", DocumentURL: "http://testing"}})
+			results, err := client.DocumentItems.Update(testBoardID, testItemID, DocumentItemSet{
+				Data: ItemDataSet{Title: "A test", URL: "http://testing"}})
 
 			Convey("Then the item information is returned which includes the new role", func() {
 				So(err, ShouldBeNil)

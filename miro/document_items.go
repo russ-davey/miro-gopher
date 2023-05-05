@@ -17,7 +17,7 @@ type DocumentsService struct {
 
 // Create Adds a document item to a board by specifying the URL where the document is hosted.
 // Required scope: boards:write | Rate limiting: Level 2
-func (c *DocumentsService) Create(boardID string, payload SetDocumentItem) (*DocumentItem, error) {
+func (c *DocumentsService) Create(boardID string, payload DocumentItemSet) (*DocumentItem, error) {
 	response := &DocumentItem{}
 
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
@@ -80,7 +80,7 @@ func (c *DocumentsService) Get(boardID, itemID string) (*DocumentItem, error) {
 
 // Update a document item on a board.
 // Required scope: boards:write | Rate limiting: Level 2
-func (c *DocumentsService) Update(boardID, itemID string, payload SetDocumentItem) (*DocumentItem, error) {
+func (c *DocumentsService) Update(boardID, itemID string, payload DocumentItemSet) (*DocumentItem, error) {
 	response := &DocumentItem{}
 
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {

@@ -2,9 +2,9 @@ package miro
 
 import "time"
 
-type SetDocumentItem struct {
+type DocumentItemSet struct {
 	// Data Contains information about the document URL. (required)
-	Data DocumentItemData `json:"data"`
+	Data ItemDataSet `json:"data"`
 	// Position Contains location information about the item, such as its x coordinate, y coordinate, and the origin of the x and y coordinates.
 	Position PositionSet `json:"position"`
 	// Geometry Contains geometrical information about the item, such as its width or height.
