@@ -32,6 +32,7 @@ type Client struct {
 	DocumentItems *DocumentsService
 	EmbedItems    *EmbedItemsService
 	Frames        *FramesService
+	Images        *ImagesService
 }
 
 type Field struct {
@@ -87,6 +88,7 @@ func buildAPIMap(c *Client) {
 	c.DocumentItems = &DocumentsService{client: c, apiVersion: "v2", resource: "boards", subResource: "documents"}
 	c.EmbedItems = &EmbedItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "embeds"}
 	c.Frames = &FramesService{client: c, apiVersion: "v2", resource: "boards", subResource: "frames"}
+	c.Images = &ImagesService{client: c, apiVersion: "v2", resource: "boards", subResource: "images"}
 }
 
 // Get Native GET function
