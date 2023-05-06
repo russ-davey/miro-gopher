@@ -36,6 +36,7 @@ type Client struct {
 	StickyNotes   *StickyNotesService
 	TextItems     *TextItemsService
 	Tags          *TagsService
+	OEmbed        *OEmbedServices
 }
 
 type Field struct {
@@ -95,6 +96,7 @@ func buildAPIMap(c *Client) {
 	c.StickyNotes = &StickyNotesService{client: c, apiVersion: "v2", resource: "boards", subResource: "sticky_notes"}
 	c.TextItems = &TextItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "texts"}
 	c.Tags = &TagsService{client: c, apiVersion: "v2", resource: "boards", subResource: "tags"}
+	c.OEmbed = &OEmbedServices{client: c, apiVersion: "v1", resource: "oembed"}
 }
 
 // Get Native GET function

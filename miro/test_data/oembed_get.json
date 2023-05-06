@@ -1,0 +1,14 @@
+{
+  "html": "string",
+  "title": "string",
+  "author": "string",
+  "version": "string",
+  "type": "string",
+  "thumbnail_url": "string",
+  "thumbnail_width": 0,
+  "thumbnail_height": 0,
+  "width": 0,
+  "height": 0,
+  "provider_name": "string",
+  "provider_url": "string"
+}
