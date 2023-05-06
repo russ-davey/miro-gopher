@@ -53,7 +53,7 @@ func (c *ConnectorsService) GetAll(boardID string, queryParams ...ConnectorSearc
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			err = c.client.Get(c.client.ctx, url, response, ParseQueryTags(queryParams[0])...)
+			err = c.client.Get(c.client.ctx, url, response, parseQueryTags(queryParams[0])...)
 		} else {
 			err = c.client.Get(c.client.ctx, url, response)
 		}

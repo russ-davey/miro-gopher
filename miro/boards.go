@@ -43,7 +43,7 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			err = b.client.Get(b.client.ctx, url, response, ParseQueryTags(queryParams[0])...)
+			err = b.client.Get(b.client.ctx, url, response, parseQueryTags(queryParams[0])...)
 		} else {
 			err = b.client.Get(b.client.ctx, url, response)
 		}

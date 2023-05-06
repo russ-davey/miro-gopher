@@ -93,12 +93,13 @@ func buildAPIMap(c *Client) {
 	c.Images = &ImagesService{client: c, apiVersion: "v2", resource: "boards", subResource: "images"}
 	c.StickyNotes = &StickyNotesService{client: c, apiVersion: "v2", resource: "boards", subResource: "sticky_notes"}
 	c.TextItems = &TextItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "texts"}
+	c.Tags = &TagsService{client: c, apiVersion: "v2", resource: "boards", subResource: "tags"}
 }
 
 // Get Native GET function
 func (c *Client) Get(ctx context.Context, url string, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
-		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
+		url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -181,7 +182,7 @@ func (c *Client) PostMultipart(ctx context.Context, url string, parts MultiParts
 // postNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
 func (c *Client) postNoContent(ctx context.Context, url string, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
-		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
+		url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
@@ -203,7 +204,7 @@ func (c *Client) postNoContent(ctx context.Context, url string, queryParams ...P
 // Put Native PUT function
 func (c *Client) Put(ctx context.Context, url string, payload, response interface{}, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
-		url = fmt.Sprintf("%s%s", url, EncodeQueryParams(queryParams))
+		url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
 	}
 
 	bufBody, err := payloadToBuffer(payload)

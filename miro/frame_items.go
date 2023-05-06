@@ -54,7 +54,7 @@ func (f *FramesService) GetItems(boardID, frameID string, queryParams ...ItemSea
 	} else {
 		var err error
 		if len(queryParams) > 0 {
-			searchParams := ParseQueryTags(queryParams[0])
+			searchParams := parseQueryTags(queryParams[0])
 			searchParams = append(searchParams, Parameter{"parent_item_id": frameID})
 			err = f.client.Get(f.client.ctx, url, response, searchParams...)
 		} else {
