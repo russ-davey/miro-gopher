@@ -28,7 +28,7 @@ type AppCardItemData struct {
 	Description string `json:"description"`
 }
 
-type SetAppCardItem struct {
+type AppCardItemSet struct {
 	// Data Contains app card item data, such as the title, description, or fields.
 	Data AppCardItemData `json:"data"`
 	// Style Contains information about the style of an app card item, such as the fill color.

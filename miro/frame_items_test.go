@@ -50,7 +50,7 @@ func TestGetFrame(t *testing.T) {
 	responseData := constructResponseAndResults("frame_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When Get is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -91,7 +91,7 @@ func TestGetFrameItems(t *testing.T) {
 
 			results, err := client.Frames.GetItems(testBoardID, testItemID)
 
-			Convey("Then a slice of item information is returned", func() {
+			Convey("Then a list of item information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -124,7 +124,7 @@ func TestGetAllFramesWithSearchParams(t *testing.T) {
 
 			results, err := client.Frames.GetItems(testBoardID, testItemID, ItemSearchParams{Limit: "1"})
 
-			Convey("Then a slice of item information is returned consisting of just one item", func() {
+			Convey("Then a list of item information is returned consisting of just one item", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -149,7 +149,7 @@ func TestUpdateFrameItem(t *testing.T) {
 	constructResponseAndResults("frame_item_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a FrameItemUpdate struct", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When Update is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body

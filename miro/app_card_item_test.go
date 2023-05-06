@@ -16,7 +16,7 @@ func TestCreateAppCardItem(t *testing.T) {
 	responseData := constructResponseAndResults("app_card_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Create method is called", func() {
+		Convey("When Create is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
@@ -25,7 +25,7 @@ func TestCreateAppCardItem(t *testing.T) {
 			})
 
 			results, err := client.AppCardItems.Create(testBoardID,
-				SetAppCardItem{
+				AppCardItemSet{
 					Data: AppCardItemData{
 						Fields: []Fields{
 							{
@@ -69,6 +69,14 @@ func TestCreateAppCardItem(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When Create is called without a board ID", func() {
+			_, err := client.AppCardItems.Create("", AppCardItemSet{})
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 }
 
@@ -80,7 +88,7 @@ func TestGetAppCardItem(t *testing.T) {
 	responseData := constructResponseAndResults("app_card_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When Get is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -101,6 +109,14 @@ func TestGetAppCardItem(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When Get is called without a board ID or item ID", func() {
+			_, err := client.AppCardItems.Get("", "")
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 }
 
@@ -112,11 +128,11 @@ func TestUpdateAppCardItem(t *testing.T) {
 	constructResponseAndResults("app_card_item_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a AppCardItemUpdate struct", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When Update is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
-				bodyData := SetAppCardItem{}
+				bodyData := AppCardItemSet{}
 				json.NewDecoder(r.Body).Decode(&bodyData)
 				// update test data
 				responseBody.Position.X = bodyData.Position.X
@@ -127,7 +143,7 @@ func TestUpdateAppCardItem(t *testing.T) {
 				receivedRequest = r
 			})
 
-			results, err := client.AppCardItems.Update(testBoardID, testItemID, SetAppCardItem{
+			results, err := client.AppCardItems.Update(testBoardID, testItemID, AppCardItemSet{
 				Position: PositionSet{X: -2.7315},
 			})
 
@@ -143,6 +159,14 @@ func TestUpdateAppCardItem(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When Update is called without a board ID or item ID", func() {
+			_, err := client.AppCardItems.Update("", "", AppCardItemSet{})
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 
 }
@@ -152,7 +176,7 @@ func TestDeleteAppCardItem(t *testing.T) {
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Delete function is called", func() {
+		Convey("When Delete is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusNoContent)
@@ -170,6 +194,14 @@ func TestDeleteAppCardItem(t *testing.T) {
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("%s/%s", testResourcePath, testItemID))
 				})
+			})
+		})
+
+		Convey("When Delete is called without a board ID and an item ID", func() {
+			err := client.AppCardItems.Delete("", "")
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
 			})
 		})
 	})

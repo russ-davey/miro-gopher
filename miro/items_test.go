@@ -27,7 +27,7 @@ func TestGetAllItems(t *testing.T) {
 
 			results, err := client.Items.GetAll(testBoardID)
 
-			Convey("Then a slice of item information is returned", func() {
+			Convey("Then a list of item information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results.Data[0].ID, ShouldResemble, expectedResults.Data[0].ID)
 
@@ -60,7 +60,7 @@ func TestGetAllItemsWithSearchParams(t *testing.T) {
 
 			results, err := client.Items.GetAll(testBoardID, ItemSearchParams{Type: ItemTypeFrame, Limit: "1"})
 
-			Convey("Then a slice of item information is returned", func() {
+			Convey("Then a list of item information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results.Data[0].ID, ShouldResemble, expectedResults.Data[0].ID)
 
@@ -89,7 +89,7 @@ func TestGetItem(t *testing.T) {
 	responseData := constructResponseAndResults("items_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When Get is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -98,7 +98,7 @@ func TestGetItem(t *testing.T) {
 
 			results, err := client.Items.Get(testBoardID, testItemID)
 
-			Convey("Then a slice of item information is returned", func() {
+			Convey("Then a list of item information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -121,7 +121,7 @@ func TestUpdateItem(t *testing.T) {
 	constructResponseAndResults("items_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a ItemUpdate struct", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When Update is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body

@@ -1,0 +1,1855 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>miro: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/russ-davey/miro-gopher/miro/access_token.go (77.8%)</option>
+				
+				<option value="file1">github.com/russ-davey/miro-gopher/miro/app_card_item.go (100.0%)</option>
+				
+				<option value="file2">github.com/russ-davey/miro-gopher/miro/board_members.go (100.0%)</option>
+				
+				<option value="file3">github.com/russ-davey/miro-gopher/miro/boards.go (80.0%)</option>
+				
+				<option value="file4">github.com/russ-davey/miro-gopher/miro/card_items.go (77.8%)</option>
+				
+				<option value="file5">github.com/russ-davey/miro-gopher/miro/connectors.go (80.0%)</option>
+				
+				<option value="file6">github.com/russ-davey/miro-gopher/miro/document_items.go (79.2%)</option>
+				
+				<option value="file7">github.com/russ-davey/miro-gopher/miro/embed_items.go (77.8%)</option>
+				
+				<option value="file8">github.com/russ-davey/miro-gopher/miro/frame_items.go (84.8%)</option>
+				
+				<option value="file9">github.com/russ-davey/miro-gopher/miro/image_items.go (79.2%)</option>
+				
+				<option value="file10">github.com/russ-davey/miro-gopher/miro/items.go (80.0%)</option>
+				
+				<option value="file11">github.com/russ-davey/miro-gopher/miro/miro.go (76.7%)</option>
+				
+				<option value="file12">github.com/russ-davey/miro-gopher/miro/oembed.go (88.9%)</option>
+				
+				<option value="file13">github.com/russ-davey/miro-gopher/miro/parameters.go (89.7%)</option>
+				
+				<option value="file14">github.com/russ-davey/miro-gopher/miro/shape_item.go (77.8%)</option>
+				
+				<option value="file15">github.com/russ-davey/miro-gopher/miro/sticky_note_items.go (77.8%)</option>
+				
+				<option value="file16">github.com/russ-davey/miro-gopher/miro/tags.go (80.0%)</option>
+				
+				<option value="file17">github.com/russ-davey/miro-gopher/miro/text_items.go (77.8%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package miro
+
+const (
+        // endpointOAUTHToken /oauth-token endpoint
+        endpointOAUTHToken = "oauth-token"
+        // endpointOAUTH /oauth endpoint
+        endpointOAUTH = "oauth"
+)
+
+type AccessTokenService struct {
+        client     *Client
+        apiVersion string
+}
+
+// Get information about an access token, such as the token type, scopes, team, user, token creation date and time, and the user who created the token.
+func (a *AccessTokenService) Get() (*AccessToken, error) <span class="cov8" title="1">{
+        response := &amp;AccessToken{}
+
+        if url, err := constructURL(a.client.BaseURL, a.apiVersion, endpointOAUTHToken); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = a.client.Get(a.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Revoke Revoking an access token means that the access token will no longer work. When an access token is revoked,
+// the refresh token is also revoked and no longer valid. This does not uninstall the application for the user.
+func (a *AccessTokenService) Revoke(accessToken string) error <span class="cov8" title="1">{
+        if url, err := constructURL(a.client.BaseURL, a.apiVersion, endpointOAUTH, "revoke"); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                err = a.client.postNoContent(a.client.ctx, url, Parameter{
+                        "access_token": accessToken,
+                })
+                return err
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package miro
+
+type AppCardItemsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create an app card item on a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (a *AppCardItemsService) Create(boardID string, payload AppCardItemSet) (*AppCardItem, error) <span class="cov8" title="1">{
+        response := &amp;AppCardItem{}
+
+        if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = a.client.Post(a.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific app card item on a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (a *AppCardItemsService) Get(boardID, itemID string) (*AppCardItem, error) <span class="cov8" title="1">{
+        response := &amp;AppCardItem{}
+
+        if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource, itemID); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = a.client.Get(a.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update an app card item on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (a *AppCardItemsService) Update(boardID, itemID string, payload AppCardItemSet) (*AppCardItem, error) <span class="cov8" title="1">{
+        response := &amp;AppCardItem{}
+
+        if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource, itemID); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = a.client.Patch(a.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete an app card item from a board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (a *AppCardItemsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(a.client.BaseURL, a.apiVersion, a.resource, boardID, a.subResource, itemID); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return a.client.Delete(a.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package miro
+
+type BoardMembersService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// ShareBoard Shares the board and Invites new members to collaborate on a board by sending an invitation email.
+// Depending on the board's Sharing policy, there might be various scenarios where membership in the team is required in
+// order to share the board with a user.
+// Required scope: boards:write | Rate limiting: Level 3
+func (b *BoardMembersService) ShareBoard(boardID string, payload ShareBoardInvitation) (*BoardInvitationResponse, error) <span class="cov8" title="1">{
+        response := &amp;BoardInvitationResponse{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Post(b.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a board member.
+// Required scope: boards:read | Rate limiting: Level 1
+func (b *BoardMembersService) Get(boardID, itemID string) (*BoardMember, error) <span class="cov8" title="1">{
+        response := &amp;BoardMember{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Get(b.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// GetAll retrieves a pageable list of members for a board.
+// Required scope: boards:read | Rate limiting: Level 1
+// Search query params: BoardMemberSearchParams{}
+func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberSearchParams) (*ListBoardMembers, error) <span class="cov8" title="1">{
+        response := &amp;ListBoardMembers{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        err = b.client.Get(b.client.ctx, url, response, parseQueryTags(queryParams[0])...)
+                }</span> else<span class="cov8" title="1"> {
+                        err = b.client.Get(b.client.ctx, url, response)
+                }</span>
+
+                <span class="cov8" title="1">return response, err</span>
+        }
+}
+
+// Update the role of a board member.
+// Required scope: boards:write | Rate limiting: Level 2
+func (b *BoardMembersService) Update(boardID, itemID string, role Role) (*BoardMember, error) <span class="cov8" title="1">{
+        response := &amp;BoardMember{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil </span><span class="cov8" title="1">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Patch(b.client.ctx, url, RoleUpdate{Role: role}, response)
+                return response, err
+        }</span>
+}
+
+// Delete Removes a board member from a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (b *BoardMembersService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource, itemID); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return b.client.Delete(b.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package miro
+
+type BoardsService struct {
+        client     *Client
+        apiVersion string
+        resource   string
+}
+
+// Create a board with the specified name and sharing policies.
+// Required scope: boards:write | Rate limiting: Level 3
+func (b *BoardsService) Create(payload SetBoard) (*Board, error) <span class="cov8" title="1">{
+        response := &amp;Board{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Post(b.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information about a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (b *BoardsService) Get(boardID string) (*Board, error) <span class="cov8" title="1">{
+        response := &amp;Board{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Get(b.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// GetAll boards that match the search criteria provided in the request.
+// Required scope: boards:read | Rate limiting: Level 1
+// Search query params: BoardSearchParams{}
+func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, error) <span class="cov8" title="1">{
+        response := &amp;ListBoards{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        err = b.client.Get(b.client.ctx, url, response, parseQueryTags(queryParams[0])...)
+                }</span> else<span class="cov8" title="1"> {
+                        err = b.client.Get(b.client.ctx, url, response)
+                }</span>
+
+                <span class="cov8" title="1">return response, err</span>
+        }
+}
+
+// Copy Creates a copy of an existing board. You can also update the name, description, sharing policy, and permissions
+// policy for the new board in the request body.
+// Required scope: boards:write | Rate limiting: Level 4
+func (b *BoardsService) Copy(payload SetBoard, copyFrom string) (*Board, error) <span class="cov8" title="1">{
+        response := &amp;Board{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Put(b.client.ctx, url, payload, response, Parameter{"copy_from": copyFrom})
+                return response, err
+        }</span>
+}
+
+// Update a specific board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (b *BoardsService) Update(boardID string, payload SetBoard) (*Board, error) <span class="cov8" title="1">{
+        response := &amp;Board{}
+
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = b.client.Patch(b.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete a board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (b *BoardsService) Delete(boardID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return b.client.Delete(b.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package miro
+
+type CardItemsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a card item on a board
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *CardItemsService) Create(boardID string, payload SetCardItem) (*CardItem, error) <span class="cov8" title="1">{
+        response := &amp;CardItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Post(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific card item on a board
+// Required scope: boards:read | Rate limiting: Level 1
+func (c *CardItemsService) Get(boardID, itemID string) (*CardItem, error) <span class="cov8" title="1">{
+        response := &amp;CardItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Get(c.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update a card item on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *CardItemsService) Update(boardID, itemID string, payload SetCardItem) (*CardItem, error) <span class="cov8" title="1">{
+        response := &amp;CardItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Patch(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete a card item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (c *CardItemsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return c.client.Delete(c.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package miro
+
+type ConnectorsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a connector on a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *ConnectorsService) Create(boardID string, payload SetConnector) (*Connector, error) <span class="cov8" title="1">{
+        response := &amp;Connector{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Post(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific connector on a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (c *ConnectorsService) Get(boardID, itemID string) (*Connector, error) <span class="cov8" title="1">{
+        response := &amp;Connector{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Get(c.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// GetAll connectors for a specific board.
+//
+// This method returns results using a cursor-based approach. A cursor-paginated method returns a portion of the total
+// set of results based on the limit specified and a cursor that points to the next portion of the results.
+// To retrieve the next portion of the collection, on your next call to the same method, set the cursor parameter equal
+// to the cursor value you received in the response of the previous request. For example, if you set the limit query
+// parameter to 10 and the board contains 20 objects, the first call will return information about the first 10 objects
+// in the response along with a cursor parameter and value. In this example, let's say the cursor parameter value
+// returned in the response is foo. If you want to retrieve the next set of objects, on your next call to the same method,
+// set the cursor parameter value to foo.
+// Required scope: boards:read | Rate limiting: Level 2
+// Search query params: ConnectorsSearchParams{}
+func (c *ConnectorsService) GetAll(boardID string, queryParams ...ConnectorSearchParams) (*ListConnectors, error) <span class="cov8" title="1">{
+        response := &amp;ListConnectors{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        err = c.client.Get(c.client.ctx, url, response, parseQueryTags(queryParams[0])...)
+                }</span> else<span class="cov8" title="1"> {
+                        err = c.client.Get(c.client.ctx, url, response)
+                }</span>
+
+                <span class="cov8" title="1">return response, err</span>
+        }
+}
+
+// Update a connector on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *ConnectorsService) Update(boardID, itemID string, payload SetConnector) (*Connector, error) <span class="cov8" title="1">{
+        response := &amp;Connector{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Patch(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete the specified connector from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (c *ConnectorsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return c.client.Delete(c.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package miro
+
+import (
+        "bytes"
+        "encoding/json"
+        "io"
+        "os"
+        "path"
+)
+
+type DocumentsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a document item on a board by specifying the URL where the document is hosted.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *DocumentsService) Create(boardID string, payload DocumentItemSet) (*DocumentItem, error) <span class="cov8" title="1">{
+        response := &amp;DocumentItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Post(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Upload a document item using a file from a device.
+// The maximum file size supported is 28.6 MB.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *DocumentsService) Upload(boardID, filePath string, payload UploadFileItem) (*DocumentItem, error) <span class="cov8" title="1">{
+        response := &amp;DocumentItem{}
+
+        file, err := os.Open(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span>
+        <span class="cov8" title="1">fileName := path.Base(file.Name())
+
+        buf := &amp;bytes.Buffer{}
+        if err := json.NewEncoder(buf).Encode(payload); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">multiParts := make(MultiParts)
+        multiParts["resource"] = MultiPart{
+                Reader:      io.Reader(file),
+                FileName:    fileName,
+                ContentType: "application/octet-stream",
+        }
+        multiParts["data"] = MultiPart{
+                Reader:      buf,
+                FileName:    fileName,
+                ContentType: "application/json",
+        }
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.PostMultipart(c.client.ctx, url, multiParts, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific document item on a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (c *DocumentsService) Get(boardID, itemID string) (*DocumentItem, error) <span class="cov8" title="1">{
+        response := &amp;DocumentItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Get(c.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update a document item on a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *DocumentsService) Update(boardID, itemID string, payload DocumentItemSet) (*DocumentItem, error) <span class="cov8" title="1">{
+        response := &amp;DocumentItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Patch(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// UpdateFromFile update document item using a file from a device.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *DocumentsService) UpdateFromFile(boardID, itemID, filePath string, payload UploadFileItem) (*DocumentItem, error) <span class="cov8" title="1">{
+        response := &amp;DocumentItem{}
+
+        file, err := os.Open(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span>
+        <span class="cov8" title="1">fileName := path.Base(file.Name())
+
+        buf := &amp;bytes.Buffer{}
+        if err := json.NewEncoder(buf).Encode(payload); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">multiParts := make(MultiParts)
+        multiParts["resource"] = MultiPart{
+                Reader:      io.Reader(file),
+                FileName:    fileName,
+                ContentType: "application/octet-stream",
+        }
+        multiParts["data"] = MultiPart{
+                Reader:      buf,
+                FileName:    fileName,
+                ContentType: "application/json",
+        }
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.PatchMultipart(c.client.ctx, url, multiParts, response)
+                return response, err
+        }</span>
+}
+
+// Delete a document item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (c *DocumentsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return c.client.Delete(c.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package miro
+
+type EmbedItemsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create an embed item on a board
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *EmbedItemsService) Create(boardID string, payload SetEmbedItem) (*EmbedItem, error) <span class="cov8" title="1">{
+        response := &amp;EmbedItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Post(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific embed item on a board
+// Required scope: boards:read | Rate limiting: Level 1
+func (c *EmbedItemsService) Get(boardID, itemID string) (*EmbedItem, error) <span class="cov8" title="1">{
+        response := &amp;EmbedItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Get(c.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update an embed item on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *EmbedItemsService) Update(boardID, itemID string, payload SetEmbedItem) (*EmbedItem, error) <span class="cov8" title="1">{
+        response := &amp;EmbedItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Patch(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete an embed item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (c *EmbedItemsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return c.client.Delete(c.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package miro
+
+type FramesService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a frame on a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (f *FramesService) Create(boardID string, payload SetFrameItem) (*FrameItem, error) <span class="cov8" title="1">{
+        response := &amp;FrameItem{}
+
+        addPayloadDefaults(&amp;payload)
+
+        if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, f.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = f.client.Post(f.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific frame on a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (f *FramesService) Get(boardID, itemID string) (*FrameItem, error) <span class="cov8" title="1">{
+        response := &amp;FrameItem{}
+
+        if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, f.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = f.client.Get(f.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// GetItems Retrieves a list of items within a specific frame. A frame is a parent item and all items within a frame are child items.
+// This method returns results using a cursor-based approach. A cursor-paginated method returns a portion of the total
+// set of results based on the limit specified and a cursor that points to the next portion of the results.
+// To retrieve the next portion of the collection, on your next call to the same method, set the cursor parameter equal
+// to the cursor value you received in the response of the previous request. For example, if you set the limit query
+// parameter to 10 and the board contains 20 objects, the first call will return information about the first 10 objects
+// in the response along with a cursor parameter and value. In this example, let's say the cursor parameter value
+// returned in the response is foo. If you want to retrieve the next set of objects, on your next call to the same method,
+// set the cursor parameter value to foo.
+// Required scope: boards:read | Rate limiting: Level 2
+// Search query params: ItemSearchParams{}
+func (f *FramesService) GetItems(boardID, frameID string, queryParams ...ItemSearchParams) (*ListItems, error) <span class="cov8" title="1">{
+        response := &amp;ListItems{}
+
+        if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, "items"); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                var searchParams []Parameter
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        searchParams = parseQueryTags(queryParams[0])
+                }</span>
+                <span class="cov8" title="1">searchParams = append(searchParams, Parameter{"parent_item_id": frameID})
+                err = f.client.Get(f.client.ctx, url, response, searchParams...)
+
+                return response, err</span>
+        }
+}
+
+// Update a frame on a board based on the data, style, or geometry properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (f *FramesService) Update(boardID, itemID string, payload SetFrameItem) (*FrameItem, error) <span class="cov8" title="1">{
+        response := &amp;FrameItem{}
+
+        addPayloadDefaults(&amp;payload)
+
+        if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, f.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = f.client.Patch(f.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete the specified frame from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (f *FramesService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, f.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return f.client.Delete(f.client.ctx, url)
+        }</span>
+}
+
+func addPayloadDefaults(payload *SetFrameItem) <span class="cov8" title="1">{
+        if payload.Data.Type == "" </span><span class="cov8" title="1">{
+                payload.Data.Type = TypeFreeform
+        }</span>
+        <span class="cov8" title="1">if payload.Data.Format == "" </span><span class="cov8" title="1">{
+                payload.Data.Format = FormatCustom
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package miro
+
+import (
+        "bytes"
+        "encoding/json"
+        "io"
+        "os"
+        "path"
+)
+
+type ImagesService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create an image item on a board by specifying the URL where the image is hosted.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *ImagesService) Create(boardID string, payload ImageItemSet) (*ImageItem, error) <span class="cov8" title="1">{
+        response := &amp;ImageItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Post(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Upload an image item using a file from a device.
+// The maximum file size supported is 28.6 MB.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *ImagesService) Upload(boardID, filePath string, payload UploadFileItem) (*ImageItem, error) <span class="cov8" title="1">{
+        response := &amp;ImageItem{}
+
+        file, err := os.Open(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span>
+        <span class="cov8" title="1">fileName := path.Base(file.Name())
+
+        buf := &amp;bytes.Buffer{}
+        if err := json.NewEncoder(buf).Encode(payload); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">multiParts := make(MultiParts)
+        multiParts["resource"] = MultiPart{
+                Reader:      io.Reader(file),
+                FileName:    fileName,
+                ContentType: "application/octet-stream",
+        }
+        multiParts["data"] = MultiPart{
+                Reader:      buf,
+                FileName:    fileName,
+                ContentType: "application/json",
+        }
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.PostMultipart(c.client.ctx, url, multiParts, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific image item on a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (c *ImagesService) Get(boardID, itemID string) (*ImageItem, error) <span class="cov8" title="1">{
+        response := &amp;ImageItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Get(c.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update an image item on a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *ImagesService) Update(boardID, itemID string, payload ImageItemSet) (*ImageItem, error) <span class="cov8" title="1">{
+        response := &amp;ImageItem{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Patch(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// UpdateFromFile update image item using a file from a device.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *ImagesService) UpdateFromFile(boardID, itemID, filePath string, payload UploadFileItem) (*ImageItem, error) <span class="cov8" title="1">{
+        response := &amp;ImageItem{}
+
+        file, err := os.Open(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span>
+        <span class="cov8" title="1">fileName := path.Base(file.Name())
+
+        buf := &amp;bytes.Buffer{}
+        if err := json.NewEncoder(buf).Encode(payload); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">multiParts := make(MultiParts)
+        multiParts["resource"] = MultiPart{
+                Reader:      io.Reader(file),
+                FileName:    fileName,
+                ContentType: "application/octet-stream",
+        }
+        multiParts["data"] = MultiPart{
+                Reader:      buf,
+                FileName:    fileName,
+                ContentType: "application/json",
+        }
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.PatchMultipart(c.client.ctx, url, multiParts, response)
+                return response, err
+        }</span>
+}
+
+// Delete an image item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (c *ImagesService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return c.client.Delete(c.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package miro
+
+type ItemsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// GetAll items for a specific board. You can retrieve all items on the board, a list of child items
+// inside a parent item, or a list of specific types of items by specifying URL query parameter values.
+//
+// This method returns results using a cursor-based approach. A cursor-paginated method returns a portion of the total set
+// of results based on the limit specified and a cursor that points to the next portion of the results.
+// To retrieve the next portion of the collection, on your next call to the same method, set the cursor parameter equal
+// to the cursor value you received in the response of the previous request. For example, if you set the limit query
+// parameter to 10 and the board contains 20 objects, the first call will return information about the first 10 objects
+// in the response along with a cursor parameter and value. In this example, let's say the cursor parameter value returned
+// in the response is foo. If you want to retrieve the next set of objects, on your next call to the same method, set the
+// cursor parameter value to foo.
+// Required scope: boards:read | Rate limiting: Level 2
+func (i *ItemsService) GetAll(boardID string, queryParams ...ItemSearchParams) (*ListItems, error) <span class="cov8" title="1">{
+        response := &amp;ListItems{}
+
+        if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        err = i.client.Get(i.client.ctx, url, response, parseQueryTags(queryParams[0])...)
+                }</span> else<span class="cov8" title="1"> {
+                        err = i.client.Get(i.client.ctx, url, response)
+                }</span>
+
+                <span class="cov8" title="1">return response, err</span>
+        }
+}
+
+// Get information for a specific item on a board.
+// Required scope: boards:read | Rate limiting: Level 1
+func (i *ItemsService) Get(boardID, itemID string) (*Item, error) <span class="cov8" title="1">{
+        response := &amp;Item{}
+
+        if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = i.client.Get(i.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update item position or parent
+// Required scope: boards:write | Rate limiting: Level 2
+func (i *ItemsService) Update(boardID, itemID string, payload ItemUpdate) (*Item, error) <span class="cov8" title="1">{
+        response := &amp;Item{}
+
+        if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = i.client.Patch(i.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete an item from a board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (i *ItemsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return i.client.Delete(i.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package miro
+
+import (
+        "bytes"
+        "context"
+        "encoding/json"
+        "errors"
+        "fmt"
+        "io"
+        "mime/multipart"
+        "net/http"
+        "net/textproto"
+        "os"
+        "strings"
+        "time"
+)
+
+type Client struct {
+        BaseURL string
+        token   string
+        // HTTPClient a fine-tuned HTTP client, but you can inject your own if, for example, you wanted to lower the timeouts
+        HTTPClient    *http.Client
+        ctx           context.Context
+        AccessToken   *AccessTokenService
+        Boards        *BoardsService
+        BoardMembers  *BoardMembersService
+        Items         *ItemsService
+        AppCardItems  *AppCardItemsService
+        CardItems     *CardItemsService
+        ShapeItems    *ShapeItemsService
+        Connectors    *ConnectorsService
+        DocumentItems *DocumentsService
+        EmbedItems    *EmbedItemsService
+        Frames        *FramesService
+        Images        *ImagesService
+        StickyNotes   *StickyNotesService
+        TextItems     *TextItemsService
+        Tags          *TagsService
+        OEmbed        *OEmbedServices
+}
+
+type Field struct {
+        Field   string `json:"field"`
+        Message string `json:"message"`
+}
+
+type Context struct {
+        Fields []Field `json:"fields"`
+}
+
+type ResponseError struct {
+        // Status code of the error
+        Status int `json:"status"`
+        // Code of the error
+        Code string `json:"code"`
+        // Context details of the error
+        Context Context `json:"context"`
+        // Description of the error
+        Message string `json:"message"`
+        // Type of the error
+        Type string `json:"type"`
+}
+
+func NewClient(token string) *Client <span class="cov8" title="1">{
+        var baseURL string
+        if mockServer := os.Getenv("MIRO_MOCK_SERVER"); mockServer != "" </span><span class="cov0" title="0">{
+                baseURL = mockServer
+        }</span> else<span class="cov8" title="1"> {
+                baseURL = "https://api.miro.com"
+        }</span>
+
+        <span class="cov8" title="1">c := &amp;Client{
+                BaseURL:    baseURL,
+                token:      token,
+                HTTPClient: httpClient(),
+                ctx:        context.Background(),
+        }
+        buildAPIMap(c)
+
+        return c</span>
+}
+
+func buildAPIMap(c *Client) <span class="cov8" title="1">{
+        c.AccessToken = &amp;AccessTokenService{client: c, apiVersion: "v1"}
+        c.Boards = &amp;BoardsService{client: c, apiVersion: "v2", resource: "boards"}
+        c.BoardMembers = &amp;BoardMembersService{client: c, apiVersion: "v2", resource: "boards", subResource: "members"}
+        c.Items = &amp;ItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "items"}
+        c.AppCardItems = &amp;AppCardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "app_cards"}
+        c.CardItems = &amp;CardItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "cards"}
+        c.ShapeItems = &amp;ShapeItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "shapes"}
+        c.Connectors = &amp;ConnectorsService{client: c, apiVersion: "v2", resource: "boards", subResource: "connectors"}
+        c.DocumentItems = &amp;DocumentsService{client: c, apiVersion: "v2", resource: "boards", subResource: "documents"}
+        c.EmbedItems = &amp;EmbedItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "embeds"}
+        c.Frames = &amp;FramesService{client: c, apiVersion: "v2", resource: "boards", subResource: "frames"}
+        c.Images = &amp;ImagesService{client: c, apiVersion: "v2", resource: "boards", subResource: "images"}
+        c.StickyNotes = &amp;StickyNotesService{client: c, apiVersion: "v2", resource: "boards", subResource: "sticky_notes"}
+        c.TextItems = &amp;TextItemsService{client: c, apiVersion: "v2", resource: "boards", subResource: "texts"}
+        c.Tags = &amp;TagsService{client: c, apiVersion: "v2", resource: "boards", subResource: "tags"}
+        c.OEmbed = &amp;OEmbedServices{client: c, apiVersion: "v1", resource: "oembed"}
+}</span>
+
+// Get Native GET function
+func (c *Client) Get(ctx context.Context, url string, response interface{}, queryParams ...Parameter) error <span class="cov8" title="1">{
+        if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">c.addHeaders(req)
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusOK </span><span class="cov8" title="1">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return json.NewDecoder(resp.Body).Decode(&amp;response)</span>
+        }
+}
+
+// Post Native POST function
+func (c *Client) Post(ctx context.Context, url string, payload, response interface{}) error <span class="cov8" title="1">{
+        bufBody, err := payloadToBuffer(payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bufBody)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">c.addHeaders(req)
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusCreated </span><span class="cov0" title="0">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return json.NewDecoder(resp.Body).Decode(&amp;response)</span>
+        }
+}
+
+func (c *Client) PostMultipart(ctx context.Context, url string, parts MultiParts, response interface{}) error <span class="cov8" title="1">{
+        body := &amp;bytes.Buffer{}
+        writer := multipart.NewWriter(body)
+
+        for key, value := range parts </span><span class="cov8" title="1">{
+                if part, err := createFormPart(key, value.FileName, value.ContentType, writer); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span> else<span class="cov8" title="1"> {
+                        if _, err = io.Copy(part, value.Reader); err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+        }
+
+        // finalize the multipart request
+        <span class="cov8" title="1">if err := writer.Close(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // set the content type
+        <span class="cov8" title="1">req.Header.Add("Content-Type", writer.FormDataContentType())
+        req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusCreated </span><span class="cov0" title="0">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return json.NewDecoder(resp.Body).Decode(&amp;response)</span>
+        }
+}
+
+// postNoContent Native POST function, expects http status code 204 (no content) and can accept queryParams
+func (c *Client) postNoContent(ctx context.Context, url string, queryParams ...Parameter) error <span class="cov8" title="1">{
+        if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">c.addHeaders(req)
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusNoContent </span><span class="cov0" title="0">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return nil</span>
+        }
+}
+
+// Put Native PUT function
+func (c *Client) Put(ctx context.Context, url string, payload, response interface{}, queryParams ...Parameter) error <span class="cov8" title="1">{
+        if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
+        }</span>
+
+        <span class="cov8" title="1">bufBody, err := payloadToBuffer(payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, bufBody)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">c.addHeaders(req)
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusCreated </span><span class="cov8" title="1">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return json.NewDecoder(resp.Body).Decode(&amp;response)</span>
+        }
+}
+
+// Patch Native PATCH function
+func (c *Client) Patch(ctx context.Context, url string, payload, response interface{}) error <span class="cov8" title="1">{
+        bufBody, err := payloadToBuffer(payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, bufBody)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">c.addHeaders(req)
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusOK </span><span class="cov0" title="0">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return json.NewDecoder(resp.Body).Decode(&amp;response)</span>
+        }
+}
+
+func (c *Client) PatchMultipart(ctx context.Context, url string, parts MultiParts, response interface{}) error <span class="cov8" title="1">{
+        body := &amp;bytes.Buffer{}
+        writer := multipart.NewWriter(body)
+
+        for key, value := range parts </span><span class="cov8" title="1">{
+                if part, err := createFormPart(key, value.FileName, value.ContentType, writer); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span> else<span class="cov8" title="1"> {
+                        if _, err = io.Copy(part, value.Reader); err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+        }
+
+        // finalize the multipart request
+        <span class="cov8" title="1">if err := writer.Close(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, body)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // set the content type
+        <span class="cov8" title="1">req.Header.Add("Content-Type", writer.FormDataContentType())
+        req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))
+
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusOK </span><span class="cov0" title="0">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return json.NewDecoder(resp.Body).Decode(&amp;response)</span>
+        }
+}
+
+// Delete Native DELETE function
+func (c *Client) Delete(ctx context.Context, url string, queryParams ...Parameter) error <span class="cov8" title="1">{
+        if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
+        }</span>
+
+        <span class="cov8" title="1">req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">c.addHeaders(req)
+        if resp, err := c.HTTPClient.Do(req); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                if resp.StatusCode != http.StatusNoContent </span><span class="cov0" title="0">{
+                        return constructErrorMsg(resp)
+                }</span>
+                <span class="cov8" title="1">return nil</span>
+        }
+}
+
+func httpClient() *http.Client <span class="cov8" title="1">{
+        transport := &amp;http.Transport{
+                // Enable keep-alive connections. By default, the http.DefaultClient does not use HTTP keep-alive, which means
+                // that a new TCP connection would be established for each request.
+                MaxIdleConnsPerHost: 10,
+                IdleConnTimeout:     30 * time.Second,
+        }
+
+        return &amp;http.Client{
+                Timeout:   time.Second * 10,
+                Transport: transport,
+        }
+}</span>
+
+func (c *Client) addHeaders(r *http.Request) <span class="cov8" title="1">{
+        switch r.Method </span>{
+        case http.MethodGet:<span class="cov8" title="1">
+                r.Header.Add("accept", "application/json")</span>
+        case http.MethodDelete:<span class="cov8" title="1"></span>
+        default:<span class="cov8" title="1">
+                r.Header.Add("accept", "application/json")
+                r.Header.Add("content-type", "application/json")</span>
+        }
+        <span class="cov8" title="1">r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.token))</span>
+}
+
+func payloadToBuffer(body interface{}) (io.ReadWriter, error) <span class="cov8" title="1">{
+        var bufBody io.ReadWriter
+        if body != nil </span><span class="cov8" title="1">{
+                if jsonBody, err := json.Marshal(body); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span> else<span class="cov8" title="1"> {
+                        bufBody = bytes.NewBuffer(jsonBody)
+                }</span>
+        }
+        <span class="cov8" title="1">return bufBody, nil</span>
+}
+
+func createFormPart(fieldName, filename, contentType string, writer *multipart.Writer) (io.Writer, error) <span class="cov8" title="1">{
+        h := make(textproto.MIMEHeader)
+        h.Set("Content-Disposition",
+                fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
+                        fieldName, filename))
+        h.Set("Content-Type", contentType)
+
+        return writer.CreatePart(h)
+}</span>
+
+func constructErrorMsg(resp *http.Response) error <span class="cov8" title="1">{
+        respErr := &amp;ResponseError{}
+        if err := json.NewDecoder(resp.Body).Decode(respErr); err != nil </span><span class="cov0" title="0">{
+                return errors.New(fmt.Sprintf("unexpected status code: %d", resp.StatusCode))
+        }</span>
+
+        <span class="cov8" title="1">var errorDetails string
+        if len(respErr.Context.Fields) &gt; 0 </span><span class="cov0" title="0">{
+                details := make([]string, 1)
+                for _, field := range respErr.Context.Fields </span><span class="cov0" title="0">{
+                        details = append(details, fmt.Sprintf("%s: %s", field.Field, field.Message))
+                }</span>
+                <span class="cov0" title="0">errorDetails = strings.Join(details, "\n  ")</span>
+        }
+
+        <span class="cov8" title="1">return fmt.Errorf("unexpected status code: %d, message: %s (%s)%s", resp.StatusCode, respErr.Message, respErr.Code, errorDetails)</span>
+}
+
+func constructURL(urlParts ...string) (string, error) <span class="cov8" title="1">{
+        for _, part := range urlParts </span><span class="cov8" title="1">{
+                if part == "" </span><span class="cov8" title="1">{
+                        return "", errors.New("resource arguments cannot be empty")
+                }</span>
+        }
+        <span class="cov8" title="1">return strings.Join(urlParts, "/"), nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package miro
+
+type OEmbedServices struct {
+        client     *Client
+        apiVersion string
+        resource   string
+}
+
+// Get information to embed a Miro board as a live embed.
+// The URL is the resource to return as oEmbed data. Currently, it supports only URLs pointing to Miro boards.
+// OEmbed params: OEmbedParams{}
+func (o *OEmbedServices) Get(URL string, queryParams ...OEmbedParams) (*OEmbed, error) <span class="cov8" title="1">{
+        response := &amp;OEmbed{}
+
+        if url, err := constructURL(o.client.BaseURL, o.apiVersion, o.resource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                var searchParams []Parameter
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        searchParams = parseQueryTags(queryParams[0])
+                }</span>
+                <span class="cov8" title="1">searchParams = append(searchParams, Parameter{"url": URL})
+
+                err = o.client.Get(o.client.ctx, url, response, searchParams...)
+                return response, err</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package miro
+
+import (
+        "fmt"
+        "net/url"
+        "reflect"
+        "strings"
+)
+
+type Parameter map[string]string
+
+type tags struct {
+        tag       string
+        omitempty bool
+        required  bool
+}
+
+func encodeQueryParams(queryParams []Parameter) string <span class="cov8" title="1">{
+        values := url.Values{}
+        for _, params := range queryParams </span><span class="cov8" title="1">{
+                for key, value := range params </span><span class="cov8" title="1">{
+                        values.Add(key, value)
+                }</span>
+        }
+        <span class="cov8" title="1">if len(values) == 0 </span><span class="cov0" title="0">{
+                return ""
+        }</span>
+        <span class="cov8" title="1">return "?" + values.Encode()</span>
+}
+
+func parseQueryTags(v interface{}) []Parameter <span class="cov8" title="1">{
+        params := make([]Parameter, 0)
+        t := reflect.TypeOf(v)
+        value := reflect.ValueOf(v)
+
+        for i := 0; i &lt; t.NumField(); i++ </span><span class="cov8" title="1">{
+                field := t.Field(i)
+                if tagStr := field.Tag.Get("query"); tagStr != "" </span><span class="cov8" title="1">{
+                        tag := parseTag(tagStr)
+                        val := fmt.Sprintf("%v", value.Field(i))
+                        if val == "" &amp;&amp; tag.omitempty </span><span class="cov8" title="1">{
+                                continue</span>
+                        }
+                        <span class="cov8" title="1">params = append(params, Parameter{tag.tag: val})</span>
+                }
+        }
+        <span class="cov8" title="1">return params</span>
+}
+
+func parseTag(tagStr string) tags <span class="cov8" title="1">{
+        t := tags{}
+
+        keys := strings.Split(tagStr, ",")
+        for i, key := range keys </span><span class="cov8" title="1">{
+                if i == 0 </span><span class="cov8" title="1">{
+                        t.tag = key
+                }</span> else<span class="cov8" title="1"> if key == "omitempty" </span><span class="cov8" title="1">{
+                        t.omitempty = true
+                }</span> else<span class="cov0" title="0"> if key == "required" </span><span class="cov0" title="0">{
+                        t.omitempty = true
+                }</span>
+        }
+        <span class="cov8" title="1">return t</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package miro
+
+type ShapeItemsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a shape item on a board
+// Required scope: boards:write | Rate limiting: Level 2
+func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*ShapeItem, error) <span class="cov8" title="1">{
+        response := &amp;ShapeItem{}
+
+        if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = s.client.Post(s.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific shape item on a board
+// Required scope: boards:read | Rate limiting: Level 1
+func (s *ShapeItemsService) Get(boardID, itemID string) (*ShapeItem, error) <span class="cov8" title="1">{
+        response := &amp;ShapeItem{}
+
+        if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = s.client.Get(s.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update a shape item on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (s *ShapeItemsService) Update(boardID, itemID string, payload SetShapeItem) (*ShapeItem, error) <span class="cov8" title="1">{
+        response := &amp;ShapeItem{}
+
+        if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = s.client.Patch(s.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete a shape item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (s *ShapeItemsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(s.client.BaseURL, s.apiVersion, s.resource, boardID, s.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return s.client.Delete(s.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package miro
+
+type StickyNotesService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a sticky note item on a board
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *StickyNotesService) Create(boardID string, payload StickyNoteSet) (*StickyNote, error) <span class="cov8" title="1">{
+        response := &amp;StickyNote{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Post(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific sticky note item on a board
+// Required scope: boards:read | Rate limiting: Level 1
+func (c *StickyNotesService) Get(boardID, itemID string) (*StickyNote, error) <span class="cov8" title="1">{
+        response := &amp;StickyNote{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Get(c.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update a sticky note item on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (c *StickyNotesService) Update(boardID, itemID string, payload StickyNoteSet) (*StickyNote, error) <span class="cov8" title="1">{
+        response := &amp;StickyNote{}
+
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = c.client.Patch(c.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete a sticky note item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (c *StickyNotesService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return c.client.Delete(c.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package miro
+
+type TagsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// GetTags retrieves all the items that have the specified tag.
+// Required scope: boards:read | Rate limiting: Level 1
+// Search query params: TagSearchParams{}
+func (t *TagsService) GetTags(boardID, tagID string, queryParams ...TagSearchParams) (*ListItems, error) <span class="cov8" title="1">{
+        response := &amp;ListItems{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, "items"); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                var searchParams []Parameter
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        searchParams = parseQueryTags(queryParams[0])
+                }</span>
+                <span class="cov8" title="1">searchParams = append(searchParams, Parameter{"tag_id": tagID})
+
+                err = t.client.Get(t.client.ctx, url, response, searchParams...)
+                return response, err</span>
+        }
+}
+
+// Attach an existing tag to the specified item. Card and sticky note items can have up to 8 tags.
+// Required scope: boards:write | Rate limiting: Level 1
+func (t *TagsService) Attach(boardID, itemID, tagID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, "items", itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return t.client.postNoContent(t.client.ctx, url, Parameter{"tag_id": tagID})
+        }</span>
+}
+
+// Detach removes the specified tag from the specified item. The tag still exists on the board.
+// Required scope: boards:write | Rate limiting: Level 1
+func (t *TagsService) Detach(boardID, itemID, tagID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, "items", itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return t.client.Delete(t.client.ctx, url, Parameter{"tag_id": tagID})
+        }</span>
+}
+
+func (t *TagsService) GetTagsFromItem(boardID, itemID string) (*ListTags, error) <span class="cov8" title="1">{
+        response := &amp;ListTags{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, "items", itemID, "tags"); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err := t.client.Get(t.client.ctx, url, response)
+
+                return response, err
+        }</span>
+}
+
+// Create a tag on a board.
+// Required scope: boards:write | Rate limiting: Level 1
+func (t *TagsService) Create(boardID string, payload TagSet) (*Tag, error) <span class="cov8" title="1">{
+        response := &amp;Tag{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = t.client.Post(t.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+func (t *TagsService) GetTagsFromBoard(boardID string, queryParams ...TagSearchParams) (*ListBoardTags, error) <span class="cov8" title="1">{
+        response := &amp;ListBoardTags{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, "tags"); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                if len(queryParams) &gt; 0 </span><span class="cov8" title="1">{
+                        err = t.client.Get(t.client.ctx, url, response, parseQueryTags(queryParams[0])...)
+                }</span> else<span class="cov8" title="1"> {
+                        err = t.client.Get(t.client.ctx, url, response)
+                }</span>
+
+                <span class="cov8" title="1">return response, err</span>
+        }
+}
+
+// Get information for a specific tag.
+// Required scope: boards:read | Rate limiting: Level 1
+func (t *TagsService) Get(boardID, itemID string) (*Tag, error) <span class="cov8" title="1">{
+        response := &amp;Tag{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = t.client.Get(t.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update a tag based on the data properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 1
+func (t *TagsService) Update(boardID, itemID string, payload TagSet) (*Tag, error) <span class="cov8" title="1">{
+        response := &amp;Tag{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = t.client.Patch(t.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete a specified tag from the board. The tag is also removed from all cards and sticky notes on the board.
+// Required scope: boards:write | Rate limiting: Level 1
+func (t *TagsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return t.client.Delete(t.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package miro
+
+type TextItemsService struct {
+        client      *Client
+        apiVersion  string
+        resource    string
+        subResource string
+}
+
+// Create a text item on a board.
+// Required scope: boards:write | Rate limiting: Level 2
+func (t *TextItemsService) Create(boardID string, payload TextItemSet) (*TextItem, error) <span class="cov8" title="1">{
+        response := &amp;TextItem{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = t.client.Post(t.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Get information for a specific text item on a board
+// Required scope: boards:read | Rate limiting: Level 1
+func (t *TextItemsService) Get(boardID, itemID string) (*TextItem, error) <span class="cov8" title="1">{
+        response := &amp;TextItem{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = t.client.Get(t.client.ctx, url, response)
+                return response, err
+        }</span>
+}
+
+// Update a text item on a board based on the data and style properties provided in the request body.
+// Required scope: boards:write | Rate limiting: Level 2
+func (t *TextItemsService) Update(boardID, itemID string, payload TextItemSet) (*TextItem, error) <span class="cov8" title="1">{
+        response := &amp;TextItem{}
+
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return response, err
+        }</span> else<span class="cov8" title="1"> {
+                err = t.client.Patch(t.client.ctx, url, payload, response)
+                return response, err
+        }</span>
+}
+
+// Delete a text item from the board.
+// Required scope: boards:write | Rate limiting: Level 3
+func (t *TextItemsService) Delete(boardID, itemID string) error <span class="cov8" title="1">{
+        if url, err := constructURL(t.client.BaseURL, t.apiVersion, t.resource, boardID, t.subResource, itemID); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span> else<span class="cov8" title="1"> {
+                return t.client.Delete(t.client.ctx, url)
+        }</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

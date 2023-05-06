@@ -56,7 +56,7 @@ func TestGetEmbedItem(t *testing.T) {
 	responseData := constructResponseAndResults("embed_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When Get is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -88,7 +88,7 @@ func TestUpdateEmbedItem(t *testing.T) {
 	constructResponseAndResults("embed_item_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a EmbedItemUpdate struct", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When Update is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body

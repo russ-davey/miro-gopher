@@ -15,7 +15,7 @@ func TestShareBoard(t *testing.T) {
 	defer closeAPIServer()
 
 	Convey("Given a Board ID", t, func() {
-		Convey("When the ShareBoard function is called", func() {
+		Convey("When ShareBoard is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(testResourcePath, func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusCreated)
@@ -43,6 +43,14 @@ func TestShareBoard(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When ShareBoard is called without a board ID", func() {
+			_, err := client.BoardMembers.ShareBoard("", ShareBoardInvitation{})
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 }
 
@@ -55,7 +63,7 @@ func TestGetBoardMember(t *testing.T) {
 	roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a board ID and a board member ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When Get is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -80,6 +88,14 @@ func TestGetBoardMember(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When Get is called without a board ID and an item ID", func() {
+			_, err := client.BoardMembers.Get("", "")
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 }
 
@@ -101,7 +117,7 @@ func TestGetAllBoardMembers(t *testing.T) {
 
 			results, err := client.BoardMembers.GetAll(testBoardID)
 
-			Convey("Then a slice of board member information is returned", func() {
+			Convey("Then a list of board member information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -115,6 +131,14 @@ func TestGetAllBoardMembers(t *testing.T) {
 						So(compareJSON(responseData, roundTrip), ShouldBeTrue)
 					})
 				})
+			})
+		})
+
+		Convey("When GetAll is called without a board ID", func() {
+			_, err := client.BoardMembers.GetAll("")
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
 			})
 		})
 	})
@@ -138,7 +162,7 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 
 			results, err := client.BoardMembers.GetAll(testBoardID, BoardMemberSearchParams{Limit: "1"})
 
-			Convey("Then a slice of board member information is returned consisting of just one member", func() {
+			Convey("Then a list of board member information is returned consisting of just one member", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -155,6 +179,14 @@ func TestGetAllBoardMembersWithSearchParams(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When GetAll is called without a board ID", func() {
+			_, err := client.BoardMembers.GetAll("", BoardMemberSearchParams{Limit: "1"})
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 }
 
@@ -166,7 +198,7 @@ func TestUpdateBoardMember(t *testing.T) {
 	constructResponseAndResults("board_members_get.json", &responseBody)
 
 	Convey("Given a board ID, a board member ID and a new role", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When Update is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testBoardMemberID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
@@ -195,6 +227,14 @@ func TestUpdateBoardMember(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When Update is called without a board ID and an item ID", func() {
+			_, err := client.BoardMembers.Update("", "", RoleEditor)
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
+			})
+		})
 	})
 }
 
@@ -221,6 +261,14 @@ func TestDeleteBoardMember(t *testing.T) {
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v2/%s/%s/members/%s", endpointBoards, testBoardID, testBoardMemberID))
 				})
+			})
+		})
+
+		Convey("When Delete is called without a board ID and an item ID", func() {
+			err := client.BoardMembers.Delete("", "")
+
+			Convey("Then an error is returned", func() {
+				So(err, ShouldBeError)
 			})
 		})
 	})

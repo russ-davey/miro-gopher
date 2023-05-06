@@ -51,7 +51,7 @@ func TestGetConnector(t *testing.T) {
 	roundTrip, _ := json.Marshal(expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When Get is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -96,7 +96,7 @@ func TestGetAllConnectors(t *testing.T) {
 
 			results, err := client.Connectors.GetAll(testBoardID)
 
-			Convey("Then a slice of item information is returned", func() {
+			Convey("Then a list of item information is returned", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -128,7 +128,7 @@ func TestGetAllConnectorsWithSearchParams(t *testing.T) {
 
 			results, err := client.Connectors.GetAll(testBoardID, ConnectorSearchParams{Limit: "1"})
 
-			Convey("Then a slice of item information is returned consisting of just one item", func() {
+			Convey("Then a list of item information is returned consisting of just one item", func() {
 				So(err, ShouldBeNil)
 				So(results, ShouldResemble, expectedResults)
 
@@ -152,7 +152,7 @@ func TestUpdateConnector(t *testing.T) {
 	constructResponseAndResults("connectors_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a SetConnector struct", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When Update is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body

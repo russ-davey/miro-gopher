@@ -195,3 +195,49 @@ func TestAddHeaders(t *testing.T) {
 		}
 	})
 }
+
+func TestPayloadToBuffer(t *testing.T) {
+	Convey("Given a request body", t, func() {
+		reqBody := struct {
+			Name string `json:"name"`
+			Age  int    `json:"age"`
+		}{
+			Name: "John Doe",
+			Age:  30,
+		}
+
+		Convey("When payloadToBuffer is called with the request body", func() {
+			buffer, err := payloadToBuffer(reqBody)
+
+			Convey("Then the function should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("And the buffer should not be nil", func() {
+				So(buffer, ShouldNotBeNil)
+			})
+
+			Convey("And the buffer should contain the encoded JSON body", func() {
+				var decodedBody struct {
+					Name string `json:"name"`
+					Age  int    `json:"age"`
+				}
+				err = json.NewDecoder(buffer).Decode(&decodedBody)
+				So(err, ShouldBeNil)
+				So(decodedBody, ShouldResemble, reqBody)
+			})
+		})
+
+		Convey("When payloadToBuffer is called with a nil request body", func() {
+			buffer, err := payloadToBuffer(nil)
+
+			Convey("Then the function should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("And the buffer should be nil", func() {
+				So(buffer, ShouldBeNil)
+			})
+		})
+	})
+}
