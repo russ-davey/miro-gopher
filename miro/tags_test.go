@@ -174,7 +174,7 @@ func TestCreateTag(t *testing.T) {
 	defer closeAPIServer()
 
 	expectedResults := &Tag{}
-	responseData := constructResponseAndResults("tag_get.json", &expectedResults)
+	responseData := constructResponseAndResults("tags_get.json", &expectedResults)
 
 	Convey("Given a board ID and a tag ID", t, func() {
 		Convey("When the Create method is called", func() {
@@ -273,7 +273,7 @@ func TestGetTag(t *testing.T) {
 	defer closeAPIServer()
 
 	expectedResults := &Tag{}
-	responseData := constructResponseAndResults("tag_get.json", &expectedResults)
+	responseData := constructResponseAndResults("tags_get.json", &expectedResults)
 
 	Convey("Given a board ID and a tag ID", t, func() {
 		Convey("When the Get method is called", func() {
@@ -305,7 +305,7 @@ func TestUpdateTag(t *testing.T) {
 	defer closeAPIServer()
 
 	responseBody := &Tag{}
-	constructResponseAndResults("tag_get.json", &responseBody)
+	constructResponseAndResults("tags_get.json", &responseBody)
 
 	Convey("Given a board ID, a tag ID and a TagSet struct", t, func() {
 		Convey("When the Update method is called", func() {
