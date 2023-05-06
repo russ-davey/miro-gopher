@@ -51,7 +51,6 @@ func (c *ConnectorsService) GetAll(boardID string, queryParams ...ConnectorSearc
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource); err != nil {
 		return response, err
 	} else {
-		var err error
 		if len(queryParams) > 0 {
 			err = c.client.Get(c.client.ctx, url, response, parseQueryTags(queryParams[0])...)
 		} else {

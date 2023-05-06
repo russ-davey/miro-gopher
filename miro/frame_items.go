@@ -52,14 +52,12 @@ func (f *FramesService) GetItems(boardID, frameID string, queryParams ...ItemSea
 	if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, "items"); err != nil {
 		return response, err
 	} else {
-		var err error
+		var searchParams []Parameter
 		if len(queryParams) > 0 {
-			searchParams := parseQueryTags(queryParams[0])
-			searchParams = append(searchParams, Parameter{"parent_item_id": frameID})
-			err = f.client.Get(f.client.ctx, url, response, searchParams...)
-		} else {
-			err = f.client.Get(f.client.ctx, url, response, Parameter{"parent_item_id": frameID})
+			searchParams = parseQueryTags(queryParams[0])
 		}
+		searchParams = append(searchParams, Parameter{"parent_item_id": frameID})
+		err = f.client.Get(f.client.ctx, url, response, searchParams...)
 
 		return response, err
 	}

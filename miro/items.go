@@ -25,7 +25,6 @@ func (i *ItemsService) GetAll(boardID string, queryParams ...ItemSearchParams) (
 	if url, err := constructURL(i.client.BaseURL, i.apiVersion, i.resource, boardID, i.subResource); err != nil {
 		return response, err
 	} else {
-		var err error
 		if len(queryParams) > 0 {
 			err = i.client.Get(i.client.ctx, url, response, parseQueryTags(queryParams[0])...)
 		} else {

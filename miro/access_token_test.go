@@ -66,8 +66,8 @@ func TestRevokeAccessToken(t *testing.T) {
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodPost)
-					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Query().Get("access_token"), ShouldEqual, testToken)
+					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, fmt.Sprintf("/v1/%s/revoke", endpointOAUTH))
 				})
 			})

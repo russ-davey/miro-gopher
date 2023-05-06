@@ -44,7 +44,6 @@ func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberS
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource, boardID, b.subResource); err != nil {
 		return response, err
 	} else {
-		var err error
 		if len(queryParams) > 0 {
 			err = b.client.Get(b.client.ctx, url, response, parseQueryTags(queryParams[0])...)
 		} else {

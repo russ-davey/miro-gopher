@@ -12,6 +12,7 @@ type Parameter map[string]string
 type tags struct {
 	tag       string
 	omitempty bool
+	required  bool
 }
 
 func encodeQueryParams(queryParams []Parameter) string {
@@ -54,6 +55,8 @@ func parseTag(tagStr string) tags {
 		if i == 0 {
 			t.tag = key
 		} else if key == "omitempty" {
+			t.omitempty = true
+		} else if key == "required" {
 			t.omitempty = true
 		}
 	}

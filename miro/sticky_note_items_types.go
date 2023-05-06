@@ -51,7 +51,7 @@ const (
 )
 
 type StickyNoteStyle struct {
-	NoteColor         NoteColor         `json:"fillColor"`
+	FillColor         NoteColor         `json:"fillColor"`
 	TextAlign         TextAlign         `json:"textAlign"`
 	TextAlignVertical TextAlignVertical `json:"textAlignVertical"`
 }

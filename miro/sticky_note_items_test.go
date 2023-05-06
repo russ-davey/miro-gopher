@@ -55,7 +55,7 @@ func TestGetStickyNoteItem(t *testing.T) {
 	responseData := constructResponseAndResults("sticky_note_item_get.json", &expectedResults)
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Get function is called", func() {
+		Convey("When the Get method is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.Write(responseData)
@@ -87,7 +87,7 @@ func TestUpdateStickyNoteItem(t *testing.T) {
 	constructResponseAndResults("sticky_note_item_get.json", &responseBody)
 
 	Convey("Given a board ID, an item ID and a StickyNoteItemUpdate struct", t, func() {
-		Convey("When the Update function is called", func() {
+		Convey("When the Update method is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				// decode body
@@ -127,7 +127,7 @@ func TestDeleteStickyNoteItem(t *testing.T) {
 	defer closeAPIServer()
 
 	Convey("Given a board ID and an item ID", t, func() {
-		Convey("When the Delete function is called", func() {
+		Convey("When the Delete method is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("%s/%s", testResourcePath, testItemID), func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusNoContent)

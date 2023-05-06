@@ -98,6 +98,7 @@ func TestGetFrameItems(t *testing.T) {
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
+					So(receivedRequest.URL.Query().Get("parent_item_id"), ShouldEqual, testItemID)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, testResourcePath)
 				})
@@ -131,6 +132,7 @@ func TestGetAllFramesWithSearchParams(t *testing.T) {
 					So(receivedRequest, ShouldNotBeNil)
 					So(receivedRequest.Method, ShouldEqual, http.MethodGet)
 					So(receivedRequest.URL.Query().Get("limit"), ShouldEqual, "1")
+					So(receivedRequest.URL.Query().Get("parent_item_id"), ShouldEqual, testItemID)
 					So(receivedRequest.Header.Get("Authorization"), ShouldEqual, fmt.Sprintf("Bearer %s", testToken))
 					So(receivedRequest.URL.Path, ShouldEqual, testResourcePath)
 				})
