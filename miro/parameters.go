@@ -9,7 +9,12 @@ import (
 
 type Parameter map[string]string
 
-func EncodeQueryParams(queryParams []Parameter) string {
+type tags struct {
+	tag       string
+	omitempty bool
+}
+
+func encodeQueryParams(queryParams []Parameter) string {
 	values := url.Values{}
 	for _, params := range queryParams {
 		for key, value := range params {
@@ -22,25 +27,35 @@ func EncodeQueryParams(queryParams []Parameter) string {
 	return "?" + values.Encode()
 }
 
-func ParseQueryTags(v interface{}) []Parameter {
+func parseQueryTags(v interface{}) []Parameter {
 	params := make([]Parameter, 0)
 	t := reflect.TypeOf(v)
 	value := reflect.ValueOf(v)
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
-		if tag := field.Tag.Get("query"); tag != "" {
+		if tagStr := field.Tag.Get("query"); tagStr != "" {
+			tag := parseTag(tagStr)
 			val := fmt.Sprintf("%v", value.Field(i))
-			if val == "" {
-				if strings.Contains(tag, "omitempty") {
-					continue
-				}
-				val = ""
+			if val == "" && tag.omitempty {
+				continue
 			}
-
-			key := strings.Replace(tag, ",omitempty", "", 1)
-			params = append(params, Parameter{key: val})
+			params = append(params, Parameter{tag.tag: val})
 		}
 	}
 	return params
+}
+
+func parseTag(tagStr string) tags {
+	t := tags{}
+
+	keys := strings.Split(tagStr, ",")
+	for i, key := range keys {
+		if i == 0 {
+			t.tag = key
+		} else if key == "omitempty" {
+			t.omitempty = true
+		}
+	}
+	return t
 }
