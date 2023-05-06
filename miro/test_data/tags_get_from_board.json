@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "fillColor": "red",
+      "id": "3074457363306854000",
+      "title": "delayed",
+      "type": "string"
+    }
+  ],
+  "total": 1,
+  "size": 1,
+  "offset": 0,
+  "limit": 20,
+  "links": {
+    "first": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1ODc2NaSDN&#RDMDA3MzYyOX==",
+    "last": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1ODc2NDUyNDUyMDA3MzYyOX==",
+    "next": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1ODc2NDUyNDsdgsFEwfFJCw==",
+    "prev": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=",
+    "self": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1OD1245643FWUyMDA3MzYyOX=="
+  },
+  "type": "string"
+}

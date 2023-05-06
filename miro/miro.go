@@ -35,6 +35,7 @@ type Client struct {
 	Images        *ImagesService
 	StickyNotes   *StickyNotesService
 	TextItems     *TextItemsService
+	Tags          *TagsService
 }
 
 type Field struct {
@@ -179,7 +180,7 @@ func (c *Client) PostMultipart(ctx context.Context, url string, parts MultiParts
 	}
 }
 
-// postNoContent Native POST function (pretending to be a DELETE method... but with query params?!)
+// postNoContent Native POST function, expects http status code 204 (no content) and can accept queryParams
 func (c *Client) postNoContent(ctx context.Context, url string, queryParams ...Parameter) error {
 	if len(queryParams) > 0 {
 		url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
@@ -290,7 +291,11 @@ func (c *Client) PatchMultipart(ctx context.Context, url string, parts MultiPart
 }
 
 // Delete Native DELETE function
-func (c *Client) Delete(ctx context.Context, url string) error {
+func (c *Client) Delete(ctx context.Context, url string, queryParams ...Parameter) error {
+	if len(queryParams) > 0 {
+		url = fmt.Sprintf("%s%s", url, encodeQueryParams(queryParams))
+	}
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
 	if err != nil {
 		return err
