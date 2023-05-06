@@ -15,7 +15,7 @@ type DocumentsService struct {
 	subResource string
 }
 
-// Create Adds a document item to a board by specifying the URL where the document is hosted.
+// Create a document item on a board by specifying the URL where the document is hosted.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *DocumentsService) Create(boardID string, payload DocumentItemSet) (*DocumentItem, error) {
 	response := &DocumentItem{}
@@ -28,7 +28,7 @@ func (c *DocumentsService) Create(boardID string, payload DocumentItemSet) (*Doc
 	}
 }
 
-// Upload Creates a document item using file from device.
+// Upload a document item using a file from a device.
 // The maximum file size supported is 28.6 MB.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *DocumentsService) Upload(boardID, filePath string, payload UploadFileItem) (*DocumentItem, error) {
@@ -65,7 +65,7 @@ func (c *DocumentsService) Upload(boardID, filePath string, payload UploadFileIt
 	}
 }
 
-// Get Retrieves information for a specific document item on a board.
+// Get information for a specific document item on a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (c *DocumentsService) Get(boardID, itemID string) (*DocumentItem, error) {
 	response := &DocumentItem{}
@@ -91,7 +91,7 @@ func (c *DocumentsService) Update(boardID, itemID string, payload DocumentItemSe
 	}
 }
 
-// UpdateFromFile update document item using file from device.
+// UpdateFromFile update document item using a file from a device.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *DocumentsService) UpdateFromFile(boardID, itemID, filePath string, payload UploadFileItem) (*DocumentItem, error) {
 	response := &DocumentItem{}

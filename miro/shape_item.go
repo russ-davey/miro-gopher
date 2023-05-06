@@ -7,7 +7,7 @@ type ShapeItemsService struct {
 	subResource string
 }
 
-// Create Adds a shape item to a board
+// Create a shape item on a board
 // Required scope: boards:write | Rate limiting: Level 2
 func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*ShapeItem, error) {
 	response := &ShapeItem{}
@@ -20,7 +20,7 @@ func (s *ShapeItemsService) Create(boardID string, payload SetShapeItem) (*Shape
 	}
 }
 
-// Get Retrieves information for a specific shape item on a board
+// Get information for a specific shape item on a board
 // Required scope: boards:read | Rate limiting: Level 1
 func (s *ShapeItemsService) Get(boardID, itemID string) (*ShapeItem, error) {
 	response := &ShapeItem{}

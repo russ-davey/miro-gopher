@@ -7,7 +7,7 @@ type StickyNotesService struct {
 	subResource string
 }
 
-// Create Adds a sticky note item to a board
+// Create a sticky note item on a board
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *StickyNotesService) Create(boardID string, payload StickyNoteSet) (*StickyNote, error) {
 	response := &StickyNote{}
@@ -20,7 +20,7 @@ func (c *StickyNotesService) Create(boardID string, payload StickyNoteSet) (*Sti
 	}
 }
 
-// Get Retrieves information for a specific sticky note item on a board
+// Get information for a specific sticky note item on a board
 // Required scope: boards:read | Rate limiting: Level 1
 func (c *StickyNotesService) Get(boardID, itemID string) (*StickyNote, error) {
 	response := &StickyNote{}

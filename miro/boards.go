@@ -19,7 +19,7 @@ func (b *BoardsService) Create(payload SetBoard) (*Board, error) {
 	}
 }
 
-// Get Retrieves information about a board.
+// Get information about a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (b *BoardsService) Get(boardID string) (*Board, error) {
 	response := &Board{}
@@ -32,7 +32,7 @@ func (b *BoardsService) Get(boardID string) (*Board, error) {
 	}
 }
 
-// GetAll Retrieves a list of boards that match the search criteria provided in the request.
+// GetAll boards that match the search criteria provided in the request.
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: BoardSearchParams{}
 func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, error) {

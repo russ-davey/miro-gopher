@@ -15,7 +15,7 @@ type ImagesService struct {
 	subResource string
 }
 
-// Create Adds a image item to a board by specifying the URL where the image is hosted.
+// Create an image item on a board by specifying the URL where the image is hosted.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *ImagesService) Create(boardID string, payload ImageItemSet) (*ImageItem, error) {
 	response := &ImageItem{}
@@ -28,7 +28,7 @@ func (c *ImagesService) Create(boardID string, payload ImageItemSet) (*ImageItem
 	}
 }
 
-// Upload Creates an image item using file from device.
+// Upload an image item using a file from a device.
 // The maximum file size supported is 28.6 MB.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *ImagesService) Upload(boardID, filePath string, payload UploadFileItem) (*ImageItem, error) {
@@ -65,7 +65,7 @@ func (c *ImagesService) Upload(boardID, filePath string, payload UploadFileItem)
 	}
 }
 
-// Get Retrieves information for a specific image item on a board.
+// Get information for a specific image item on a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (c *ImagesService) Get(boardID, itemID string) (*ImageItem, error) {
 	response := &ImageItem{}
@@ -78,7 +78,7 @@ func (c *ImagesService) Get(boardID, itemID string) (*ImageItem, error) {
 	}
 }
 
-// Update a image item on a board.
+// Update an image item on a board.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *ImagesService) Update(boardID, itemID string, payload ImageItemSet) (*ImageItem, error) {
 	response := &ImageItem{}
@@ -91,7 +91,7 @@ func (c *ImagesService) Update(boardID, itemID string, payload ImageItemSet) (*I
 	}
 }
 
-// UpdateFromFile update image item using file from device.
+// UpdateFromFile update image item using a file from a device.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *ImagesService) UpdateFromFile(boardID, itemID, filePath string, payload UploadFileItem) (*ImageItem, error) {
 	response := &ImageItem{}
@@ -127,7 +127,7 @@ func (c *ImagesService) UpdateFromFile(boardID, itemID, filePath string, payload
 	}
 }
 
-// Delete a image item from the board.
+// Delete an image item from the board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (c *ImagesService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {

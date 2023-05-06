@@ -7,7 +7,7 @@ type ConnectorsService struct {
 	subResource string
 }
 
-// Create Adds a connector to a board.
+// Create a connector on a board.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *ConnectorsService) Create(boardID string, payload SetConnector) (*Connector, error) {
 	response := &Connector{}
@@ -20,7 +20,7 @@ func (c *ConnectorsService) Create(boardID string, payload SetConnector) (*Conne
 	}
 }
 
-// Get Retrieves information for a specific connector on a board.
+// Get information for a specific connector on a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (c *ConnectorsService) Get(boardID, itemID string) (*Connector, error) {
 	response := &Connector{}
@@ -33,7 +33,7 @@ func (c *ConnectorsService) Get(boardID, itemID string) (*Connector, error) {
 	}
 }
 
-// GetAll Retrieves a list of connectors for a specific board.
+// GetAll connectors for a specific board.
 //
 // This method returns results using a cursor-based approach. A cursor-paginated method returns a portion of the total
 // set of results based on the limit specified and a cursor that points to the next portion of the results.

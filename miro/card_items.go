@@ -7,7 +7,7 @@ type CardItemsService struct {
 	subResource string
 }
 
-// Create Adds a card item to a board
+// Create a card item on a board
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *CardItemsService) Create(boardID string, payload SetCardItem) (*CardItem, error) {
 	response := &CardItem{}
@@ -20,7 +20,7 @@ func (c *CardItemsService) Create(boardID string, payload SetCardItem) (*CardIte
 	}
 }
 
-// Get Retrieves information for a specific card item on a board
+// Get information for a specific card item on a board
 // Required scope: boards:read | Rate limiting: Level 1
 func (c *CardItemsService) Get(boardID, itemID string) (*CardItem, error) {
 	response := &CardItem{}

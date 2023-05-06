@@ -113,35 +113,23 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 //func TestStructAgainstRealData(t *testing.T) {
 //	client := NewClient(os.Getenv("MIRO_TOKEN"))
 //
-//	//version := "v2"
-//	//resource := "boards"
-//	//subResource := "shapes"
-//	boardID := "="
-//	//itemID := ""
+//	boardID := ""
+//	itemID := ""
 //
-//	response, err := client.ShapeItems.Update(boardID, "", SetShapeItem{
-//		Data: ShapeItemData{Shape: ShapeCloud, Content: "A fluffy cloud"},
-//		Style: Style{
-//			TextAlign: TextAlignCenter,
-//			FontSize:  "10",
-//		},
-//		Position: PositionSet{Origin: Center, X: -100, Y: -100},
-//		Geometry: Geometry{
-//			Height:   1000,
-//			Rotation: 90,
-//			Width:    1000,
-//		},
-//	})
-//	//response, err := client.ShapeItems.Get(boardID, itemID)
+//	//response, err := client.Items.GetAll(boardID, ItemSearchParams{Type: ItemTypeFrame})
+//	err := client.TextItems.Delete(boardID, itemID)
+//	//response, err := client.Frames.Create(boardID, SetFrameItem{Data: FrameItemData{Title: "test frame", Format: FormatCustom, Type: TypeFreeform}})
 //	if err != nil {
 //		log.Fatalf("error: %v", err)
 //	}
-//	jsonData, _ := json.Marshal(response)
-//	fmt.Println(string(jsonData))
-//
+//	//jsonData, _ := json.Marshal(response)
+//	//fmt.Println("----------------------")
+//	//fmt.Println(string(jsonData))
+//	//
 //	//rawResponse := make(map[string]interface{})
-//	////client.Get(fmt.Sprintf("https://api.miro.com/%s/%s", version, endpoint), &rawResponse)
-//	//client.Get(fmt.Sprintf("https://api.miro.com/%s/%s/%s/%s/%s", version, resource, boardID, subResource, itemID), &rawResponse)
+//	//url, _ := constructURL("https://api.miro.com", "v2", "boards", boardID, "texts", itemID)
+//	////url, _ := constructURL("https://api.miro.com", version, resource, boardID, "items?parent_item_id=3458764553554022926")
+//	//client.Get(client.ctx, url, &rawResponse)
 //	//jsonDataNative, _ := json.Marshal(rawResponse)
 //	//
 //	//processed, native := sortJSON(jsonData, jsonDataNative)

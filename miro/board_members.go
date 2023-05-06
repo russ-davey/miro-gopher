@@ -22,7 +22,7 @@ func (b *BoardMembersService) ShareBoard(boardID string, payload ShareBoardInvit
 	}
 }
 
-// Get Retrieves information for a board member.
+// Get information for a board member.
 // Required scope: boards:read | Rate limiting: Level 1
 func (b *BoardMembersService) Get(boardID, itemID string) (*BoardMember, error) {
 	response := &BoardMember{}
@@ -35,7 +35,7 @@ func (b *BoardMembersService) Get(boardID, itemID string) (*BoardMember, error) 
 	}
 }
 
-// GetAll Retrieves a pageable list of members for a board.
+// GetAll retrieves a pageable list of members for a board.
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: BoardMemberSearchParams{}
 func (b *BoardMembersService) GetAll(boardID string, queryParams ...BoardMemberSearchParams) (*ListBoardMembers, error) {

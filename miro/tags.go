@@ -7,7 +7,7 @@ type TagsService struct {
 	subResource string
 }
 
-// GetTags Retrieves all the items that have the specified tag.
+// GetTags retrieves all the items that have the specified tag.
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: TagSearchParams{}
 func (t *TagsService) GetTags(boardID, tagID string, queryParams ...TagSearchParams) (*ListItems, error) {
@@ -88,7 +88,7 @@ func (t *TagsService) GetTagsFromBoard(boardID string, queryParams ...TagSearchP
 	}
 }
 
-// Get Retrieves information for a specific tag.
+// Get information for a specific tag.
 // Required scope: boards:read | Rate limiting: Level 1
 func (t *TagsService) Get(boardID, itemID string) (*Tag, error) {
 	response := &Tag{}

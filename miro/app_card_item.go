@@ -7,7 +7,7 @@ type AppCardItemsService struct {
 	subResource string
 }
 
-// Create Adds an app card item to a board.
+// Create an app card item on a board.
 // Required scope: boards:write | Rate limiting: Level 2
 func (a *AppCardItemsService) Create(boardID string, payload SetAppCardItem) (*AppCardItem, error) {
 	response := &AppCardItem{}
@@ -20,7 +20,7 @@ func (a *AppCardItemsService) Create(boardID string, payload SetAppCardItem) (*A
 	}
 }
 
-// Get Retrieves information for a specific app card item on a board.
+// Get information for a specific app card item on a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (a *AppCardItemsService) Get(boardID, itemID string) (*AppCardItem, error) {
 	response := &AppCardItem{}

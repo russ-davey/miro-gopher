@@ -7,7 +7,7 @@ type TextItemsService struct {
 	subResource string
 }
 
-// Create Adds a text item to a board.
+// Create a text item on a board.
 // Required scope: boards:write | Rate limiting: Level 2
 func (t *TextItemsService) Create(boardID string, payload TextItemSet) (*TextItem, error) {
 	response := &TextItem{}
@@ -20,7 +20,7 @@ func (t *TextItemsService) Create(boardID string, payload TextItemSet) (*TextIte
 	}
 }
 
-// Get Retrieves information for a specific text item on a board
+// Get information for a specific text item on a board
 // Required scope: boards:read | Rate limiting: Level 1
 func (t *TextItemsService) Get(boardID, itemID string) (*TextItem, error) {
 	response := &TextItem{}

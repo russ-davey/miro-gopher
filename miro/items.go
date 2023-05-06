@@ -7,7 +7,7 @@ type ItemsService struct {
 	subResource string
 }
 
-// GetAll Retrieves a list of items for a specific board. You can retrieve all items on the board, a list of child items
+// GetAll items for a specific board. You can retrieve all items on the board, a list of child items
 // inside a parent item, or a list of specific types of items by specifying URL query parameter values.
 //
 // This method returns results using a cursor-based approach. A cursor-paginated method returns a portion of the total set
@@ -35,7 +35,7 @@ func (i *ItemsService) GetAll(boardID string, queryParams ...ItemSearchParams) (
 	}
 }
 
-// Get Retrieves information for a specific item on a board.
+// Get information for a specific item on a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (i *ItemsService) Get(boardID, itemID string) (*Item, error) {
 	response := &Item{}

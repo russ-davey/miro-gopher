@@ -7,7 +7,7 @@ type FramesService struct {
 	subResource string
 }
 
-// Create Adds a frame to a board.
+// Create a frame on a board.
 // Required scope: boards:write | Rate limiting: Level 2
 func (f *FramesService) Create(boardID string, payload SetFrameItem) (*FrameItem, error) {
 	response := &FrameItem{}
@@ -22,7 +22,7 @@ func (f *FramesService) Create(boardID string, payload SetFrameItem) (*FrameItem
 	}
 }
 
-// Get Retrieves information for a specific frame on a board.
+// Get information for a specific frame on a board.
 // Required scope: boards:read | Rate limiting: Level 1
 func (f *FramesService) Get(boardID, itemID string) (*FrameItem, error) {
 	response := &FrameItem{}

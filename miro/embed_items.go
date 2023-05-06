@@ -7,7 +7,7 @@ type EmbedItemsService struct {
 	subResource string
 }
 
-// Create Adds an embed item to a board
+// Create an embed item on a board
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *EmbedItemsService) Create(boardID string, payload SetEmbedItem) (*EmbedItem, error) {
 	response := &EmbedItem{}
@@ -20,7 +20,7 @@ func (c *EmbedItemsService) Create(boardID string, payload SetEmbedItem) (*Embed
 	}
 }
 
-// Get Retrieves information for a specific embed item on a board
+// Get information for a specific embed item on a board
 // Required scope: boards:read | Rate limiting: Level 1
 func (c *EmbedItemsService) Get(boardID, itemID string) (*EmbedItem, error) {
 	response := &EmbedItem{}
@@ -33,7 +33,7 @@ func (c *EmbedItemsService) Get(boardID, itemID string) (*EmbedItem, error) {
 	}
 }
 
-// Update a embed item on a board based on the data and style properties provided in the request body.
+// Update an embed item on a board based on the data and style properties provided in the request body.
 // Required scope: boards:write | Rate limiting: Level 2
 func (c *EmbedItemsService) Update(boardID, itemID string, payload SetEmbedItem) (*EmbedItem, error) {
 	response := &EmbedItem{}
@@ -46,7 +46,7 @@ func (c *EmbedItemsService) Update(boardID, itemID string, payload SetEmbedItem)
 	}
 }
 
-// Delete a embed item from the board.
+// Delete an embed item from the board.
 // Required scope: boards:write | Rate limiting: Level 3
 func (c *EmbedItemsService) Delete(boardID, itemID string) error {
 	if url, err := constructURL(c.client.BaseURL, c.apiVersion, c.resource, boardID, c.subResource, itemID); err != nil {
