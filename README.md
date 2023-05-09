@@ -94,10 +94,6 @@ if err != nil {
     log.Fatalf("error: %v", err)
 }
 
-for _, board := range boards.Data {
-    fmt.Println(board.Name)
-}
-
 for {
     boards, err = boards.GetNext()
     if err == IteratorDone {

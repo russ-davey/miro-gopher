@@ -38,14 +38,15 @@ type Board struct {
 }
 
 type ListBoards struct {
-	client *Client
-	Data   []*Board         `json:"data"`
-	Total  int              `json:"total"`
-	Size   int              `json:"size"`
-	Offset int              `json:"offset"`
-	Limit  int              `json:"limit"`
-	Links  *PaginationLinks `json:"links"`
-	Type   string           `json:"type"`
+	client       *Client
+	firstResults bool
+	Data         []*Board         `json:"data"`
+	Total        int              `json:"total"`
+	Size         int              `json:"size"`
+	Offset       int              `json:"offset"`
+	Limit        int              `json:"limit"`
+	Links        *PaginationLinks `json:"links"`
+	Type         string           `json:"type"`
 }
 
 var IteratorDone = errors.New("no more boards")

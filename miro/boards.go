@@ -40,7 +40,7 @@ func (b *BoardsService) Get(boardID string) (*Board, error) {
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: BoardSearchParams{}
 func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, error) {
-	response := &ListBoards{client: b.client}
+	response := &ListBoards{client: b.client, firstResults: true}
 
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil {
 		return response, err
@@ -55,9 +55,14 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 	}
 }
 
-// GetNext iterator to get and return a pointer to the next set of search results
+// GetNext iterator to get and return a pointer to the next set of search results, starting with the first set returned by the GetAll method
 func (l *ListBoards) GetNext() (*ListBoards, error) {
 	response := &ListBoards{client: l.client}
+
+	if l.firstResults {
+		l.firstResults = false
+		return l, nil
+	}
 
 	if l.Offset+l.Size < l.Total {
 		var url string
