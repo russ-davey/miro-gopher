@@ -145,21 +145,24 @@ const (
 )
 
 type BoardSearchParams struct {
-	// TeamID The team_id for which you want to retrieve the list of boards. If this parameter is sent in the request,
+	// TeamID The team ID for which you want to retrieve the list of boards. If this parameter is sent in the request,
 	// the query and owner parameters are ignored.
 	TeamID string `query:"team_id,omitempty"`
-	// Query Retrieves a list of boards that contain the query string provided in the board content or board name.
+	// ProjectID The project ID for which you want to retrieve the list of boards. If this parameter is sent in the request,
+	// the query and owner parameters are ignored.
+	ProjectID string `query:"project_id,omitempty"`
+	// Query retrieves a list of boards that contain the query string provided in the board content or board name.
 	// For example, if you want to retrieve a list of boards that contain the word beta within the board itself (board content),
 	// add beta as the query parameter value. You can use the query parameter with the owner parameter to narrow down the board search results.
 	Query string `query:"query,omitempty"`
-	// Owner Retrieves a list of boards that belong to a specific owner ID. You must pass the owner ID (for example,
-	//3074457353169356300), not the owner name. You can use the 'owner' parameter with the query parameter to narrow
-	//down the board search results. Note that if you pass the team_id in the same request, the owner parameter is ignored.
+	// Owner retrieves a list of boards that belong to a specific owner ID. You must pass the owner ID (for example,
+	// 3074457353169356300), not the owner name. You can use the 'owner' parameter with the query parameter to narrow
+	// down the board search results. Note that if you pass the team_id in the same request, the owner parameter is ignored.
 	Owner string `query:"owner,omitempty"`
-	// Limit The maximum number of boards to retrieve.
+	// Limit the maximum number of boards to retrieve.
 	// Default: 20
 	Limit string `query:"limit,omitempty"`
-	// The (zero-based) offset of the first item in the collection to return.
+	// Offset the (zero-based) offset of the first item in the collection to return.
 	// Default: 0.
 	Offset string `query:"offset,omitempty"`
 	// Sort The order in which you want to view the result set.
@@ -173,6 +176,7 @@ type CurrentUserMembership struct {
 }
 
 type Picture struct {
-	ID       string `json:"id"`
+	ID       int64  `json:"id"`
 	ImageURL string `json:"imageURL"`
+	Type     string `json:"type"`
 }
