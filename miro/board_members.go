@@ -7,7 +7,7 @@ type BoardMembersService struct {
 	subResource string
 }
 
-// ShareBoard Shares the board and Invites new members to collaborate on a board by sending an invitation email.
+// ShareBoard shares the board and invites new members to collaborate on a board by sending an invitation email.
 // Depending on the board's Sharing policy, there might be various scenarios where membership in the team is required in
 // order to share the board with a user.
 // Required scope: boards:write | Rate limiting: Level 3

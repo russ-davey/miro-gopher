@@ -175,31 +175,14 @@ func TestListBoards(t *testing.T) {
 	client, _, mux, closeAPIServer := mockMIROAPI("v2", endpointBoards, "", "")
 	defer closeAPIServer()
 
-	timeStamp := getTimeNow()
-
-	expectedResults := &ListBoards{
-		Total:  123,
-		Size:   123,
-		Offset: 1,
-		Limit:  1,
-		Data: []*Board{
-			{
-				CreatedAt:   timeStamp,
-				CreatedBy:   BasicEntityInfo{ID: "2718282", Name: "Leonhard Euler", Type: "user"},
-				Description: testBoardDesc,
-				ID:          testBoardID,
-				ModifiedAt:  timeStamp,
-				Name:        testBoardName,
-			},
-		},
-		Type: "board",
-	}
+	expectedResults := ListBoards{}
+	responseData := constructResponseAndResults("boards_get.json", &expectedResults)
 
 	Convey("Given no arguments", t, func() {
 		Convey("When the Boards GetAll function is called", func() {
 			var receivedRequest *http.Request
 			mux.HandleFunc(fmt.Sprintf("/v2/%s", endpointBoards), func(w http.ResponseWriter, r *http.Request) {
-				json.NewEncoder(w).Encode(expectedResults)
+				w.Write(responseData)
 				receivedRequest = r
 			})
 
@@ -207,7 +190,7 @@ func TestListBoards(t *testing.T) {
 
 			Convey("Then the list of boards is returned", func() {
 				So(err, ShouldBeNil)
-				So(results, ShouldResemble, expectedResults)
+				So(results.Data, ShouldResemble, expectedResults.Data)
 
 				Convey("And the request contains the expected headers and parameters", func() {
 					So(receivedRequest, ShouldNotBeNil)
@@ -270,7 +253,7 @@ func TestListBoardsWithSearchParams(t *testing.T) {
 
 			Convey("Then the list of boards is returned, sorted alphabetically", func() {
 				So(err, ShouldBeNil)
-				So(results, ShouldResemble, expectedResults)
+				So(results.Data, ShouldResemble, expectedResults.Data)
 				So(results.Data[0].CreatedBy.Name, ShouldEqual, "Anna")
 				So(results.Data[1].CreatedBy.Name, ShouldEqual, "Josef K")
 

@@ -1,0 +1,70 @@
+{
+  "data": [
+    {
+      "createdAt": "2023-05-03T11:12:42.038Z",
+      "createdBy": {
+        "id": "3074457353169356300",
+        "name": "John Smith",
+        "type": "user"
+      },
+      "currentUserMembership": {
+        "id": "3074457353169356300",
+        "name": "John Smith",
+        "role": "viewer",
+        "type": "board_member"
+      },
+      "description": "Sample board description",
+      "id": "uXjVOD6LSME=",
+      "modifiedAt": "2023-05-03T11:12:42.038Z",
+      "modifiedBy": {
+        "id": "3074457353169356300",
+        "name": "John Smith",
+        "type": "user"
+      },
+      "name": "Sample board name",
+      "owner": {
+        "id": "3074457353169356300",
+        "name": "John Smith",
+        "type": "user"
+      },
+      "picture": {
+        "id": 3458764514006802400,
+        "imageURL": "https://miro.com/static/images/page/mr-index/localization/en/slider/ideation_brainstorming.png"
+      },
+      "policy": {
+        "permissionsPolicy": {
+          "collaborationToolsStartAccess": "all_editors",
+          "copyAccess": "anyone",
+          "sharingAccess": "team_members_with_editing_rights"
+        },
+        "sharingPolicy": {
+          "access": "private",
+          "inviteToAccountAndBoardLinkAccess": "no_access",
+          "organizationAccess": "private",
+          "teamAccess": "private"
+        }
+      },
+      "team": {
+        "id": "3088887345710753000",
+        "name": "Marketing team"
+      },
+      "project": {
+        "id": "3088887345710756000"
+      },
+      "type": "board",
+      "viewLink": "https://miro.com/app/board/uXjVOD6LSME="
+    }
+  ],
+  "total": 1,
+  "size": 1,
+  "offset": 0,
+  "limit": 20,
+  "links": {
+    "first": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1ODc2NaSDN&#RDMDA3MzYyOX==",
+    "last": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1ODc2NDUyNDUyMDA3MzYyOX==",
+    "next": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1ODc2NDUyNDsdgsFEwfFJCw==",
+    "prev": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=",
+    "self": "http://api.miro.com/v2/boards/o9J_lJWSHdg=/items?limit=10&cursor=MzQ1OD1245643FWUyMDA3MzYyOX=="
+  },
+  "type": "string"
+}

@@ -12,7 +12,7 @@ type FramesService struct {
 func (f *FramesService) Create(boardID string, payload SetFrameItem) (*FrameItem, error) {
 	response := &FrameItem{}
 
-	addPayloadDefaults(&payload)
+	setPayloadDefaults(&payload)
 
 	if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, f.subResource); err != nil {
 		return response, err
@@ -68,7 +68,7 @@ func (f *FramesService) GetItems(boardID, frameID string, queryParams ...ItemSea
 func (f *FramesService) Update(boardID, itemID string, payload SetFrameItem) (*FrameItem, error) {
 	response := &FrameItem{}
 
-	addPayloadDefaults(&payload)
+	setPayloadDefaults(&payload)
 
 	if url, err := constructURL(f.client.BaseURL, f.apiVersion, f.resource, boardID, f.subResource, itemID); err != nil {
 		return response, err
@@ -88,7 +88,7 @@ func (f *FramesService) Delete(boardID, itemID string) error {
 	}
 }
 
-func addPayloadDefaults(payload *SetFrameItem) {
+func setPayloadDefaults(payload *SetFrameItem) {
 	if payload.Data.Type == "" {
 		payload.Data.Type = TypeFreeform
 	}
