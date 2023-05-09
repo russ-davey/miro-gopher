@@ -1,5 +1,9 @@
 package miro
 
+import (
+	"strings"
+)
+
 type BoardsService struct {
 	client     *Client
 	apiVersion string
@@ -36,7 +40,7 @@ func (b *BoardsService) Get(boardID string) (*Board, error) {
 // Required scope: boards:read | Rate limiting: Level 1
 // Search query params: BoardSearchParams{}
 func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, error) {
-	response := &ListBoards{}
+	response := &ListBoards{client: b.client}
 
 	if url, err := constructURL(b.client.BaseURL, b.apiVersion, b.resource); err != nil {
 		return response, err
@@ -48,6 +52,26 @@ func (b *BoardsService) GetAll(queryParams ...BoardSearchParams) (*ListBoards, e
 		}
 
 		return response, err
+	}
+}
+
+// GetNext iterator to get and return a pointer to the next set of search results
+func (l *ListBoards) GetNext() (*ListBoards, error) {
+	response := &ListBoards{client: l.client}
+
+	if l.Offset+l.Size < l.Total {
+		var url string
+		if idx := strings.Index(l.Links.Next, "{"); idx != -1 {
+			url = l.Links.Next[:idx]
+		} else {
+			url = l.Links.Next
+		}
+
+		err := l.client.Get(l.client.ctx, url, response)
+
+		return response, err
+	} else {
+		return response, IteratorDone
 	}
 }
 

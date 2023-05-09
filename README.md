@@ -86,6 +86,30 @@ client.Boards.GetAll(miro.BoardSearchParams{
 })
 ```
 
+or when there are more than 20 boards, then use the iterator:
+
+```go
+boards, err := client.Boards.GetAll(BoardSearchParams{TeamID: "gophers", Limit: "50"})
+if err != nil {
+    log.Fatalf("error: %v", err)
+}
+
+for _, board := range boards.Data {
+    fmt.Println(board.Name)
+}
+
+for {
+    boards, err = boards.GetNext()
+    if err == IteratorDone {
+        break
+    }
+
+    for _, board := range boards.Data {
+        fmt.Println(board.Name)
+    }
+}
+```
+
 ### Create
 
 ```go

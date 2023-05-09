@@ -28,6 +28,7 @@ func encodeQueryParams(queryParams []Parameter) string {
 	return "?" + values.Encode()
 }
 
+// parseQueryTags parse "query" tags in struct and return them in a slice of Parameter with their tag names as the keys
 func parseQueryTags(v interface{}) []Parameter {
 	params := make([]Parameter, 0)
 	t := reflect.TypeOf(v)

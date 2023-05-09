@@ -1,6 +1,9 @@
 package miro
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type SetBoard struct {
 	// Description of the board.
@@ -35,6 +38,7 @@ type Board struct {
 }
 
 type ListBoards struct {
+	client *Client
 	Data   []*Board         `json:"data"`
 	Total  int              `json:"total"`
 	Size   int              `json:"size"`
@@ -43,6 +47,8 @@ type ListBoards struct {
 	Links  *PaginationLinks `json:"links"`
 	Type   string           `json:"type"`
 }
+
+var IteratorDone = errors.New("no more boards")
 
 type (
 	Access       string
@@ -163,7 +169,7 @@ type BoardSearchParams struct {
 	// Default: 20
 	Limit string `query:"limit,omitempty"`
 	// Offset the (zero-based) offset of the first item in the collection to return.
-	// Default: 0.
+	// Default: 20. Minimum: 1. Maximum: 50.
 	Offset string `query:"offset,omitempty"`
 	// Sort The order in which you want to view the result set.
 	// Options last_created and alphabetically are applicable only when you search for boards by team.
