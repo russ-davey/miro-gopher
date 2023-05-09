@@ -64,20 +64,20 @@ func (l *ListBoards) GetNext() (*ListBoards, error) {
 		return l, nil
 	}
 
-	if l.Offset+l.Size < l.Total {
-		var url string
-		if idx := strings.Index(l.Links.Next, "{"); idx != -1 {
-			url = l.Links.Next[:idx]
-		} else {
-			url = l.Links.Next
-		}
-
-		err := l.client.Get(l.client.ctx, url, response)
-
-		return response, err
-	} else {
+	var url string
+	if idx := strings.Index(l.Links.Next, "{"); idx != -1 {
+		url = l.Links.Next[:idx]
+	} else if l.Links.Next == "" {
 		return response, IteratorDone
+	} else {
+		url = l.Links.Next
 	}
+
+	err := l.client.Get(l.client.ctx, url, response)
+
+	l.Links.Next = response.Links.Next
+
+	return response, err
 }
 
 // Copy Creates a copy of an existing board. You can also update the name, description, sharing policy, and permissions
