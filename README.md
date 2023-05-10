@@ -2,9 +2,9 @@
 
 API client for accessing the MIRO API
 
-Currently, only supports the `oauth`, `oauth_token`, `/boards` & `/boards/members` endpoints, but more to follow soon.
+Supports all non-enterprise plan MIRO API endpoints, however they will be added at a later date.
 
-For now the `GET`, `POST`, `PUT`, `PATCH` & `DELETE` methods are open to use for any other API calls to MIRO.
+For anything not covered there's the `GET`, `POST`, `POST Multipart`, `PUT`, `PATCH` & `DELETE` methods that are open to use for any other API calls to MIRO.
 
 Minimum required Go version : `1.18`
 
