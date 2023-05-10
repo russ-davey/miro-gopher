@@ -113,22 +113,39 @@ func sortJSON(json1, json2 []byte) ([]byte, []byte) {
 //func TestStructAgainstRealData(t *testing.T) {
 //	client := NewClient(os.Getenv("MIRO_TOKEN"))
 //
-//	boardID := ""
-//	itemID := ""
+//	//boardID := ""
+//	//itemID := ""
 //
 //	//response, err := client.Items.GetAll(boardID, ItemSearchParams{Type: ItemTypeFrame})
-//	err := client.TextItems.Delete(boardID, itemID)
+//	iter, err := client.Boards.GetAll(BoardSearchParams{TeamID: ""})
 //	//response, err := client.Frames.Create(boardID, SetFrameItem{Data: FrameItemData{Title: "test frame", Format: FormatCustom, Type: TypeFreeform}})
 //	if err != nil {
 //		log.Fatalf("error: %v", err)
 //	}
+//
+//	fmt.Println("----------------------")
+//
+//	for {
+//		boards, err := iter.GetNext()
+//		if err == IteratorDone {
+//			break
+//		}
+//
+//		for _, board := range boards.Data {
+//			if board.Policy.SharingPolicy.Access != AccessPrivate {
+//				fmt.Println(board.Name, "(", board.ID, ")", board.Policy.SharingPolicy.Access)
+//			}
+//			//fmt.Println(board.Name)
+//		}
+//	}
+//
 //	//jsonData, _ := json.Marshal(response)
-//	//fmt.Println("----------------------")
+//	fmt.Println("----------------------")
 //	//fmt.Println(string(jsonData))
 //	//
 //	//rawResponse := make(map[string]interface{})
-//	//url, _ := constructURL("https://api.miro.com", "v2", "boards", boardID, "texts", itemID)
-//	////url, _ := constructURL("https://api.miro.com", version, resource, boardID, "items?parent_item_id=3458764553554022926")
+//	//url, _ := constructURL("https://api.miro.com", "v2", "boards", "?team_id=")
+//	////url, _ := constructURL("https://api.miro.com", version, resource, boardID, "items?parent_item_id=")
 //	//client.Get(client.ctx, url, &rawResponse)
 //	//jsonDataNative, _ := json.Marshal(rawResponse)
 //	//
