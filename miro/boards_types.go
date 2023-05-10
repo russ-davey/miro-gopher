@@ -152,10 +152,10 @@ const (
 )
 
 type BoardSearchParams struct {
-	// TeamID The team ID for which you want to retrieve the list of boards. If this parameter is sent in the request,
+	// TeamID for which you want to retrieve the list of boards. If this parameter is sent in the request,
 	// the query and owner parameters are ignored.
 	TeamID string `query:"team_id,omitempty"`
-	// ProjectID The project ID for which you want to retrieve the list of boards. If this parameter is sent in the request,
+	// ProjectID for which you want to retrieve the list of boards. If this parameter is sent in the request,
 	// the query and owner parameters are ignored.
 	ProjectID string `query:"project_id,omitempty"`
 	// Query retrieves a list of boards that contain the query string provided in the board content or board name.
@@ -172,7 +172,7 @@ type BoardSearchParams struct {
 	// Offset the (zero-based) offset of the first item in the collection to return.
 	// Default: 20. Minimum: 1. Maximum: 50.
 	Offset string `query:"offset,omitempty"`
-	// Sort The order in which you want to view the result set.
+	// Sort the order in which you want to view the result set.
 	// Options last_created and alphabetically are applicable only when you search for boards by team.
 	Sort Sort `query:"sort,omitempty"`
 }
