@@ -2,7 +2,7 @@
 
 API client for accessing the MIRO API
 
-Supports all non-enterprise plan MIRO API endpoints, however they will be added at a later date.
+Supports all non-enterprise plan MIRO API endpoints. _Enterprise plan endpoints will be added at a later date._
 
 For anything not covered there's the `GET`, `POST`, `POST Multipart`, `PUT`, `PATCH` & `DELETE` methods that are open to use for any other API calls to MIRO.
 
