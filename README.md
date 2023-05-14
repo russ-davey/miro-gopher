@@ -110,7 +110,7 @@ for {
 ### Create
 
 ```go
-client.Boards.Create(miro.CreateBoard{
+client.Boards.Create(miro.SetBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
     Policy: miro.Policy{
@@ -132,7 +132,7 @@ client.Boards.Create(miro.CreateBoard{
 ### Copy
 
 ```go
-client.Boards.Copy(miro.CreateBoard{
+client.Boards.Copy(miro.SetBoard{
     Description: "My Board",
     Name:        "MIRO Gopher",
     Policy: miro.Policy{
@@ -154,7 +154,7 @@ client.Boards.Copy(miro.CreateBoard{
 
 ### Update
 ```go
-client.Boards.Update(miro.CreateBoard{
+client.Boards.Update(miro.SetBoard{
     Description: "My New Board",
     Name:        "New MIRO Gopher",
     Policy: miro.Policy{
