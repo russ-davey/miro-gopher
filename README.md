@@ -11,6 +11,7 @@ Minimum required Go version : `1.18`
 
 [![GoDoc](https://godoc.org/github.com/russ-davey/miro-gopher?status.svg)](http://godoc.org/github.com/russ-davey/miro-gopher)
 [![Tests](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml/badge.svg?branch=main)](https://github.com/russ-davey/miro-gopher/actions/workflows/miro-gopher.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/russ-davey/miro-gopher)](https://goreportcard.com/report/github.com/russ-davey/miro-gopher)
 
 [![Tag](https://img.shields.io/github/v/tag/russ-davey/miro-gopher?style=plastic)](https://github.com/russ-davey/miro-gopher/tags)
 [![GoDoc](https://img.shields.io/github/go-mod/go-version/russ-davey/miro-gopher?style=plastic)](https://go.dev/doc/go1.2)
